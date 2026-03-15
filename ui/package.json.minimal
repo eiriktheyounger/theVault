@@ -1,0 +1,20 @@
+{
+  "name": "nerospicy-ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build:prod": "vite build",
+    "serve:prod": "serve -s dist -l 4173",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "e2e:codegen": "playwright codegen http://localhost:4173",
+    "e2e:lastpass": "playwright test tests/lastpass.spec.ts"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "express": "^4.21.2",
+    "serve": "^14.2.5"
+  }
+}

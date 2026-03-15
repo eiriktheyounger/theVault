@@ -1,0 +1,127 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme variables */
+:root {
+  color-scheme: dark;
+  --brand: #7c3aed;
+  --bg: #0b0b0c;
+  --panel: #121214;
+  --panel2: #16161a;
+  --border: #232327;
+  --text: #eaeaf0;
+  --muted: #a6a6b0;
+}
+
+.light {
+  color-scheme: light;
+  --brand: #7c3aed;
+  --bg: #ffffff;
+  --panel: #f9fafb;
+  --panel2: #f3f4f6;
+  --border: #e5e7eb;
+  --text: #1f2937;
+  --muted: #6b7280;
+}
+
+@layer base {
+  html,
+  body {
+    @apply bg-bg text-text;
+  }
+
+  input,
+  textarea,
+  select {
+    @apply rounded-2xl border border-border bg-panel text-text placeholder:text-muted;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 40%, transparent);
+  }
+}
+
+/* Markdown pre wrap */
+.prose pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Custom helpers must live in a Tailwind layer to use @apply */
+@layer components {
+  .input {
+    @apply w-full px-3 py-2;
+  }
+  .textarea {
+    @apply w-full p-4 resize-y;
+  }
+  .btn {
+    @apply inline-flex items-center gap-2 rounded-xl px-4 py-2 font-medium transition;
+  }
+  .btn-primary {
+    @apply btn bg-brand text-black hover:brightness-110 active:brightness-95;
+  }
+  .btn-outline {
+    @apply btn border border-border bg-panel2 text-text hover:bg-panel;
+  }
+  .btn-ghost {
+    @apply btn text-text text-opacity-80 hover:text-text hover:bg-panel2;
+  }
+  .btn-destructive {
+    @apply btn bg-error text-black hover:brightness-110 active:brightness-95;
+  }
+  .card {
+    @apply rounded-2xl border border-border bg-panel p-4 shadow-soft;
+  }
+  .label {
+    @apply block text-sm font-medium text-muted mb-1;
+  }
+}
+
+/* Accessibility niceties */
+:focus-visible {
+  outline: 2px solid theme('colors.brand');
+  outline-offset: 2px;
+}
+::placeholder {
+  opacity: 0.6;
+}
+
+/* NeroSpicy custom utility classes */
+.ns-answerBox {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.ns-subhead {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.ns-citations {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.ns-sep {
+  margin: 0.75rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.ns-pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size: 0.875rem;
+  background: var(--panel2);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}

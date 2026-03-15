@@ -1,0 +1,6 @@
+{
+  "answer": "This is a short summary.",
+  "text": "This is a longer summary giving more detail on the answer.",
+  "citations": ["Doc1.md", "Doc2.md"],
+  "model": "phi3:mini"
+}

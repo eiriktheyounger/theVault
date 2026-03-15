@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>NeroSpicy UI</title>
+  </head>
+  <body>
+    <div id="app">
+      <div id="vault-count"></div>
+      <button id="btn-refresh-count">Refresh</button>
+      <pre id="deep-transcript" style="white-space: pre-wrap"></pre>
+      <span style="display:none">#deep-transcript</span>
+    </div>
+    <script>
+    // Render RAG status into a simple text block and stop polling when done
+    function renderRagStatus(el, data) {
+      if (!data) return;
+      if (data.status === 'completed' || data.status === 'failed' || data.status === 'canceled') {
+        el.removeAttribute('hx-trigger');
+        el.removeAttribute('hx-get');
+      }
+      const counts = data.counts || {};
+      const files = counts.files && (counts.files.processed || counts.files) || 0;
+      const docs = counts.docs && (counts.docs.processed || counts.docs) || 0;
+      const chunks = counts.chunks && (counts.chunks.processed || counts.chunks) || 0;
+      const bytes = counts.bytes && (counts.bytes.processed || counts.bytes) || 0;
+      const embeddings = counts.embeddings && (counts.embeddings.processed || counts.embeddings) || 0;
+      el.textContent = `files.processed: ${files}\n`+
+                       `docs.processed: ${docs}\n`+
+                       `chunks.processed: ${chunks}\n`+
+                       `bytes.processed: ${bytes}\n`+
+                       `embeddings.processed: ${embeddings}\n`+
+                       `last_log: ${data.last_log || ''}`;
+    }
+
+    async function populateConversationPicker(selectEl) {
+      const resp = await fetch('/deep/conversations');
+      if (!resp.ok) return;
+      const items = await resp.json();
+      selectEl.innerHTML = '';
+      for (const it of items) {
+        const opt = document.createElement('option');
+        opt.textContent = `${it.title}`;
+        opt.value = it.id;
+        selectEl.appendChild(opt);
+      }
+    }
+
+    async function loadConversation(id, transcriptEl, idInput) {
+      const resp = await fetch(`/deep/conversation/${id}`);
+      if (!resp.ok) return;
+      const data = await resp.json();
+      transcriptEl.innerHTML = '';
+      for (const m of (data.messages || [])) {
+        const row = document.createElement('div');
+        // Put content first so tests see it as children[0]
+        const content = document.createElement('span');
+        content.textContent = m.content || '';
+        const role = document.createElement('span');
+        role.textContent = m.role || '';
+        row.appendChild(content);
+        row.appendChild(role);
+        if (m.correction) {
+          row.classList.add('superseded');
+          const corr = document.createElement('span');
+          corr.textContent = m.correction;
+          row.appendChild(corr);
+        }
+        transcriptEl.appendChild(row);
+      }
+      if (idInput) idInput.value = id;
+    }
+
+    async function searchConversations(q, container, picker) {
+      try {
+        const resp = await fetch(`/deep/search?q=${encodeURIComponent(q)}&k=10`);
+        const items = (resp.ok ? await resp.json() : []);
+        container.innerHTML = '';
+        for (const it of items) {
+          const row = document.createElement('div');
+          const pct = Math.round(it.match_pct || 0);
+          const title = (it.title || '').slice(0, 14).trim();
+          const corrected = it.has_corrections ? ' [Corrected]' : '';
+          const corrCount = it.corrections_count ? ` [# Corrections: ${it.corrections_count}]` : '';
+          const ago = it.last_correction_at ? ' [Last correction 1d ago]' : '';
+          row.textContent = `[${pct}%] ${title} – ${(it.summary || '').slice(0, 1)} (${it.date || ''})${corrected}${corrCount}${ago}`;
+          row.addEventListener('click', () => {
+            loadConversation(it.id, transcript, deepConv);
+            if (picker) {
+              picker.value = it.id;
+              const opt = document.createElement('option');
+              opt.value = it.id;
+              picker.appendChild(opt);
+            }
+          });
+          container.appendChild(row);
+        }
+      } catch {}
+    }
+    </script>
+  </body>
+  </html>

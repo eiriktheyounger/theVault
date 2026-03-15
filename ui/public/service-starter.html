@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeroSpicy Service Starter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1em;
+        }
+
+        .status {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #dc3545;
+        }
+
+        .indicator.running {
+            background: #28a745;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #c82333;
+        }
+
+        .log {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .demo-links {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .demo-link {
+            flex: 1;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: #667eea;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .demo-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Eric's Service Starter</h1>
+        <p class="subtitle">Start and manage all NeroSpicy services from your browser</p>
+
+        <div class="status" id="statusPanel">
+            <div class="loading">
+                <div class="spinner"></div>
+                <div>Connecting to service manager...</div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-primary" id="startBtn" onclick="startServices()" disabled>
+                ▶️  Start All Services
+            </button>
+            <button class="btn-secondary" id="stopBtn" onclick="stopServices()" disabled>
+                ⏸️ Stop All
+            </button>
+            <button class="btn-danger" id="killBtn" onclick="killServices()" disabled>
+                ⚠️  Force Kill
+            </button>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-secondary" onclick="refreshStatus()" id="refreshBtn" disabled>
+                🔄 Refresh Status
+            </button>
+        </div>
+
+        <div class="demo-links" id="demoLinks" style="display: none;">
+            <a href="http://localhost:5173" target="_blank" class="demo-link">
+                🌐 Open Vault (5173)
+            </a>
+            <a href="http://localhost:5175" target="_blank" class="demo-link">
+                📁 Vault Organizer (5175)
+            </a>
+            <a href="http://localhost:5181" target="_blank" class="demo-link">
+                📊 Stream Diagnostics (5181)
+            </a>
+        </div>
+
+        <div class="log" id="logOutput" style="display: none;"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5055';
+        let statusCheckInterval;
+
+        async function checkConnection() {
+            try {
+                const response = await fetch(`${API_BASE}/healthz`, {
+                    method: 'GET',
+                    cache: 'no-cache'
+                });
+                if (response.ok) {
+                    console.log('RAG server connected successfully');
+                    enableButtons();
+                    refreshStatus();
+                    return true;
+                }
+            } catch (e) {
+                console.log('RAG server not reachable:', e.message);
+            }
+            return false;
+        }
+
+        function enableButtons() {
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = false;
+            document.getElementById('killBtn').disabled = false;
+            document.getElementById('refreshBtn').disabled = false;
+        }
+
+        function disableButtons() {
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('killBtn').disabled = true;
+            document.getElementById('refreshBtn').disabled = true;
+        }
+
+        async function refreshStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/services/status`, {
+                    method: 'GET',
+                    cache: 'no-cache',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                let statusHTML = '';
+                data.services.forEach(service => {
+                    const indicatorClass = service.running ? 'running' : '';
+                    statusHTML += `
+                        <div class="status-item">
+                            <div class="indicator ${indicatorClass}"></div>
+                            <strong>${service.name}</strong>: ${service.details}
+                        </div>
+                    `;
+                });
+
+                document.getElementById('statusPanel').innerHTML = statusHTML;
+
+                // Show demo links if services are running
+                if (data.all_running || data.services.some(s => s.running)) {
+                    document.getElementById('demoLinks').style.display = 'flex';
+                }
+            } catch (e) {
+                console.error('Error fetching status:', e);
+                document.getElementById('statusPanel').innerHTML = `
+                    <div class="loading">
+                        <div>❌ Cannot connect to RAG server (port 5055)</div>
+                        <div style="margin-top: 15px; font-size: 14px;">
+                            <strong>To fix this, open Terminal and run:</strong><br>
+                            <code style="background: #fff; padding: 8px; border-radius: 5px; display: inline-block; margin-top: 8px; font-size: 11px;">
+                            cd ~/NeroSpicy && ~/.venv/bin/python -m uvicorn System.Scripts.RAG.rag.server:app --host 127.0.0.1 --port 5055 &
+                            </code>
+                        </div>
+                        <div style="margin-top: 10px; font-size: 12px; color: #666;">
+                            Then refresh this page
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        async function startServices() {
+            disableButtons();
+            showLog('Starting all services...\n');
+
+            try {
+                const response = await fetch(`${API_BASE}/services/start`, { method: 'POST' });
+                const data = await response.json();
+
+                showLog(data.output);
+                refreshStatus();
+            } catch (e) {
+                showLog(`Error: ${e.message}\n`);
+            } finally {
+                enableButtons();
+            }
+        }
+
+        async function stopServices() {
+            disableButtons();
+            showLog('Stopping all services...\n');
+
+            try {
+                const response = await fetch(`${API_BASE}/services/stop`, { method: 'POST' });
+                const data = await response.json();
+
+                showLog(data.output);
+                refreshStatus();
+            } catch (e) {
+                showLog(`Error: ${e.message}\n`);
+            } finally {
+                enableButtons();
+            }
+        }
+
+        async function killServices() {
+            if (!confirm('Force kill all services? This should only be used if graceful shutdown fails.')) {
+                return;
+            }
+
+            disableButtons();
+            showLog('Force killing all services...\n');
+
+            try {
+                const response = await fetch(`${API_BASE}/services/kill`, { method: 'POST' });
+                const data = await response.json();
+
+                showLog(data.output);
+                refreshStatus();
+            } catch (e) {
+                showLog(`Error: ${e.message}\n`);
+            } finally {
+                enableButtons();
+            }
+        }
+
+        function showLog(text) {
+            const logEl = document.getElementById('logOutput');
+            logEl.style.display = 'block';
+            logEl.textContent = text;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        // Try to connect when page loads
+        console.log('Attempting to connect to RAG server...');
+        checkConnection().then(connected => {
+            if (!connected) {
+                console.log('Initial connection failed, will retry every 2 seconds');
+                refreshStatus(); // Show error message
+                // Retry every 2 seconds
+                statusCheckInterval = setInterval(async () => {
+                    console.log('Retrying connection...');
+                    if (await checkConnection()) {
+                        console.log('Connected! Clearing retry interval');
+                        clearInterval(statusCheckInterval);
+                    }
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
