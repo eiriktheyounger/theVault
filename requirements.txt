@@ -1,0 +1,36 @@
+# theVault - Consolidated Python Dependencies
+# Python 3.9 compatible
+
+# Web Framework
+fastapi==0.112.2
+uvicorn[standard]==0.30.6
+pydantic==2.5.3
+httpx>=0.23.0
+
+# LLM & AI
+anthropic>=0.25.0
+ollama>=0.2.0
+
+# Vector & Search
+hnswlib>=0.7.0
+numpy<2.0.0
+scikit-learn>=1.3.0
+
+# Data & Config
+PyYAML>=6.0
+python-dotenv==1.0.0
+python-frontmatter==1.0.0
+python-dateutil>=2.8.0
+
+# Processing & Utils
+requests>=2.31.0
+markdown-it-py==3.0.0
+beautifulsoup4>=4.12.0
+structlog>=24.1.0
+APScheduler>=3.10.0
+
+# Dev/Testing (optional)
+# pytest>=7.4.0
+# pytest-asyncio>=0.21.0
+# black>=23.0.0
+# ruff>=0.1.0

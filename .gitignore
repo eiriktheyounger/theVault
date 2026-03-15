@@ -1,0 +1,43 @@
+# Data directories (on NAS via symlink)
+Vault/
+Inbox/
+Processed/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Databases
+*.db
+*.sqlite*
+hnsw.index
+chunks_hnsw.bin
+meta.csv
+
+# Node
+node_modules/
+
+# Logs
+System/Logs/
+
+# OS
+.DS_Store
+
+# Obsidian
+.obsidian/
+
+# Environment
+.env
+*.env.local
+
+# Audio files
+*.wav
+*.m4a
+*.mp3
+*.ogg
+
+# Processing temp
+.vault_processing/
