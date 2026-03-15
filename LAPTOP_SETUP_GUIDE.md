@@ -10,7 +10,7 @@
 
 ## Prerequisites Checklist
 
-- [ ] GitHub access (can clone `anthropics/theVault` or your fork)
+- [ ] GitHub access (can clone `eiriktheyounger/theVault` or your fork)
 - [ ] SSH key configured for GitHub (or use HTTPS token)
 - [ ] `/Volumes/home/MacMiniStorage` is accessible (NAS mounted on laptop)
 - [ ] ~5 GB free disk space (`~/theVault/` + virtualenv)
@@ -25,8 +25,8 @@
 ### Command
 ```bash
 cd ~
-git clone https://github.com/anthropics/theVault.git
-# or: git clone git@github.com:anthropics/theVault.git (SSH)
+git clone https://github.com/eiriktheyounger/theVault.git
+# or: git clone git@github.com:eiriktheyounger/theVault.git (SSH)
 cd ~/theVault
 git status
 ```
