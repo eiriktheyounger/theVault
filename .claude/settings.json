@@ -1,0 +1,31 @@
+{
+  "env": {
+    "MAX_THINKING_TOKENS": "10000",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "haiku"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/theVault/System/Scripts/check_nas.sh > /dev/null 2>&1"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd ~/theVault && git add -A && git diff --cached --quiet || git commit -m \"auto: $(date +%Y-%m-%d_%H:%M:%S)\" > /dev/null 2>&1"
+          }
+        ]
+      }
+    ]
+  }
+}
