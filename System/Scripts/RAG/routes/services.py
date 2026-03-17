@@ -220,7 +220,7 @@ async def stop_services():
 
 @router.post("/kill", response_model=ServiceActionResponse)
 async def kill_services():
-    """Force kill all NeroSpicy services."""
+    """Force kill all theVault services."""
     try:
         project_root = Path.home() / "theVault"
         venv_python = project_root / ".venv" / "bin" / "python"
