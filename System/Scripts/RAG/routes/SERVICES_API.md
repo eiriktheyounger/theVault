@@ -148,7 +148,7 @@ curl -X POST http://localhost:5055/services/stop
 
 ### POST /services/kill
 
-**Description**: Force kill all NeroSpicy services using `emergency_kill.py`
+**Description**: Force kill all theVault services using `emergency_kill.py`
 
 **Request**: No body required
 
