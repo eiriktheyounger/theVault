@@ -246,7 +246,7 @@ All service management scripts are in `System/Scripts/Services/`:
 
 **Execution**:
 ```python
-project_root = Path.home() / "NeroSpicy"
+project_root = Path.home() / "theVault"
 venv_python = project_root / ".venv" / "bin" / "python"
 script = project_root / "System" / "Scripts" / "Services" / "start_all.py"
 
