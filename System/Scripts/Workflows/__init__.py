@@ -1,5 +1,5 @@
 """
-Workflows Module - NeroSpicy
+Workflows Module - theVault
 
 Morning and evening workflow orchestration with progress tracking.
 """
