@@ -23,6 +23,7 @@
 1. Verify NAS: bash System/Scripts/check_nas.sh
 2. Activate venv: source .venv/bin/activate
 3. Check Ollama: curl -s http://localhost:11434/api/tags | head -5
+4. Start RAG server: cd System/Scripts/RAG && python3 -m uvicorn llm.server:app --port 5055
 
 ## Key Paths
 - RAG server: System/Scripts/RAG/
