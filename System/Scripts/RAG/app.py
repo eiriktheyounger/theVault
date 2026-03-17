@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 OLLAMA_URL = "http://127.0.0.1:11434"  # matches your logs
 
-app = FastAPI(title="NeroSpicy")
+app = FastAPI(title="theVault")
 
 # ---------------- LLM client ----------------
 
