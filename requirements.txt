@@ -1,5 +1,5 @@
 # theVault - Consolidated Python Dependencies
-# Python 3.9 compatible
+# Python 3.12.5
 
 # Web Framework
 fastapi==0.112.2
