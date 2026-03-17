@@ -14,6 +14,7 @@
 - LLM server: FastAPI on port 5111 (Ollama proxy)
 - Ollama: port 11434 (qwen2.5:7b, nomic-embed-text)
 - Database: SQLite (chunks.sqlite3) + HNSW (chunks_hnsw.bin), 768-dim embeddings
+- Vector index: FAISS (IndexIDMap2/IndexFlatIP), saved as chunks_hnsw.bin
 - Vault: ~/theVault/Vault → NAS symlink (/Volumes/home/MacMiniStorage/Vault)
 - Inbox: ~/theVault/Inbox → NAS symlink
 - Processed: ~/theVault/Processed → NAS symlink
