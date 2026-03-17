@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Minimal RAG index builder for NeroSpicy.
+Minimal RAG index builder for theVault.
 
 This script walks the Vault/ tree, finds Markdown files, and (optionally)
 precomputes a lightweight on-disk index that other scripts can use.
