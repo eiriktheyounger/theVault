@@ -106,189 +106,86 @@ Verify sync is working: Check if daily notes appear in `Vault/Daily/YYYY/MM/` di
 
 ---
 
-## STEP 4: Copy RAG Databases from Mac Mini
+## STEP 4: Configure QuickAdd for Captures
 
-The RAG database (41,976 chunks) and HNSW index (114 MB) must be synced to laptop.
+1. In Obsidian, go to **Settings → Community plugins → QuickAdd**
+2. Click the "Gear" icon to open QuickAdd settings
+3. **Create a new macro:**
+   - Click "Manage Macros"
+   - Click "Add Macro"
+   - Name it "Capture to Daily"
+4. **Set up the capture action:**
+   - Template: Use the format: `HH:MM Capture text`
+   - Append to: Daily note under "## Captures" heading
+5. **Bind keyboard shortcut:**
+   - In QuickAdd settings, set trigger to "Cmd+Shift+C"
 
-### Option A: SCP from Mac Mini (Recommended - Fastest)
-
-**Setup once** (on laptop):
+**Test it:**
 ```bash
-# Add Mac Mini to ~/.ssh/config
-cat >> ~/.ssh/config << 'EOF'
-Host macmini
-    HostName 192.168.1.210     # Replace with actual IP
-    User ericmanchester
-    IdentityFile ~/.ssh/id_ed25519
-EOF
+# Press Cmd+Shift+C in Obsidian, type something like "09:30 Test capture"
+# Verify it appears in today's daily note under ## Captures
 ```
-
-**Copy databases** (from laptop):
-```bash
-scp -r macmini:~/theVault/System/Scripts/RAG/rag_data/ ~/theVault/System/Scripts/RAG/
-# Expected: downloads chunks.sqlite3 (141 MB), chunks_hnsw.bin (114 MB), meta.csv (53 MB)
-# Time: ~2-3 minutes on 1 Gbps network
-```
-
-### Option B: NAS Backup (if Mac Mini has backup scheduled)
-
-```bash
-ls /Volumes/home/MacMiniStorage/Backups/thevault-rag-data-*.tar.gz
-tar xzf /Volumes/home/MacMiniStorage/Backups/thevault-rag-data-LATEST.tar.gz -C ~/theVault/System/Scripts/RAG/
-```
-
-### Option C: Rebuild Fresh from Vault (if no backup available)
-
-```bash
-cd ~/theVault
-source .venv/bin/activate
-python3 System/Scripts/batch_reindex.py --batch-size 150
-# Time: ~10-15 minutes; generates fresh HNSW index from vault files
-deactivate
-```
-
-**Choose ONE option:**
-- **Option A (scp)**: 2-3 minutes, most reliable
-- **Option B (backup)**: 1-2 minutes, requires backup exists
-- **Option C (rebuild)**: 10-15 minutes, works offline but slow
 
 ---
 
-## STEP 5: Verify Setup
+## STEP 5: Set ANTHROPIC_API_KEY
 
-Run these 5 checks in order:
+Add to `~/.zshrc`:
 
-### Check 1: Virtual Environment
 ```bash
+export ANTHROPIC_API_KEY='sk-ant-...'  # Your actual API key
+```
+
+Then reload:
+```bash
+source ~/.zshrc
+echo $ANTHROPIC_API_KEY  # Verify it's set
+```
+
+---
+
+## STEP 6: Run Vault Check Script
+
+```bash
+bash ~/theVault/System/Scripts/check_vault_laptop.sh
+```
+
+This verifies:
+- ✓ Vault accessibility (symlink or local)
+- ✓ Obsidian plugins installed
+- ✓ Python environment OK
+- ✓ Git configuration
+- ✓ API keys set
+- ✓ RAG server requirements
+
+Fix any ✗ issues shown before proceeding.
+
+---
+
+## STEP 7: Optional — Set Up RAG Server Locally
+
+If you want search functionality on the laptop (requires Ollama):
+
+```bash
+# Install Ollama
+# Download from https://ollama.ai and install
+
+# Pull models
+ollama pull qwen2.5:7b
+ollama pull nomic-embed-text
+
+# Start RAG server
+cd ~/theVault/System/Scripts/RAG
 source ~/theVault/.venv/bin/activate
-python3 --version      # Should show Python 3.9+
-which python3          # Should show ~/.venv/bin/python3
-pip list | grep fastapi # Should show fastapi==0.112.2
-deactivate
+python3 -m uvicorn llm.server:app --port 5055
+
+# In another terminal, test:
+curl -X POST http://localhost:5055/rag/search \
+  -H "Content-Type: application/json" \
+  -d '{"query": "test", "top_k": 5}'
 ```
 
-### Check 2: NAS Symlinks
-```bash
-ls ~/theVault/Vault | head -5      # Should list directory contents
-ls ~/theVault/Inbox | head -5      # Should list inbox items
-[ -L ~/theVault/Vault ] && echo "✓ Symlink OK" || echo "✗ Not a symlink"
-```
-
-### Check 3: Database Integrity
-```bash
-cd ~/theVault
-source .venv/bin/activate
-
-# SQLite check
-sqlite3 System/Scripts/RAG/rag_data/chunks.sqlite3 "SELECT COUNT(*) FROM chunks;"
-# Should return: 41976
-
-# HNSW index check (optional)
-python3 -c "import hnswlib; idx = hnswlib.Index(space='cosine', dim=768); idx.load_index('System/Scripts/RAG/rag_data/chunks_hnsw.bin'); print(f'✓ HNSW loaded: {idx.get_current_count()} vectors')"
-
-deactivate
-```
-
-### Check 4: Git Status
-```bash
-cd ~/theVault
-git status              # Should show "nothing to commit, working tree clean"
-git log --oneline -5   # Should show recent commits
-```
-
-### Check 5: File Structure
-```bash
-# Verify key directories exist
-[ -d ~/theVault/System/Scripts/RAG ] && echo "✓ RAG scripts"
-[ -d ~/theVault/ui ] && echo "✓ UI"
-[ -d ~/theVault/System/Scripts/Workflows ] && echo "✓ Workflows"
-[ -f ~/theVault/requirements.txt ] && echo "✓ Requirements"
-```
-
----
-
-## STEP 6: Laptop-Specific Configuration
-
-### Port Availability Checks
-```bash
-# Verify ports are free (same as Mac Mini)
-for port in 5055 5111 5173; do
-  nc -zv localhost $port 2>/dev/null && echo "⚠️  Port $port in use" || echo "✓ Port $port available"
-done
-```
-
-### Ollama Status (Laptop)
-```bash
-# Check if Ollama is running
-pgrep -f "ollama" && echo "✓ Ollama running" || echo "○ Ollama not running"
-
-# If not running, start it
-# ollama serve > /tmp/ollama.log 2>&1 &
-
-# Verify models are downloaded
-curl -s http://127.0.0.1:11434/api/tags | python3 -c "import sys, json; tags = json.load(sys.stdin)['models']; print('Models:', [m['name'] for m in tags])"
-```
-
-### Environment Variables (Optional)
-Create `~/theVault/.env.laptop` with laptop-specific settings:
-```bash
-# .env.laptop
-VAULT_PATH=~/theVault/Vault
-RAG_MODE=REAL
-OLLAMA_HOST=http://127.0.0.1:11434
-CLAUDE_API_KEY=sk-...  # If using Claude API features
-```
-
-Then when running services on laptop:
-```bash
-export $(cat ~/theVault/.env.laptop | xargs)
-```
-
----
-
-## STEP 7: Sync Strategy & Troubleshooting
-
-### Sync Philosophy
-- **Code**: Git-based (pull latest, push experimental branches)
-- **Vault Content**: NAS symlink (same path on both machines)
-- **RAG Index**: Periodic sync (scp after major ingest, or rebuild fresh)
-- **Databases**: Rebuild locally if needed, or copy from Mac Mini
-
-### Daily Workflow
-```bash
-# Monday-Friday morning (laptop)
-cd ~/theVault
-git pull origin main          # Get latest code
-# Vault content auto-syncs via NAS
-source .venv/bin/activate
-npm run dev                   # Start UI
-npm run rag                   # Start RAG (if testing search)
-```
-
-### Troubleshooting Table
-
-| Problem | Symptom | Solution |
-|---------|---------|----------|
-| **NAS Mounts But Files Missing** | `ls ~/theVault/Vault/` is empty or errors | Mac Mini not running NAS share; wake NAS or check Mac Mini SMB daemon |
-| **"Permission denied" on NAS** | Can see `/Volumes/home/MacMiniStorage` but can't read Vault | NAS has read-only permissions; reconnect with credentials: `mount_smbfs //User:Pass@192.168.1.X/home /Volumes/home` |
-| **RAG server crashes on startup** | "cannot open shared object file: No such file or directory" | HNSW index corrupted; rebuild: `python3 System/Scripts/batch_reindex.py --batch-size 150` |
-| **Port 5055 already in use** | "Address already in use" when starting RAG | Kill existing process: `lsof -i :5055 \| grep -v PID \| awk '{print $2}' \| xargs kill -9` |
-| **UI won't load on localhost:5173** | "Connection refused" | Start UI dev server: `npm run dev` (not `npm run build:prod`) |
-| **Git pull conflicts** | "CONFLICT (content merge)" | Stash local changes: `git stash`, then `git pull`, then `git stash pop` |
-| **Ollama models missing on laptop** | "model not found: qwen2.5:7b" | Pull models: `ollama pull qwen2.5:7b && ollama pull nomic-embed-text` |
-| **API calls timeout** | Requests to localhost:5055 hang >30s | Check Mac Mini is running RAG server; or increase timeout in ui/src/lib/api.ts |
-| **Database integrity error** | "database disk image is malformed" | Re-copy from Mac Mini: `scp -r macmini:~/theVault/System/Scripts/RAG/rag_data/ ~/theVault/System/Scripts/RAG/` |
-| **Git status shows "ahead by X commits"** | Laptop has experimental commits not on Mac Mini | Push branch: `git push -u origin feature-branch` or reset: `git reset --hard origin/main` |
-
-### Post-Setup Next Steps
-
-1. **Test Vault Access**: Open a random file from ~/theVault/Vault in Obsidian
-2. **Verify RAG Index**:
-   ```bash
-   curl http://localhost:5055/healthz | python3 -m json.tool
-   ```
-3. **Sync Confirmation**: Check git status and NAS access before doing any development
-4. **Schedule Backup**: If laptop will run overnight services, add cronjob to backup rag_data to NAS
+**Note:** RAG server requires a FAISS index. On laptop, search will work against your synced vault copy.
 
 ---
 
