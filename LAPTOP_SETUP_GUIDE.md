@@ -81,39 +81,28 @@ Expected: Installation completes without errors (15-30 seconds).
 
 ---
 
-## STEP 3: Create Python Virtual Environment & Install Dependencies
+## STEP 3: Set Up Obsidian Sync
 
-### Commands
-```bash
-cd ~/theVault
+1. **Open Obsidian**
+2. **Open folder as vault** → Choose `~/theVault/Vault`
+3. **Trust the vault** when prompted
+4. **Enable Obsidian Sync:**
+   - Go to Settings → Obsidian Sync → Sign In
+   - Use your Anthropic account credentials
+   - Wait 2-3 minutes for initial sync
+5. **Install community plugins:**
+   - Settings → Community plugins → "Obsidian Sync" → Install
+   - Settings → Community plugins → "QuickAdd" → Install
+6. **Enable plugins:**
+   - Settings → Community plugins → Toggle "Obsidian Sync" ON
+   - Settings → Community plugins → Toggle "QuickAdd" ON
 
-# Create venv
-python3 -m venv .venv
-source .venv/bin/activate
+Verify sync is working: Check if daily notes appear in `Vault/Daily/YYYY/MM/` directory.
 
-# Install dependencies
-pip install --upgrade pip setuptools wheel
-pip install -r requirements.txt
-
-# Verify installation
-python3 -c "import fastapi, anthropic, ollama; print('✓ All imports OK')"
-deactivate
-```
-
-### Expected Results
-```
-✓ All imports OK
-Successfully installed fastapi uvicorn anthropic ollama ... (30 packages)
-```
-
-### Troubleshooting
-| Issue | Fix |
-|-------|-----|
-| "python3: command not found" | Install Python: `brew install python@3.9` or use pyenv |
-| "Requirement already satisfied" messages (harmless) | Normal - pip skips installed packages |
-| "No matching distribution found for numpy>=2.1.0" | Already fixed in requirements.txt (uses numpy<2.0.0) |
-| "ERROR: pip's legacy resolver does not work this way" | Run `pip install --upgrade pip` first |
-| Import errors after install | Verify venv is activated: `which python3` should show `~/.venv/bin/python3` |
+**Troubleshooting:**
+- Vault not showing files? Wait 2-3 minutes and restart Obsidian
+- Plugins not installing? Try enabling "Community plugins" in Settings
+- Sync not starting? Restart Obsidian and check Settings → Obsidian Sync
 
 ---
 
