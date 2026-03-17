@@ -1,6 +1,13 @@
 # theVault
 
-Local-first AI knowledge management system on Mac Mini M4. Python 3.9, FastAPI, SQLite+HNSW, Obsidian vault on NAS.
+**PRIMARY PROJECT** — Local-first AI knowledge management system on Mac Mini M4. Python 3.12.5, FastAPI, SQLite+HNSW, Obsidian vault on NAS.
+
+## Migration Notice (March 17, 2026)
+**Active development has migrated from ~/NeroSpicy to ~/theVault.** This is now the primary project directory.
+- **Old project**: ~/NeroSpicy (archived, read-only reference)
+- **New project**: ~/theVault (active development)
+- Both share the same NAS-backed Vault, Inbox, and Processed directories
+- All new work goes in ~/theVault/
 
 ## Architecture
 - API server: FastAPI on port 5055 (RAG search, chat, ingest)
