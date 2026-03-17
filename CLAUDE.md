@@ -40,6 +40,7 @@
 - Test every change against the existing 41,976 chunks
 - Do not modify production endpoints without creating a backup route first
 - One agent writes code at a time — no parallel sessions editing the same files
+- The vector index uses FAISS, not hnswlib — do not import hnswlib for search
 
 ## What NOT to Do
 - Do not install Docker or reference Docker configs
