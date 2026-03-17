@@ -165,7 +165,7 @@ async def _lifespan(app: FastAPI):
 
 
 # ---------- FastAPI app ----------
-app = FastAPI(title="NeroSpicy LLM Server", version="1.0.0", lifespan=_lifespan)
+app = FastAPI(title="theVault LLM Server", version="1.0.0", lifespan=_lifespan)
 
 # Include routers
 app.include_router(health_routes.router)
