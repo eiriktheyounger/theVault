@@ -41,7 +41,14 @@ def get_today_note_path():
     return DAILY_BASE / now.strftime('%Y') / now.strftime('%m') / f"{now.strftime('%Y-%m-%d')}-DLY.md"
 
 def read_section(content, start_marker, end_marker):
-    """Extract text between HTML comment markers."""
+    """Extract text between HTML comment markers or headings."""
+    # Special case: if markers are heading-based, use heading extraction
+    if start_marker == "## Captures" and end_marker == "## Evening":
+        pattern = r'## Captures\s*\n(.*?)(?=\n## Evening)'
+        match = re.search(pattern, content, re.DOTALL)
+        return match.group(1).strip() if match else ""
+
+    # Default: HTML comment markers
     pattern = f"{re.escape(start_marker)}(.*?){re.escape(end_marker)}"
     match = re.search(pattern, content, re.DOTALL)
     return match.group(1).strip() if match else ""
