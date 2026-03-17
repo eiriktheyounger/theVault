@@ -124,7 +124,7 @@ def get_all_service_statuses() -> List[ServiceStatus]:
 
 @router.get("/status", response_model=ServicesStatusResponse)
 async def get_services_status():
-    """Get status of all NeroSpicy services."""
+    """Get status of all theVault services."""
     try:
         statuses = get_all_service_statuses()
         all_running = all(s.running for s in statuses)
