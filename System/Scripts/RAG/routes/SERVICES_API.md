@@ -13,7 +13,7 @@ REST API endpoints for managing theVault system services (Ollama, LLM Server, RA
 
 ### GET /services/status
 
-**Description**: Get current status of all NeroSpicy services
+**Description**: Get current status of all theVault services
 
 **Response**: `ServicesStatusResponse`
 ```json
