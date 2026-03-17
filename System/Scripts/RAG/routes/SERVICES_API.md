@@ -387,7 +387,7 @@ curl -X POST http://localhost:5055/services/kill | jq
 
 1. **No authentication** - Assumes localhost-only access
 2. **Command injection** - Uses fixed script paths, not user input
-3. **Process control** - Limited to NeroSpicy services only
+3. **Process control** - Limited to theVault services only
 4. **Force kill** - Can terminate critical services, use with caution
 
 **Production recommendations**:
