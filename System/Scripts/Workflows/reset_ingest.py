@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Reset Ingest - Recovery Tool for NeroSpicy
+Reset Ingest - Recovery Tool for theVault
 
 Moves processed files back to inbox and deletes outputs for a given time period.
 Used for testing and recovering from failed processing.
