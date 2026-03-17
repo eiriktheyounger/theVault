@@ -1,7 +1,7 @@
-# Service Management API - NeroSpicy
+# Service Management API - theVault
 
 ## Overview
-REST API endpoints for managing NeroSpicy system services (Ollama, LLM Server, RAG Server, UI/Vite).
+REST API endpoints for managing theVault system services (Ollama, LLM Server, RAG Server, UI/Vite).
 
 **Module**: `System/Scripts/RAG/routes/services.py`
 **Prefix**: `/services`
