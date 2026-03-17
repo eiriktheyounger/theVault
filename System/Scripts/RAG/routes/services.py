@@ -181,7 +181,7 @@ async def start_services():
 
 @router.post("/stop", response_model=ServiceActionResponse)
 async def stop_services():
-    """Gracefully stop all NeroSpicy services."""
+    """Gracefully stop all theVault services."""
     try:
         project_root = Path.home() / "theVault"
         venv_python = project_root / ".venv" / "bin" / "python"
