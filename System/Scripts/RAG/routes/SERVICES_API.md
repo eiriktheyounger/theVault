@@ -62,7 +62,7 @@ curl http://localhost:5055/services/status
 
 ### POST /services/start
 
-**Description**: Start all NeroSpicy services using `start_all.py`
+**Description**: Start all theVault services using `start_all.py`
 
 **Request**: No body required
 
