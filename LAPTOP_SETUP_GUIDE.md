@@ -189,48 +189,102 @@ curl -X POST http://localhost:5055/rag/search \
 
 ---
 
-## Quick Reference Commands
+## Daily Workflow
+
+### Morning
 
 ```bash
-# Activate venv
-source ~/theVault/.venv/bin/activate
+cd ~/theVault
 
-# Start all services (from ~/theVault)
-npm run rag & npm run llm & npm run dev
-
-# Check service status
-curl http://localhost:5055/healthz   # RAG
-curl http://localhost:5111/health    # LLM
-# UI: http://localhost:5173
-
-# Sync from NAS (Vault auto-synced via symlink)
+# Get latest code from Mac Mini
 git pull origin main
 
-# Rebuild index (slow, 10-15 min)
-python3 System/Scripts/batch_reindex.py --batch-size 150
+# Activate venv for any development
+source .venv/bin/activate
+```
 
-# Copy fresh databases from Mac Mini
-scp -r macmini:~/theVault/System/Scripts/RAG/rag_data/ ~/theVault/System/Scripts/RAG/
+### Capturing Ideas
 
-# Check database integrity
-sqlite3 System/Scripts/RAG/rag_data/chunks.sqlite3 "SELECT COUNT(*) FROM chunks;"
+Press **Cmd+Shift+C** anywhere in Obsidian:
+- Format: `HH:MM Your capture text`
+- Appends to today's daily note under "## Captures"
+- Auto-syncs to Mac Mini via Obsidian Sync
+
+### Syncing Code Changes
+
+```bash
+# After making changes
+git add .
+git commit -m "Brief description"
+git push origin main
+
+# Mac Mini will pull these changes automatically
+```
+
+### Starting RAG Server (Optional)
+
+```bash
+cd ~/theVault/System/Scripts/RAG
+source ~/theVault/.venv/bin/activate
+python3 -m uvicorn llm.server:app --port 5055
+
+# In another tab, test:
+curl http://localhost:5055/healthz
 ```
 
 ---
 
-## Support
+## Troubleshooting Quick Guide
 
-**For issues**, check:
-1. This guide's Troubleshooting section (Step 7)
-2. `~/theVault/CLAUDE.md` for architecture overview
-3. `~/theVault/System/Scripts/check_nas.sh` to verify NAS mount
-4. Logs: `tail -f /tmp/ollama.log` (Ollama), `~/.npm/_logs/` (npm)
+**Vault not showing in Obsidian?**
+- Restart Obsidian
+- Check Settings → Obsidian Sync is enabled
+- Wait 2-3 minutes for initial sync
 
-**For data loss or corruption**, restore from:
-- Vault: NAS backup (symlinked)
-- RAG index: Mac Mini (scp) or rebuild
-- Code: GitHub (git pull)
+**Captures not saving?**
+- Verify "## Captures" heading exists in daily note
+- Check QuickAdd is enabled in Settings
+- Test: Cmd+Shift+C → type test text
+
+**Python package errors?**
+- Activate venv: `source .venv/bin/activate`
+- Reinstall: `pip install -r requirements.txt`
+- Verify: `python3 -c "import fastapi; print('OK')"`
+
+**Git conflicts?**
+- Stash local changes: `git stash`
+- Pull: `git pull origin main`
+- Reapply: `git stash pop`
+
+**ANTHROPIC_API_KEY not working?**
+- Verify set: `echo $ANTHROPIC_API_KEY`
+- Reload shell: `source ~/.zshrc`
+- Check ~/.zshrc has correct export line
 
 ---
 
-*Last Updated: March 15, 2026*
+## Support & Resources
+
+For setup issues:
+1. Run: `bash ~/theVault/System/Scripts/check_vault_laptop.sh`
+2. Check CLAUDE.md: `~/theVault/CLAUDE.md`
+3. Check git status: `cd ~/theVault && git status`
+
+For development questions:
+- Architecture: See CLAUDE.md
+- Code standards: Review recent commits
+- API docs: RAG server at http://localhost:5055/docs (if running)
+
+---
+
+## Notes
+
+- **Vault auto-syncs** via Obsidian Sync — no manual sync needed
+- **Code syncs** via git — manual push/pull
+- **Overnight processor** only runs on Mac Mini at 10 PM
+- **RAG server** on laptop is optional, works best with Ollama
+- **Daily notes** location: `Vault/Daily/YYYY/MM/YYYY-MM-DD-DLY.md`
+
+---
+
+*Last Updated: March 17, 2026*
