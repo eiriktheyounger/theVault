@@ -41,3 +41,6 @@ System/Logs/
 
 # Processing temp
 .vault_processing/
+
+# Python version (pyenv)
+.python-version
