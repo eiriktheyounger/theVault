@@ -20,7 +20,7 @@
 - Processed: ~/theVault/Processed → NAS symlink
 
 ## Before You Code
-1. Verify NAS: bash System/Scripts/check_nas.sh
+1. Verify vault: bash System/Scripts/check_vault_laptop.sh (laptop) or check_nas.sh (Mac Mini)
 2. Activate venv: source .venv/bin/activate
 3. Check Ollama: curl -s http://localhost:11434/api/tags | head -5
 4. Start RAG server: cd System/Scripts/RAG && python3 -m uvicorn llm.server:app --port 5055
