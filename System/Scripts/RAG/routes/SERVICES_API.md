@@ -105,7 +105,7 @@ curl -X POST http://localhost:5055/services/start
 
 ### POST /services/stop
 
-**Description**: Gracefully stop all NeroSpicy services using `stop_all.py`
+**Description**: Gracefully stop all theVault services using `stop_all.py`
 
 **Request**: No body required
 
