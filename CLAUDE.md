@@ -48,3 +48,4 @@
 - Do not reference PostgreSQL or pgvector
 - Do not create microservice directories — this is a monolithic FastAPI app
 - Do not copy Vault/ Inbox/ or Processed/ to local disk — they live on NAS
+- Do not use hnswlib for search — the index is FAISS despite the filename
