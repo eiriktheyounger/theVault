@@ -1,4 +1,4 @@
-# Notes.app Integration API - NeroSpicy
+# Notes.app Integration API - theVault
 
 ## Overview
 REST API endpoints for accessing and searching Apple Notes.app data via AppleScript.
