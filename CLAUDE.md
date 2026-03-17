@@ -32,6 +32,8 @@
 - Databases: System/Scripts/RAG/rag_data/
 - Workflows: System/Scripts/Workflows/
 - Daily notes: Vault → Daily/YYYY/MM/YYYY-MM-DD-DLY.md
+- Laptop setup: LAPTOP_SETUP_GUIDE.md (Obsidian Sync + QuickAdd for secondary machine)
+- Laptop checks: System/Scripts/check_vault_laptop.sh
 
 ## Rules
 - Use Path objects, not strings, for all file paths
