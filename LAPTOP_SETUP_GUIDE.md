@@ -37,63 +37,47 @@
 
 ## STEP 1: Clone GitHub Repository
 
-### Command
 ```bash
 cd ~
-git clone https://github.com/eiriktheyounger/theVault.git
-# or: git clone git@github.com:eiriktheyounger/theVault.git (SSH)
+git clone git@github.com:eiriktheyounger/theVault.git
 cd ~/theVault
 git status
 ```
 
-### Expected Results
+Expected output:
 ```
 On branch main
 Your branch is up to date with 'origin/main'.
-
 nothing to commit, working tree clean
 ```
 
-### Troubleshooting
-| Issue | Fix |
-|-------|-----|
-| "fatal: destination path 'theVault' already exists" | `rm -rf ~/theVault && git clone ...` |
-| "Permission denied (publickey)" | Configure SSH key: `ssh-keygen -t ed25519 && ssh-add ~/.ssh/id_ed25519` |
-| "Could not resolve host: github.com" | Check internet connection; may need VPN if behind corporate firewall |
+**Troubleshooting:**
+- "Permission denied (publickey)": Configure SSH key: `ssh-keygen -t ed25519 && ssh-add ~/.ssh/id_ed25519`
+- Already cloned? Just update: `cd ~/theVault && git pull origin main`
 
 ---
 
-## STEP 2: Create NAS Symlinks
+## STEP 2: Set Up Python Environment
 
-The Vault, Inbox, and Processed directories live on NAS (`/Volumes/home/MacMiniStorage/`).
-
-### Commands
 ```bash
-# Verify NAS is accessible
-ls /Volumes/home/MacMiniStorage/ && echo "✓ NAS mounted"
+# Verify Python version
+python3 --version
+# Expected: Python 3.12.5
 
-# Create symlinks (from ~/theVault/)
-ln -s /Volumes/home/MacMiniStorage/Vault ~/theVault/Vault
-ln -s /Volumes/home/MacMiniStorage/Inbox ~/theVault/Inbox
-ln -s /Volumes/home/MacMiniStorage/Processed ~/theVault/Processed
+# Create and activate venv
+cd ~/theVault
+python3 -m venv .venv
+source .venv/bin/activate
 
-# Verify symlinks
-ls -l ~/theVault/Vault ~/theVault/Inbox ~/theVault/Processed
+# Install dependencies
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Verify key packages
+python3 -c "import fastapi, anthropic, uvicorn; print('✓ Core packages OK')"
 ```
 
-### Expected Results
-```
-Vault -> /Volumes/home/MacMiniStorage/Vault
-Inbox -> /Volumes/home/MacMiniStorage/Inbox
-Processed -> /Volumes/home/MacMiniStorage/Processed
-```
-
-### Troubleshooting
-| Issue | Fix |
-|-------|-----|
-| "ls: cannot open directory: /Volumes/home/MacMiniStorage/" | Wake NAS or mount SMB: `mount_smbfs //User:Pass@192.168.1.X/home /Volumes/home` |
-| "ln: /Volumes/home/MacMiniStorage/Vault: No such file or directory" | Verify NAS path is correct: `diskutil list` and check `mount` output |
-| "operation not permitted" | Check symlink permissions; if NAS requires authentication, mount first |
+Expected: Installation completes without errors (15-30 seconds).
 
 ---
 
