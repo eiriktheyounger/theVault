@@ -142,7 +142,7 @@ async def get_services_status():
 
 @router.post("/start", response_model=ServiceActionResponse)
 async def start_services():
-    """Start all NeroSpicy services."""
+    """Start all theVault services."""
     try:
         project_root = Path.home() / "theVault"
         venv_python = project_root / ".venv" / "bin" / "python"
