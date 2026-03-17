@@ -88,7 +88,7 @@ def check_port_in_use(port: int) -> tuple[bool, int | None]:
 
 
 def get_all_service_statuses() -> List[ServiceStatus]:
-    """Get status of all NeroSpicy services."""
+    """Get status of all theVault services."""
     # Define services with either pattern or port
     service_checks = [
         ("Ollama", "pattern", "ollama serve", None),
