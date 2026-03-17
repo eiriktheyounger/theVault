@@ -1,22 +1,37 @@
 # theVault Laptop Setup Guide
 
-**Status**: Prepared for MacBook Pro (M3 Max) as secondary development machine
-**Primary Machine**: Mac Mini M4 (~/theVault production)
-**Sync Strategy**: NAS-based with local git repository
-**Setup Time**: 15-20 minutes
-**Date**: March 15, 2026
+**Status**: MacBook Air as secondary development machine
+**Primary Machine**: Mac Mini M4 (~/theVault production, overnight processor)
+**Sync Strategy**: Obsidian Sync (vault) + Git (code) + NAS symlinks (if available)
+**Setup Time**: 20-30 minutes
+**Date**: March 17, 2026
+
+---
+
+## Quick Overview
+
+### What Works on Laptop
+- ✓ Obsidian daily notes (via Obsidian Sync)
+- ✓ QuickAdd captures (Cmd+Shift+C)
+- ✓ RAG server search (optional, with Ollama)
+- ✓ Code development and git workflow
+- ✓ Claude Code vault-aware editing
+
+### What Does NOT Run on Laptop
+- ✗ Overnight processor (Mac Mini only, 10 PM cron)
+- ✗ Plaud pipeline (NAS-dependent)
+- ✗ Full re-indexing (no database by default)
 
 ---
 
 ## Prerequisites Checklist
 
-- [ ] GitHub access (can clone `eiriktheyounger/theVault` or your fork)
-- [ ] SSH key configured for GitHub (or use HTTPS token)
-- [ ] `/Volumes/home/MacMiniStorage` is accessible (NAS mounted on laptop)
-- [ ] ~5 GB free disk space (`~/theVault/` + virtualenv)
-- [ ] Python 3.9+ installed (`python3 --version`)
-- [ ] Homebrew or preferred package manager available
-- [ ] ~10 minutes for first run (more if rebuilding HNSW from scratch)
+- [ ] GitHub access (`git@github.com:eiriktheyounger/theVault.git`)
+- [ ] SSH key configured for GitHub
+- [ ] ~3 GB free disk space (code + Python venv)
+- [ ] Python 3.12.5 (via pyenv or installed)
+- [ ] Obsidian installed (latest version)
+- [ ] macOS 11+ (Intel or Apple Silicon)
 
 ---
 
