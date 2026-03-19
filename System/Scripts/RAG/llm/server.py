@@ -189,6 +189,7 @@ app = FastAPI(title="NeroSpicy LLM Server", version="1.0.0", lifespan=_lifespan)
 
 # Include routers
 app.include_router(health_routes.router)
+app.include_router(graph_routes.router)
 
 # Mount vault organizer API as sub-application
 if ORGANIZER_AVAILABLE:
