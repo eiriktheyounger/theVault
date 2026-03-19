@@ -15,6 +15,14 @@ Local-first AI knowledge management system on Mac Mini M4. Python 3.12.5, FastAP
 1. Verify NAS: bash System/Scripts/check_nas.sh
 2. Activate venv: source .venv/bin/activate
 3. Check Ollama: curl -s http://localhost:11434/api/tags | head -5
+4. Start server (from ~/theVault): bash System/Scripts/start_server.sh
+
+## Server Startup — IMPORTANT
+Always start the server from ~/theVault root using the full package path:
+  python3 -m uvicorn System.Scripts.RAG.llm.server:app --host 0.0.0.0 --port 5055
+
+Do NOT start from inside System/Scripts/RAG — relative imports will break:
+  ❌ cd System/Scripts/RAG && python3 -m uvicorn llm.server:app  (breaks imports)
 
 ## Key Paths
 - RAG server: System/Scripts/RAG/
