@@ -78,7 +78,7 @@ def build_graph(vault_path: str | Path) -> nx.DiGraph:
         except OSError:
             continue
         for match in WIKILINK_RE.finditer(text):
-            target = match.group(1).strip()
+            target = match.group(1).strip().lstrip("[")
             # Strip any path prefix (e.g. [[Folder/Note]] → "Note")
             target_stem = Path(target).stem
             if not target_stem:
