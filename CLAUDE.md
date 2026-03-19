@@ -1,6 +1,6 @@
 # theVault
 
-Local-first AI knowledge management system on Mac Mini M4. Python 3.9, FastAPI, SQLite+HNSW, Obsidian vault on NAS.
+Local-first AI knowledge management system on Mac Mini M4. Python 3.12.5, FastAPI, SQLite+HNSW, Obsidian vault on NAS.
 
 ## Architecture
 - API server: FastAPI on port 5055 (RAG search, chat, ingest)

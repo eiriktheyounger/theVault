@@ -29,6 +29,9 @@ from ..retrieval import search_deep, search_fast
 # Import route modules
 from ..routes import health as health_routes
 
+# ---- Logger setup ----
+log = logging.getLogger(__name__)
+
 # Import vault organizer API
 try:
     from ...vault_organizer.api import app as organizer_app
