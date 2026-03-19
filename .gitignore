@@ -41,3 +41,7 @@ System/Logs/
 
 # Processing temp
 .vault_processing/
+
+# Large binary backups
+*.corrupted_backup_*
+System/Scripts/RAG/rag_data/*.bin.corrupted*
