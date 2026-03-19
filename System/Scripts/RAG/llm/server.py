@@ -159,6 +159,22 @@ async def _lifespan(app: FastAPI):
                     await asyncio.sleep(delay)
                     delay *= 2
 
+    # Build entity graph from vault
+    try:
+        from ..retrieval.entity_graph import build_graph
+        from ..config import VAULT_ROOT
+
+        graph = build_graph(VAULT_ROOT)
+        app.state.entity_graph = graph
+        log.info(
+            "Entity graph built: %d nodes, %d edges",
+            graph.number_of_nodes(),
+            graph.number_of_edges(),
+        )
+    except Exception as _graph_exc:
+        log.warning("entity_graph.build_failed: %s", _graph_exc)
+        app.state.entity_graph = None
+
     try:
         yield
     finally:
