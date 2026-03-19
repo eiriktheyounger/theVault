@@ -159,12 +159,14 @@ async def _lifespan(app: FastAPI):
                     await asyncio.sleep(delay)
                     delay *= 2
 
-    # Build entity graph from vault
+    # Build entity graph from vault (offloaded to thread to avoid blocking event loop)
     try:
         from ..retrieval.entity_graph import build_graph
         from ..config import VAULT_ROOT
+        import asyncio
 
-        graph = build_graph(VAULT_ROOT)
+        loop = asyncio.get_event_loop()
+        graph = await loop.run_in_executor(None, build_graph, VAULT_ROOT)
         app.state.entity_graph = graph
         log.info(
             "Entity graph built: %d nodes, %d edges",
