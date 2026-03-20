@@ -102,8 +102,14 @@ def main():
     content = note_path.read_text()
     logger.info(f"Loaded daily note: {note_path} ({len(content)} chars)")
 
-    # Extract captures
-    captures = read_section(content, "<!-- captures-start -->", "<!-- captures-end -->")
+    # Extract captures — ## Captures is the last section, read to EOF
+    captures_match = re.search(r'## Captures\s*\n(.*)', content, re.DOTALL)
+    if captures_match:
+        raw = captures_match.group(1).strip()
+        capture_lines = [l for l in raw.split('\n') if l.strip().startswith('- ')]
+        captures = '\n'.join(capture_lines)
+    else:
+        captures = ''
     if not captures:
         logger.info("No captures found — skipping processing")
         return
