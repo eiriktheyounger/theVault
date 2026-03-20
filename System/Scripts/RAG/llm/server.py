@@ -893,6 +893,99 @@ async def deep_endpoint(payload: DeepRequest) -> Dict[str, Any]:
         raise HTTPException(status_code=500, detail={"error": str(exc)})
 
 
+@app.post("/chat")
+async def chat_endpoint(request: Request) -> Dict[str, Any]:
+    """Conversational RAG endpoint for the Chat UI.
+
+    Accepts: {message, conversation_history?, search_limit?}
+    Returns: {answer, references, obsidian_links, confidence, took_ms, documents_retrieved}
+    """
+    import time
+
+    t0 = time.monotonic()
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+
+    message = (body.get("message") or "").strip()
+    if not message:
+        raise HTTPException(status_code=400, detail="message is required")
+
+    history = body.get("conversation_history") or []
+
+    # 1. Retrieve context via hybrid search
+    try:
+        result = search_fast.hybrid(message)
+        context = result.get("context", "") or ""
+        raw_citations: list = result.get("citations", [])
+    except Exception as exc:
+        log.warning("chat hybrid search failed: %s", exc)
+        context = ""
+        raw_citations = []
+
+    # 2. Build messages for Ollama /api/chat
+    system_prompt = (
+        "You are a personal knowledge assistant. "
+        "Answer the user's question using only the context provided below. "
+        "If the answer is not in the context, say you don't know.\n\n"
+        f"CONTEXT:\n{context}" if context else
+        "You are a personal knowledge assistant. "
+        "Answer based on your best understanding; no vault context was found for this query."
+    )
+
+    messages: list[dict] = [{"role": "system", "content": system_prompt}]
+    for h in history:
+        role = h.get("role", "user")
+        content = h.get("content", "")
+        if role in ("user", "assistant") and content:
+            messages.append({"role": role, "content": content})
+    messages.append({"role": "user", "content": message})
+
+    # 3. Call Ollama
+    j = await ollama_chat(FAST_MODEL, messages)
+    took_ms = int((time.monotonic() - t0) * 1000)
+
+    if j.get("ok") is False:
+        raise HTTPException(status_code=502, detail=j.get("error", "Ollama error"))
+
+    answer_text = (
+        j.get("message", {}).get("content")
+        or j.get("response")
+        or ""
+    ).strip()
+
+    # 4. Build references from citations — format: "Title (path)"
+    references = []
+    obsidian_links = []
+    for cit in raw_citations:
+        cit_str = str(cit)
+        # Parse "Title (path)" format
+        paren = cit_str.rfind("(")
+        if paren != -1 and cit_str.endswith(")"):
+            file_path = cit_str[paren + 1 : -1]
+            file_name = cit_str[:paren].strip()
+        else:
+            file_path = cit_str
+            file_name = cit_str.split("/")[-1]
+        references.append({
+            "file_path": file_path,
+            "file_name": file_name,
+            "relevance_score": 1.0,
+        })
+        obsidian_links.append(f"obsidian://open?vault=Vault&file={file_path}")
+
+    confidence = "high" if context else "low"
+    return {
+        "answer": answer_text,
+        "references": references,
+        "obsidian_links": obsidian_links,
+        "confidence": confidence,
+        "took_ms": took_ms,
+        "documents_retrieved": len(references),
+    }
+
+
 @app.get("/contract")
 def contract() -> Dict[str, Any]:
     schema = {
