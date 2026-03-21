@@ -204,7 +204,8 @@ def run_normalizer(
 
     # ── Step 2: Dedup ──
     logger.info("Finding duplicates...")
-    dedup_actions = find_duplicates(tasks)
+    active_tasks = [t for t in tasks if not t.is_completed]
+    dedup_actions = find_duplicates(active_tasks)
     report["duplicates_found"] = len(dedup_actions)
     logger.info(f"Found {len(dedup_actions)} duplicate clusters")
 
