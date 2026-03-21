@@ -123,6 +123,18 @@ def main():
     summary = summarize_with_claude(captures)
     logger.info(f"Summary generated: {len(summary)} chars")
 
+    # Run task normalizer (incremental scan)
+    task_report_text = ""
+    try:
+        from System.Scripts.task_normalizer import run_normalizer, format_report
+        logger.info("Running task normalizer...")
+        task_report = run_normalizer(full_scan=False, sync_reminders=True)
+        task_report_text = "\n\n" + format_report(task_report)
+        logger.info(f"Task normalizer complete: {task_report.get('tasks_normalized', 0)} normalized")
+    except Exception as e:
+        logger.error(f"Task normalizer failed: {e}")
+        task_report_text = "\n\n### Task Processing\n- **Error**: normalizer failed — check logs"
+
     # Build overnight section
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
     overnight_content = f"""
@@ -131,6 +143,7 @@ def main():
 
 ### Day Summary
 {summary}
+{task_report_text}
 
 ### Processing Log
 - Processed at: {timestamp}
