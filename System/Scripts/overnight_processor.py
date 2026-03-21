@@ -64,17 +64,16 @@ def write_section(content, start_marker, end_marker, new_text):
 def extract_tasks_local(text):
     """Use local Ollama to extract actionable tasks."""
     try:
-        from openai import OpenAI
-        client = OpenAI(base_url='http://localhost:11434/v1/', api_key='ollama')
-        response = client.chat.completions.create(
+        import ollama
+        response = ollama.chat(
             model='qwen2.5:7b',
             messages=[
                 {'role': 'system', 'content': 'Extract actionable tasks from the text. Return each as a markdown task: - [ ] task description. Return ONLY the task list, nothing else. If no tasks found, return "No tasks found."'},
                 {'role': 'user', 'content': text}
             ],
-            temperature=0,
+            options={'temperature': 0},
         )
-        return response.choices[0].message.content
+        return response['message']['content']
     except Exception as e:
         logger.error(f"Task extraction failed: {e}")
         return "Task extraction failed — Ollama may not be running."
