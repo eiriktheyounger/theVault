@@ -19,7 +19,6 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler(Path.home() / 'theVault' / 'System' / 'Logs' / 'overnight.log'),
-        logging.StreamHandler()
     ]
 )
 logger = logging.getLogger('overnight')
