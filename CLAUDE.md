@@ -1,6 +1,5 @@
 # theVault
 
-<<<<<<< HEAD
 **PRIMARY PROJECT** — Local-first AI knowledge management system on Mac Mini M4. Python 3.12.5, FastAPI, SQLite+HNSW, Obsidian vault on NAS.
 
 ## Migration Notice (March 17, 2026)
@@ -9,9 +8,6 @@
 - **New project**: ~/theVault (active development)
 - Both share the same NAS-backed Vault, Inbox, and Processed directories
 - All new work goes in ~/theVault/
-=======
-Local-first AI knowledge management system on Mac Mini M4. Python 3.12.5, FastAPI, SQLite+HNSW, Obsidian vault on NAS.
->>>>>>> 8c734e2c84d383b57da03d676b7ab1c7b63677e1
 
 ## Architecture
 - API server: FastAPI on port 5055 (RAG search, chat, ingest)
