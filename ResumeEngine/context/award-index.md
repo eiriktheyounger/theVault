@@ -31,6 +31,12 @@ Recognition for technical excellence and innovation across 25+ years. Four Emmy 
 - **Type:** Technology & Engineering Emmy (most prestigious Emmy category for technical achievement)
 - **Impact:** Industry recognition of AI/ML application to broadcast-scale systems
 
+### 2025: Paris 2024 Olympics Interactive Experience (NBCUniversal)
+- **Significance:** Individual credit as sole Software Developer for architecting Live Actions (end-to-end product) and Daily Recap content workflows (7M+ personalized variants with generative AI narration)
+- **Era:** Interactive personalization and generative AI at scale
+- **Type:** Outstanding Interactive Experience Emmy (elite category recognizing innovation in viewer engagement)
+- **Impact:** Recognition of massive-scale interactive personalization during record-breaking streaming event (23.5 billion streaming minutes, 82% viewership growth vs. Tokyo 2020)
+
 ## Award Recognition Value
 
 ### For Resume Positioning
