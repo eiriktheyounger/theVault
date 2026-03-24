@@ -113,9 +113,9 @@ Recognition for technical excellence and innovation across 25+ years. Four Emmy 
 - Feature prominently but don't overshadow achievements
 
 ### Framing
-- **Generic:** "Three-time Emmy Award winner"
-- **Specific:** "Technology & Engineering Emmy Award (2023) for Key Plays Feature"
-- **Narrative:** "Recognized with Emmy Awards for Key Plays, TWCTV Application, and Live 8 Concert Streaming"
+- **Generic:** "Four-time Emmy Award winner"
+- **Specific:** "Technology & Engineering Emmy Award (2023) for Key Plays Feature" or "Outstanding Interactive Experience Emmy (2025) for Paris 2024 Olympics"
+- **Narrative:** "Recognized with Emmy Awards for Paris 2024 Olympics Interactive Experience, Key Plays, TWCTV Application, and Live 8 Concert Streaming"
 - **Avoid:** Overstatement, vagueness, or false equivalence
 
 ## Notes
