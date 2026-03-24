@@ -45,6 +45,9 @@ System/Logs/
 # Python version (pyenv)
 .python-version
 
+# Task normalizer runtime state
+System/Scripts/.task_normalizer_state.json
+
 # Large binary backups
 *.corrupted_backup_*
 System/Scripts/RAG/rag_data/*.bin.corrupted*
