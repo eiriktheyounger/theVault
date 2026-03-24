@@ -6,6 +6,7 @@ Recognition for technical excellence and innovation across 25+ years. Four Emmy 
 
 | Year | Award | Project | Organization | File |
 |------|-------|---------|--------------|------|
+| **2025** | Outstanding Interactive Experience | Paris 2024 Olympics (Live Actions, Daily Recap) | NBCUniversal | [emmy-paris-olympics-interactive-2025.md](emmy-paris-olympics-interactive-2025.md) |
 | **2023** | Technology & Engineering Emmy | Key Plays | NBCUniversal | [emmy-key-plays-2023.md](emmy-key-plays-2023.md) |
 | **2014** | Emmy Award | TWCTV Application | Time Warner Cable | [emmy-twctv-2014.md](emmy-twctv-2014.md) |
 | **2005** | Emmy Award | Live 8 Concert Streaming | AOL | [emmy-live-8-2005.md](emmy-live-8-2005.md) |
