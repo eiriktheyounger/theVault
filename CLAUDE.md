@@ -23,10 +23,6 @@
 1. Verify vault: bash System/Scripts/check_vault_laptop.sh (laptop) or check_nas.sh (Mac Mini)
 2. Activate venv: source .venv/bin/activate
 3. Check Ollama: curl -s http://localhost:11434/api/tags | head -5
-<<<<<<< HEAD
-4. Start RAG server: cd System/Scripts/RAG && python3 -m uvicorn llm.server:app --port 5055
-=======
-4. Start server (from ~/theVault): bash System/Scripts/start_server.sh
 
 ## Server Startup — IMPORTANT
 Always start the server from ~/theVault root using the full package path:
@@ -34,7 +30,6 @@ Always start the server from ~/theVault root using the full package path:
 
 Do NOT start from inside System/Scripts/RAG — relative imports will break:
   ❌ cd System/Scripts/RAG && python3 -m uvicorn llm.server:app  (breaks imports)
->>>>>>> 8c734e2c84d383b57da03d676b7ab1c7b63677e1
 
 ## Key Paths
 - RAG server: System/Scripts/RAG/
