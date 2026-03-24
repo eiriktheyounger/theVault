@@ -91,6 +91,7 @@ Recognition for technical excellence and innovation across 25+ years. Four Emmy 
 - **2005 (AOL):** Pioneering era, live streaming innovation
 - **2014 (TWC):** Transition era, platform modernization
 - **2023 (NBCU):** AI era, machine learning innovation
+- **2025 (NBCU):** Interactive personalization era, generative AI at scale
 
 ### Industry Significance
 - Demonstrates sustained technical excellence over multiple decades
