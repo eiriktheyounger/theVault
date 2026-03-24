@@ -259,10 +259,13 @@ def fts_ids(q: str, topk: int) -> list[int]:
 
 def vec_ids(q: str, topk: int) -> Tuple[List[int], List[float]]:
     index = get_hnsw()
+    if index is None:
+        return [], []
     qv = np.asarray([embed_query(q)], dtype="float32")
     if qv.size == 0 or qv.shape[1] == 0:
         return [], []
-    ids, sims = index.knn_query(qv, k=topk)
+    # FAISS index.search() returns (sims, ids) in that order
+    sims, ids = index.search(qv, topk)
     return [int(x) for x in ids[0].tolist()], [float(x) for x in sims[0].tolist()]
 
 

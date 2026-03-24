@@ -44,3 +44,7 @@ System/Logs/
 
 # Python version (pyenv)
 .python-version
+
+# Large binary backups
+*.corrupted_backup_*
+System/Scripts/RAG/rag_data/*.bin.corrupted*

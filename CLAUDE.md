@@ -1,5 +1,6 @@
 # theVault
 
+<<<<<<< HEAD
 **PRIMARY PROJECT** — Local-first AI knowledge management system on Mac Mini M4. Python 3.12.5, FastAPI, SQLite+HNSW, Obsidian vault on NAS.
 
 ## Migration Notice (March 17, 2026)
@@ -8,6 +9,9 @@
 - **New project**: ~/theVault (active development)
 - Both share the same NAS-backed Vault, Inbox, and Processed directories
 - All new work goes in ~/theVault/
+=======
+Local-first AI knowledge management system on Mac Mini M4. Python 3.12.5, FastAPI, SQLite+HNSW, Obsidian vault on NAS.
+>>>>>>> 8c734e2c84d383b57da03d676b7ab1c7b63677e1
 
 ## Architecture
 - API server: FastAPI on port 5055 (RAG search, chat, ingest)
@@ -23,7 +27,18 @@
 1. Verify vault: bash System/Scripts/check_vault_laptop.sh (laptop) or check_nas.sh (Mac Mini)
 2. Activate venv: source .venv/bin/activate
 3. Check Ollama: curl -s http://localhost:11434/api/tags | head -5
+<<<<<<< HEAD
 4. Start RAG server: cd System/Scripts/RAG && python3 -m uvicorn llm.server:app --port 5055
+=======
+4. Start server (from ~/theVault): bash System/Scripts/start_server.sh
+
+## Server Startup — IMPORTANT
+Always start the server from ~/theVault root using the full package path:
+  python3 -m uvicorn System.Scripts.RAG.llm.server:app --host 0.0.0.0 --port 5055
+
+Do NOT start from inside System/Scripts/RAG — relative imports will break:
+  ❌ cd System/Scripts/RAG && python3 -m uvicorn llm.server:app  (breaks imports)
+>>>>>>> 8c734e2c84d383b57da03d676b7ab1c7b63677e1
 
 ## Key Paths
 - RAG server: System/Scripts/RAG/

@@ -28,6 +28,10 @@ from ..retrieval import search_deep, search_fast
 # Import deep history routes
 # Import route modules
 from ..routes import health as health_routes
+from ..routes import graph as graph_routes
+
+# ---- Logger setup ----
+log = logging.getLogger(__name__)
 
 # Import vault organizer API
 try:
@@ -51,7 +55,7 @@ load_dotenv()
 log = logging.getLogger("llm.server")
 logging.basicConfig(level=logging.INFO)
 
-FAST_MODEL_DEFAULT = "phi3:latest"
+FAST_MODEL_DEFAULT = "qwen2.5:7b"
 DEEP_MODEL_DEFAULT = "llama3.1:8b"
 
 # ---- Runtime configuration ----
@@ -155,6 +159,24 @@ async def _lifespan(app: FastAPI):
                     await asyncio.sleep(delay)
                     delay *= 2
 
+    # Build entity graph from vault (offloaded to thread to avoid blocking event loop)
+    try:
+        from ..retrieval.entity_graph import build_graph
+        from ..config import VAULT_ROOT
+        import asyncio
+
+        loop = asyncio.get_event_loop()
+        graph = await loop.run_in_executor(None, build_graph, VAULT_ROOT)
+        app.state.entity_graph = graph
+        log.info(
+            "Entity graph built: %d nodes, %d edges",
+            graph.number_of_nodes(),
+            graph.number_of_edges(),
+        )
+    except Exception as _graph_exc:
+        log.warning("entity_graph.build_failed: %s", _graph_exc)
+        app.state.entity_graph = None
+
     try:
         yield
     finally:
@@ -169,6 +191,7 @@ app = FastAPI(title="theVault LLM Server", version="1.0.0", lifespan=_lifespan)
 
 # Include routers
 app.include_router(health_routes.router)
+app.include_router(graph_routes.router)
 
 # Mount vault organizer API as sub-application
 if ORGANIZER_AVAILABLE:
@@ -868,6 +891,99 @@ async def deep_endpoint(payload: DeepRequest) -> Dict[str, Any]:
         raise
     except Exception as exc:  # pragma: no cover - defensive
         raise HTTPException(status_code=500, detail={"error": str(exc)})
+
+
+@app.post("/chat")
+async def chat_endpoint(request: Request) -> Dict[str, Any]:
+    """Conversational RAG endpoint for the Chat UI.
+
+    Accepts: {message, conversation_history?, search_limit?}
+    Returns: {answer, references, obsidian_links, confidence, took_ms, documents_retrieved}
+    """
+    import time
+
+    t0 = time.monotonic()
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+
+    message = (body.get("message") or "").strip()
+    if not message:
+        raise HTTPException(status_code=400, detail="message is required")
+
+    history = body.get("conversation_history") or []
+
+    # 1. Retrieve context via hybrid search
+    try:
+        result = search_fast.hybrid(message)
+        context = result.get("context", "") or ""
+        raw_citations: list = result.get("citations", [])
+    except Exception as exc:
+        log.warning("chat hybrid search failed: %s", exc)
+        context = ""
+        raw_citations = []
+
+    # 2. Build messages for Ollama /api/chat
+    system_prompt = (
+        "You are a personal knowledge assistant. "
+        "Answer the user's question using only the context provided below. "
+        "If the answer is not in the context, say you don't know.\n\n"
+        f"CONTEXT:\n{context}" if context else
+        "You are a personal knowledge assistant. "
+        "Answer based on your best understanding; no vault context was found for this query."
+    )
+
+    messages: list[dict] = [{"role": "system", "content": system_prompt}]
+    for h in history:
+        role = h.get("role", "user")
+        content = h.get("content", "")
+        if role in ("user", "assistant") and content:
+            messages.append({"role": role, "content": content})
+    messages.append({"role": "user", "content": message})
+
+    # 3. Call Ollama
+    j = await ollama_chat(FAST_MODEL, messages)
+    took_ms = int((time.monotonic() - t0) * 1000)
+
+    if j.get("ok") is False:
+        raise HTTPException(status_code=502, detail=j.get("error", "Ollama error"))
+
+    answer_text = (
+        j.get("message", {}).get("content")
+        or j.get("response")
+        or ""
+    ).strip()
+
+    # 4. Build references from citations — format: "Title (path)"
+    references = []
+    obsidian_links = []
+    for cit in raw_citations:
+        cit_str = str(cit)
+        # Parse "Title (path)" format
+        paren = cit_str.rfind("(")
+        if paren != -1 and cit_str.endswith(")"):
+            file_path = cit_str[paren + 1 : -1]
+            file_name = cit_str[:paren].strip()
+        else:
+            file_path = cit_str
+            file_name = cit_str.split("/")[-1]
+        references.append({
+            "file_path": file_path,
+            "file_name": file_name,
+            "relevance_score": 1.0,
+        })
+        obsidian_links.append(f"obsidian://open?vault=Vault&file={file_path}")
+
+    confidence = "high" if context else "low"
+    return {
+        "answer": answer_text,
+        "references": references,
+        "obsidian_links": obsidian_links,
+        "confidence": confidence,
+        "took_ms": took_ms,
+        "documents_retrieved": len(references),
+    }
 
 
 @app.get("/contract")
