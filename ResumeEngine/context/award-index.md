@@ -1,8 +1,8 @@
 # Award Context Index
 
-Recognition for technical excellence and innovation across 25+ years. Three Emmy Awards from the National Academy of Television Arts & Sciences, representing industry validation of technical achievement and engineering leadership.
+Recognition for technical excellence and innovation across 25+ years. Four Emmy Awards from the National Academy of Television Arts & Sciences, representing industry validation of technical achievement and engineering leadership.
 
-## Emmy Awards (3 Total)
+## Emmy Awards (4 Total)
 
 | Year | Award | Project | Organization | File |
 |------|-------|---------|--------------|------|
