@@ -299,6 +299,38 @@ class EveningWorkflow:
             self._notify_callback(step)
             return False
 
+    def _step_email_summary(self) -> bool:
+        """Step 2: Run daily email summary and inject into daily note."""
+        step = self.steps[1]
+        step.start()
+        self._notify_callback(step)
+
+        try:
+            import subprocess
+            summary_script = (Path(__file__).parent.parent /
+                              "Claude Code Desktop Specific" / "gmail" / "daily_email_summary.py")
+
+            if not summary_script.exists():
+                step.complete(["Email summary script not found — skipping"])
+                self._notify_callback(step)
+                return True  # Non-fatal
+
+            result = subprocess.run(
+                [sys.executable, str(summary_script), "--date", self.date],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                stdin=subprocess.DEVNULL, text=True, timeout=120, close_fds=True
+            )
+
+            lines = [l.strip() for l in result.stdout.split("\n") if l.strip()]
+            step.complete(lines or ["Email summary complete"])
+            self._notify_callback(step)
+            return True
+
+        except Exception as e:
+            step.error(str(e))
+            self._notify_callback(step)
+            return True  # Non-fatal
+
     def _step_highlight_tomorrow(self) -> bool:
         """Step 2: Highlight tomorrow's focus areas."""
         step = self.steps[1]
