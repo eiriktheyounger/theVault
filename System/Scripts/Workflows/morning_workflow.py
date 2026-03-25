@@ -647,6 +647,7 @@ class MorningWorkflow:
             self._step_sync_calendar,
             self._step_create_dashboard,
             self._step_run_ingest,
+            self._step_import_emails,
             # self._step_organize_files,  # Disabled - manual organization for now
             self._step_map_to_calendar,
             # self._step_update_tocs,  # EOL 2026-03-25 — TOC generation permanently disabled per Eric
