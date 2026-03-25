@@ -129,7 +129,7 @@ class MorningWorkflow:
 
         # Define workflow steps
         # Mac Mini gets Step 0 for NAS verification
-        total_steps = 8 if self.is_mac_mini else 7
+        total_steps = 9 if self.is_mac_mini else 8
 
         if self.is_mac_mini:
             self.steps = [
@@ -138,9 +138,10 @@ class MorningWorkflow:
                 WorkflowStep(2, "Sync Calendar (Harmonic → Work)", total_steps),
                 WorkflowStep(3, "Create Daily Dashboard", total_steps),
                 WorkflowStep(4, "Run Ingest", total_steps),
-                WorkflowStep(5, "Organize Files", total_steps),
-                WorkflowStep(6, "Map to Calendar", total_steps),
-                WorkflowStep(7, "Update TOCs", total_steps),
+                WorkflowStep(5, "Import Flagged Emails", total_steps),
+                WorkflowStep(6, "Organize Files", total_steps),
+                WorkflowStep(7, "Map to Calendar", total_steps),
+                WorkflowStep(8, "Update TOCs", total_steps),
             ]
         else:
             self.steps = [
@@ -148,9 +149,10 @@ class MorningWorkflow:
                 WorkflowStep(2, "Sync Calendar (Harmonic → Work)", total_steps),
                 WorkflowStep(3, "Create Daily Dashboard", total_steps),
                 WorkflowStep(4, "Run Ingest", total_steps),
-                WorkflowStep(5, "Organize Files", total_steps),
-                WorkflowStep(6, "Map to Calendar", total_steps),
-                WorkflowStep(7, "Update TOCs", total_steps),
+                WorkflowStep(5, "Import Flagged Emails", total_steps),
+                WorkflowStep(6, "Organize Files", total_steps),
+                WorkflowStep(7, "Map to Calendar", total_steps),
+                WorkflowStep(8, "Update TOCs", total_steps),
             ]
 
         self.errors = []
