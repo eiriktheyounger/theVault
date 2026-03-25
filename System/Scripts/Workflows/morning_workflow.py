@@ -539,6 +539,41 @@ class MorningWorkflow:
             self._notify_callback(step)
             return False
 
+    def _step_import_emails(self) -> bool:
+        """Step 5: Import emails flagged _VAULT_IMPORT from Gmail."""
+        step = self.steps[self._get_step_index(5)]
+        step.start()
+        self._notify_callback(step)
+
+        try:
+            import subprocess
+            gmail_script = (Path(__file__).parent.parent /
+                            "Claude Code Desktop Specific" / "gmail" / "email_to_vault.py")
+
+            if not gmail_script.exists():
+                step.complete(["Gmail import script not found — skipping"])
+                self._notify_callback(step)
+                return True  # Non-fatal
+
+            result = subprocess.run(
+                [sys.executable, str(gmail_script)],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                stdin=subprocess.DEVNULL, text=True, timeout=120, close_fds=True
+            )
+
+            lines = [l.strip() for l in result.stdout.split("\n") if l.strip()]
+            if result.returncode == 0:
+                step.complete(lines or ["No emails pending import"])
+            else:
+                step.complete(["Email import completed with warnings"] + lines[:3])
+            self._notify_callback(step)
+            return True
+
+        except Exception as e:
+            step.error(str(e))
+            self._notify_callback(step)
+            return True  # Non-fatal — don't block rest of workflow
+
     # EOL 2026-03-25 — TOC generation permanently disabled per Eric
     # def _step_update_tocs(self) -> bool:
     #     """Step 7: Update all TOC files."""
