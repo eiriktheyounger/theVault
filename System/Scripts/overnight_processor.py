@@ -164,4 +164,11 @@ def main(target_date=None):
     logger.info("=== Overnight processing complete ===")
 
 if __name__ == "__main__":
-    main()
+    target_date = None
+    if len(sys.argv) > 1:
+        try:
+            target_date = datetime.strptime(sys.argv[1], '%Y-%m-%d')
+        except ValueError:
+            logger.error(f"Invalid date format: {sys.argv[1]}. Use YYYY-MM-DD")
+            sys.exit(1)
+    main(target_date)
