@@ -57,3 +57,13 @@ Do NOT start from inside System/Scripts/RAG — relative imports will break:
 - Do not create microservice directories — this is a monolithic FastAPI app
 - Do not copy Vault/ Inbox/ or Processed/ to local disk — they live on NAS
 - Do not use hnswlib for search — the index is FAISS despite the filename
+
+## System Audit Reference
+A full audit of all scripts (working, broken, missing, orphaned) was completed
+on 2026-03-25. Before modifying any workflow or script, read:
+Vault/System/SYSTEM-AUDIT-2026-03-25.md
+
+Do NOT delete or modify any script without:
+1. Checking the audit to understand what references it
+2. Creating a backup: cp script.py script.py.backup-YYYY-MM-DD
+3. Verifying nothing else breaks after the change
