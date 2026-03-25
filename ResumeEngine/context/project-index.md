@@ -1,143 +1,210 @@
-# Project Context Index
+# Project Index
 
-Major projects and initiatives spanning 25+ years of career, from pioneering live streaming at AOL to AI-driven personalization at NBCUniversal. Eight projects documented with technical details, business impact, and industry significance.
+Master index of 11 major career projects spanning 2001–2025. Projects organized by company and era with context links.
 
-## Emmy Award-Winning Projects
+## Project Summary
 
-| Project | Company | Period | Award | File |
-|---------|---------|--------|-------|------|
-| **Key Plays** | NBCUniversal | 2021–2025 | Emmy (2023) | [key-plays-2021-2025.md](key-plays-2021-2025.md) |
-| **TWCTV Application** | Time Warner Cable | 2012–2017 | Emmy (2014) | [twctv-application-2012-2017.md](twctv-application-2012-2017.md) |
-| **Live 8 Concert** | AOL | 2005 | Emmy (2005) | [live-8-concert-2005.md](live-8-concert-2005.md) |
+**Total Projects:** 11 documented  
+**Timespan:** 2001–2025  
+**Emmy-Winning Projects:** 4 (Live 8, TWCTV, Key Plays, Paris Olympics)  
+**Patent-Generating Projects:** 5  
 
-## Major Interactive & AI-Driven Projects
+---
 
-| Project | Company | Period | File | Focus |
-|---------|---------|--------|------|-------|
-| **Olympic Daily Recap** | NBCUniversal | 2021–2025 | [olympic-daily-recap-2021-2025.md](olympic-daily-recap-2021-2025.md) | GenAI voice synthesis, 7M+ variants |
-| **Live Actions** | NBCUniversal | 2021–2025 | [live-actions-2021-2025.md](live-actions-2021-2025.md) | Real-time interactive overlays |
-| **RE Kreations Platform** | RE Kreations LLC | 2017–Present | [re-kreations-platform-2017-present.md](re-kreations-platform-2017-present.md) | AI orchestration, document processing |
+## Projects by Era and Company
 
-## Infrastructure & Platform Projects
+### AOL Era (2001–2006)
 
-| Project | Company | Period | File | Scope |
-|---------|---------|--------|------|-------|
-| **AOL Broadcast Operations Center** | AOL | 2001–2006 | [aol-broadcast-operations-center-2001-2006.md](aol-broadcast-operations-center-2001-2006.md) | 100+ radio, 34+ video channels |
+#### 1. AOL Broadcast Operations Center
+**File:** [[projects/aol-broadcast-operations-center]]  
+**Era:** 2001–2006  
+**Type:** Infrastructure / Facility  
+**Achievement:** First all-digital downlink facility for streaming  
+**Scale:** 100+ audio channels, 34+ video channels  
+**Impact:** Foundation for Live 8 and future streaming operations  
+**Role:** Principal designer and builder
 
-## Project Timeline
+#### 2. CNN Ad Targeting
+**File:** [[projects/cnn-ad-targeting]]  
+**Era:** 2001–2006  
+**Type:** Advertising Technology  
+**Achievement:** Weight-based ad targeting system pioneering era  
+**Innovation:** Numeric trait assignment for users and content  
+**Patent:** US-8028092 (Inserting advertising content)  
+**Market Impact:** Technology acquired by Facebook; years ahead of mainstream DSP  
+**Role:** Architect and primary engineer
 
-```
-2001-2006: AOL Era
-├── AOL Broadcast Operations Center (all-digital, first OTT-native)
-└── Live 8 Concert (world record concurrent streaming)
+#### 3. Live 8 Concert Streaming
+**File:** [[projects/live-8-concert]]  
+**Era:** 2005  
+**Type:** Live Streaming Event  
+**Achievement:** World-record concurrent live streaming  
+**Scale:** 8 global broadcast sites, millions of concurrent viewers  
+**Award:** Emmy Award (2005)  
+**Impact:** Validated streaming viability for major broadcast events  
+**Role:** Principal architect and infrastructure lead
 
-2006-2012: TWC Digital Transformation
-├── Automated catch-and-encode workflows
-├── 350%+ ad revenue growth
-└── Foundation for TWCTV platform
+### Time Warner Cable Era (2006–2017)
 
-2012-2017: TWC VOD & OTT Modernization
-├── Centralized VOD platform
-├── DRM and just-in-time encryption
-└── TWCTV Application (Emmy winner)
+#### 4. TWC VOD Centralization
+**File:** [[projects/twc-vod-centralization]]  
+**Era:** 2006–2012  
+**Type:** Platform Modernization  
+**Achievement:** VOD automation and revenue optimization  
+**Impact:** 350%+ ad revenue increase through catch-and-encode workflow  
+**Technologies:** VMS/CMS SaaS transition, multi-region headend  
+**Role:** Sr. Solutions Architect, primary designer
 
-2017-2025: AI/ML & Personalization Era
-├── RE Kreations AI platform (2017-present)
-├── Key Plays highlights product (2021-2025)
-├── Olympic Daily Recap (2021-2025)
-└── Live Actions overlays (2021-2025)
-```
+#### 5. TWCTV Platform
+**File:** [[projects/twctv]]  
+**Era:** 2012–2017  
+**Type:** OTT Streaming Platform  
+**Achievement:** Emmy-winning cable OTT platform  
+**Scale:** Served millions of cable customers  
+**Award:** Emmy Award (2014)  
+**Innovation:** DRM implementation, dynamic ad insertion  
+**Role:** Principal architect for VOD and advertising  
 
-## Project Scale & Impact
+### NBCUniversal Era (2021–2025)
 
-### Concurrent Users
-- **Live 8:** World record concurrent streaming audience
-- **Key Plays:** Millions of sports viewers
-- **TWCTV:** Millions of cable subscribers
-- **AOL BOC:** 24/7 operations, 134+ channels
+#### 6. Live Actions
+**File:** [[projects/live-actions]]  
+**Era:** 2024–2025  
+**Type:** Interactive Product  
+**Achievement:** Fan-controlled viewing journey for Paris 2024 Olympics  
+**Innovation:** Interactive tool enabling real-time event/athlete selection  
+**Patent:** US-20250203152 (Timed Metadata for Overlays)  
+**Award:** Outstanding Interactive Experience Emmy (2025)  
+**Scale:** Global deployment (Peacock, Sky Showtime, Showmax)  
+**Role:** Sole architect and builder (end-to-end)
 
-### Personalization & Variants
-- **Olympic Daily Recap:** 7M+ personalized variants
-- **TWCTV:** Individual subscriber VOD recommendations
-- **RE Kreations:** Document-specific processing
+#### 7. Olympic Daily Recap
+**File:** [[projects/olympic-daily-recap]]  
+**Era:** 2024–2025  
+**Type:** AI-Powered Content Product  
+**Achievement:** Personalized highlight playlist with AI narration  
+**Scale:** 7M+ personalized video variants  
+**Innovation:** Generative AI with Al Michaels synthesized narration (SAG-AFTRA compliant)  
+**Award:** Part of Emmy-winning interactive experience (2025)  
+**Role:** Architect for content workflows (not underlying AI platform)
 
-### Global Reach
-- **Live 8:** Eight concert venues, four continents
-- **Key Plays:** Multiple sports across international leagues (Premier League, Olympics, NFL, NBA)
-- **RE Kreations:** Distributed/remote clients worldwide
+#### 8. Key Plays
+**File:** [[projects/key-plays]]  
+**Era:** 2023–2025  
+**Type:** AI/ML Sports Feature  
+**Achievement:** Near real-time automated sports highlights  
+**Innovation:** AI/ML-powered play selection across sports  
+**Award:** Technology & Engineering Emmy (2023)  
+**Scale:** Cross-sports platform standardization (EPL, NFL, etc.)  
+**Impact:** Scaled from MVP to platform-critical service; CTO-level escalation capability  
+**Role:** Head architect for AI/ML solution
 
-## Award & Recognition
+#### 9. Overlay Core Service
+**File:** [[projects/overlay-core-service]]  
+**Era:** 2021–2025  
+**Type:** Platform Infrastructure  
+**Achievement:** In-house interactive platform for live and VOD  
+**Innovation:** Unified API spec for live/VOD parity, metadata-driven triggers  
+**Scale:** Global deployment (Peacock, Sky, Showmax)  
+**Patent:** Filed under NDA  
+**Impact:** Foundation for interactive features (Live Actions, BrightLine, overlays)  
+**Role:** Primary architect
 
-### Emmy Awards
-- Technology & Engineering Emmy (2023) — Key Plays
-- Emmy Award (2014) — TWCTV Application
-- Emmy Award (2005) — Live 8 Concert Streaming
+#### 10. BrightLine Frame Ads Integration
+**File:** [[projects/brightline-frame-ads]]  
+**Era:** 2023–2025  
+**Type:** Advertising Technology  
+**Achievement:** Frame ad (squeeze-back) integration for live sports  
+**Innovation:** SCTE-35-based event triggers (not ID3)  
+**Impact:** Millions of ad impressions unlocked; gold-standard implementation  
+**Role:** Vendor negotiation, architecture, and integration  
 
-### Patents
-- **20250203152:** Timed Metadata for Overlays (pending, from Live Actions)
-- **20240430496:** Dynamic In-Scene Secondary Content Insertion (pending, from ad/content work)
+#### 11. Pause Ads System
+**File:** [[projects/pause-ads]]  
+**Era:** 2023–2025  
+**Type:** Advertising Technology  
+**Achievement:** Client-side system for unlimited configurable pause ads  
+**Innovation:** Rolling ad call model overcoming FreeWheel 10-ad response limit  
+**Impact:** Millions of additional ad impressions; 200%+ revenue growth contribution  
+**Role:** Sole architect and implementer  
 
-## Project By Category
+---
 
-### Streaming & OTT Innovations
-1. **AOL BOC** — First all-digital broadcast operations center (2001-2006)
-2. **Live 8 Concert** — World record concurrent streaming (2005)
-3. **TWCTV Application** — Multi-platform OTT app for millions (2012-2017)
+## Projects by Dimension
 
-### Sports & Interactive Content
-1. **Key Plays** — AI/ML sports highlights (2021-2025)
-2. **Live Actions** — Real-time interactive overlays (2021-2025)
-3. **Olympic Daily Recap** — GenAI personalization (2021-2025)
+### By Type
+- **Live Streaming:** Live 8 Concert
+- **Advertising Technology:** CNN Ad Targeting, TWC VOD Centralization, BrightLine Frame Ads, Pause Ads
+- **Platform Infrastructure:** AOL Broadcast Operations Center, TWC VOD Centralization, TWCTV, Overlay Core Service
+- **OTT Platform:** TWCTV
+- **Interactive Product:** Live Actions
+- **AI-Powered Content:** Olympic Daily Recap, Key Plays
+- **Sports Highlights:** Key Plays
 
-### Enterprise Automation
-1. **RE Kreations Platform** — AI-driven document processing (2017-present)
+### By Business Impact Category
+- **Revenue Generation:** CNN Ad Targeting, TWC VOD (350%+), BrightLine, Pause Ads, Live Actions (200%+)
+- **User Scale:** Live 8 (millions concurrent), TWCTV (millions), Paris Olympics (23.5B minutes)
+- **Innovation/Awards:** All 4 Emmy-winning projects (Live 8, TWCTV, Key Plays, Paris Olympics)
+- **Patent Generation:** 5 projects (CNN Ad Targeting, Live Actions, Olympic Daily Recap, Key Plays via skills, Overlay Core)
 
-## Technology Progression
+### By Era
+- **Pioneering Streaming (2001–2006):** Live 8, CNN Ad Targeting, AOL BOC
+- **SaaS & VOD Transition (2006–2012):** TWC VOD Centralization
+- **OTT Inflection (2012–2017):** TWCTV
+- **Interactive & AI/ML (2021–2025):** Live Actions, Olympic Daily Recap, Key Plays, Overlay Core, BrightLine, Pause Ads
 
-### Broadcasting Era (2001-2012)
-- Live event production and delivery
-- Broadcast operations center design
-- Real-time encoding and transcoding
-- Multi-site global coordination
+### By Emmy Award
+- **2005:** Live 8 Concert
+- **2014:** TWCTV
+- **2023:** Key Plays
+- **2025:** Paris 2024 Olympics (Live Actions, Olympic Daily Recap)
 
-### OTT Transition (2012-2017)
-- Platform modernization and cloud migration
-- DRM and content protection
-- Multi-platform delivery (set-top, web, mobile)
-- Centralized operations
+### By Patent Generation
+- **US-8028092 (2011):** CNN Ad Targeting
+- **US-8769151, US-8762575 (2014):** TWC VOD Centralization
+- **US-20250203152 (pending):** Live Actions
+- **US-10667018 (2020):** Related to Daily Recap workflows
+- **Related:** Overlay Core Service (filed under NDA)
 
-### AI/ML Innovation (2017-2025)
-- Machine learning for content analysis
-- Generative AI for personalization
-- LLM orchestration for automation
-- Autonomous diagnostics and error recovery
+---
 
-## Business Impact Summary
+## Cross-References
 
-| Project | Revenue Impact | Scale | Timeline |
-|---------|-----------------|-------|----------|
-| **Live 8** | Brand value | World record streaming | Single event |
-| **TWCTV** | Subscriber retention | Millions of subscribers | 5+ years |
-| **Key Plays** | Engagement/retention | Millions of viewers | 4+ years |
-| **Olympic Daily Recap** | Engagement driver | 7M+ variants | 1 event |
-| **RE Kreations** | Client revenue | Multiple clients | 7+ years |
+### By Role
+- **AOL (2001–2006):** [[projects/aol-broadcast-operations-center]], [[projects/cnn-ad-targeting]], [[projects/live-8-concert]]
+- **TWC Early (2006–2012):** [[projects/twc-vod-centralization]]
+- **TWC Late (2012–2017):** [[projects/twctv]]
+- **NBCUniversal (2021–2025):** [[projects/live-actions]], [[projects/olympic-daily-recap]], [[projects/key-plays]], [[projects/overlay-core-service]], [[projects/brightline-frame-ads]], [[projects/pause-ads]]
 
-## Related Achievements
+### By Award
+- Awards Index: [[awards/award-index]]
+- Live 8 Emmy (2005): [[projects/live-8-concert]]
+- TWCTV Emmy (2014): [[projects/twctv]]
+- Key Plays Emmy (2023): [[projects/key-plays]]
+- Paris Olympics Emmy (2025): [[projects/live-actions]], [[projects/olympic-daily-recap]]
 
-### Vendor & Partnership Roles
-- Multi-vendor coordination (hardware, software, SaaS)
-- Executive vendor relationship management
-- Technology evaluation and selection
-- Cost negotiation and optimization
+### By Patent
+- Patents Index: [[patents/patent-index]]
+- CNN Ad Targeting: [[patents/patent-8028092]]
+- TWC VOD: [[patents/patent-8769151]], [[patents/patent-8762575]]
+- Live Actions: [[patents/patent-20250203152]]
+- Workflows: [[patents/patent-10667018]]
 
-### Technical Authority & Decision-Making
-- Autonomous architecture decisions
-- Technology roadmap definition
-- Budget justification for major initiatives
-- Executive buy-in and sponsorship
+### By Skill Area
+- Skills Index: [[skills/]] (streaming-media, ad-tech, ai-ml, platform-architecture, leadership)
 
-## Notes
-- Projects demonstrate sustained innovation across multiple domains (streaming, AI/ML, interactive)
-- Each project brought industry-first or world-record achievements
-- Technologies and learnings from earlier projects informed later innovations
-- Pattern of anticipating industry trends (OTT before mainstream, AI/ML early adoption)
+---
+
+## Statistics
+
+**Total Projects:** 11  
+**Emmy-Winning Projects:** 4 (36%)  
+**Patent-Generating Projects:** 5 (45%)  
+**Individual Architect/Builder:** 8 projects  
+**Team-Collaborated:** 3 projects  
+**Revenue Impact Quantified:** 350%, 200%+ documented increases  
+**Scale Impact Quantified:** 23.5B minutes, 7M+ variants, millions concurrent users  
+
+---
+
+**Note:** See individual project files for detailed accomplishments, technical approaches, business impact, and specific contributions. This index provides navigation and high-level overview of major career projects across streaming, advertising, and AI/ML domains.

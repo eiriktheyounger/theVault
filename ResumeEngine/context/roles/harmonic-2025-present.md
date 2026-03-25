@@ -1,53 +1,54 @@
-# Harmonic Inc. — Solutions Architect
-## 2025 – Present
+---
+name: Harmonic Inc. Solutions Architect
+description: Current role at Harmonic (June 2025-Present) providing technical solutions for broadcast and OTT
+type: role
+company: Harmonic Inc.
+title: Solutions Architect
+dates: 2025-Present
+location: Remote
+employment_type: Full-time
+---
 
-### Summary
-Serve as technical evangelist and solutions architect for Harmonic's cloud-native broadcast, OTT, contribution, and distribution solutions. Design end-to-end architectures spanning VOS360, XOS, and VOS360 Ads platforms across strategic broadcast and streaming accounts. Provide direct customer-facing technical leadership and support, translating complex requirements into scalable, cost-efficient solutions.
+# Harmonic Inc. — Solutions Architect (June 2025–Present)
 
-### Key Responsibilities
-- Technical evangelist for cloud-native broadcast/OTT solutions across strategic accounts
-- Design end-to-end solution architectures spanning VOS360, XOS, VOS360 Ads platforms
-- Configure and test VOS360 and XOS hardware/software with third-party infrastructure for customer-specific parameters
-- Write technical proposals and pricing quotes for client purchases
-- Identify market opportunities in cloud-native broadcast transformation
-- Translate complex customer requirements into scalable architectures
-- Provide direct support as trusted technical advisor to customer C-suite and engineering leadership
-- Research emerging technologies and assess impact on Harmonic product roadmaps
+## Role Summary
 
-### Major Achievements
-- **Pre-Sales Leadership:** Configure winning solution architectures for cloud infrastructure, server-side ad insertion (SSAI) workflows, and multi-platform video delivery
-- **Market Evangelism:** Identify and pitch tier-1 broadcast customers transitioning from on-premise to cloud infrastructure
-- **Technical Alignment:** Bridge account executives and partner vendors to create customer-aligned technical proposals optimizing scalability and cost-efficiency
+Technical solutions architect for cloud-native broadcast, OTT, and Server-Side Ad Insertion (SSAI) platforms. Serve as technical evangelist across strategic accounts including tier-1 broadcasters and streaming providers in North America. Design end-to-end solution architectures and provide direct sales support for pre-sales technical strategy. Configure and test hardware/software products to customer-specific parameters for demonstrations and proof-of-concept deployments.
 
-### Technologies & Tools
-- **Harmonic Platforms:** VOS360 (Video Operating System), XOS, VOS360 Ads (Server-Side Ad Insertion)
-- **Cloud Architecture:** Cloud-native broadcast systems, OTT contribution/distribution, Local Host Broadcast architecture
-- **Infrastructure:** Storage systems, cloud infrastructure (AWS/GCP/Azure), network routers, blade servers
-- **Pre-Sales:** RFI/RFP responses, solution design, pricing, POC execution, technical evangelism
+## Key Responsibilities
 
-### Team & Scope
-- **Reports to:** [NEEDS VERIFICATION]
-- **Team size:** [NEEDS VERIFICATION]
-- **Geographic scope:** North America focus (terrestrial/satellite/telco broadcast, OTT mobile/internet, TV/movie studios, enterprise video)
-- **Account types:** Tier-1 broadcasters, content aggregators, streaming platforms
+- Serve as technical evangelist for cloud-native broadcast, OTT, and SSAI solutions across strategic accounts including tier-1 broadcasters and streaming providers in North America
+- Design end-to-end solution architectures using VOS360, XOS, and VOS360 Ads platforms for cloud infrastructure, server-side ad insertion workflows, and multi-platform video delivery systems
+- Configure and test hardware/software products including third-party network equipment to customer-specific parameters for demonstrations and proof-of-concept deployments
+- Translate complex customer requirements into scalable technical solutions, bridging business objectives with implementation across broadcast, OTT, and SSAI workflows
+- Provide direct sales organization support for pre-sales technical strategy including RFI/RFP responses, driving successful customer acquisitions
 
-### Resume Bullets (Extracted from Master Data)
-- Serve as technical evangelist for Harmonic's cloud-native broadcast, OTT, contribution, and distribution solutions across strategic accounts in broadcast television, content aggregation, and streaming markets
-- Design end-to-end solution architectures spanning VOS360, XOS, and VOS360 Ads platforms for cloud infrastructure, server-side ad insertion (SSAI) workflows, and multi-platform video delivery systems
-- Configure and test VOS360 and XOS hardware/software products including third-party network routers, blade servers, and storage systems to customer-specific parameters for demos and POCs
-- Collaborate with account executives and partner vendors to create winning technical proposals that meet customer requirements while optimizing for scalability and cost-efficiency
-- Write and deliver quotes used with clients resulting in successful purchases
-- Identify market opportunities in cloud-native broadcast transformation and evangelize VOS360/XOS SaaS solutions to tier-1 broadcasters transitioning from on-premise to cloud infrastructure
-- Translate complex customer requirements into scalable solution architectures using VOS360, XOS, and VOS360 Ads platforms, bridging business objectives with technical implementation across broadcast, OTT, and SSAI workflows
+## Technologies & Infrastructure
 
-### What NOT to Say
-- Minimize discussion of newness to the role; emphasize accumulated expertise instead
-- Don't be defensive about technical depth — let past achievements speak
-- Avoid product-centric language; keep customer outcomes primary
+- **Harmonic Platforms**: VOS360, XOS, VOS360 Ads
+- **Cloud Infrastructure**: AWS, GCP, Azure
+- **Ad Tech**: SSAI (Server-Side Ad Insertion), CSAI (Client-Side Ad Insertion)
+- **Video Delivery**: Multi-CDN, OTT/VOD architecture
+- **Broadcast**: Cloud-native broadcast systems
+- **Integration**: Hardware/software product configuration, third-party network equipment
 
-### Needs Verification
-- Reporting relationship
-- Team size / organizational structure
-- Specific customer wins or case studies
-- Performance metrics (deal size, customer acquisition, satisfaction)
-- Timeline for major product releases
+## Projects & Customers
+
+- Tier-1 broadcasters (North America)
+- Streaming providers (strategic accounts)
+- Pre-sales technical engagements (RFI/RFP responses)
+
+## Resume Bullet Language
+
+- Solutions architect for cloud-native broadcast, OTT, and SSAI platforms serving tier-1 broadcasters and streaming providers
+- Design and architect end-to-end solutions using Harmonic VOS360, XOS, and VOS360 Ads for cloud infrastructure and server-side ad insertion workflows
+- Provide technical leadership and pre-sales strategy for major customer acquisitions and proof-of-concept deployments
+
+---
+
+## Context Notes
+
+- **Status**: Current role (June 2025-Present)
+- **Era**: Cloud-native broadcast and SSAI evolution
+- **Focus**: Enterprise solutions for major broadcasters and streaming providers
+- **Accomplishments**: [To be documented as engagement results accumulate]

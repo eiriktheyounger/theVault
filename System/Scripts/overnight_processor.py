@@ -34,9 +34,9 @@ def check_nas():
         sys.exit(1)
     logger.info("NAS mount verified")
 
-def get_today_note_path():
-    """Get path to today's daily note."""
-    now = datetime.now()
+def get_today_note_path(target_date=None):
+    """Get path to today's daily note or specified date."""
+    now = target_date if target_date else datetime.now()
     return DAILY_BASE / now.strftime('%Y') / now.strftime('%m') / f"{now.strftime('%Y-%m-%d')}-DLY.md"
 
 def read_section(content, start_marker, end_marker):

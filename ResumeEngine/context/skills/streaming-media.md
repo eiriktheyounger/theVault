@@ -1,128 +1,127 @@
-# Streaming & Media Technology Skills
+---
+name: Streaming Media & Content Delivery
+description: Expert-level capability in OTT/VOD architecture, live streaming, and adaptive bitrate delivery
+type: skill
+level: Expert
+years_of_experience: 25
+---
 
-## Core Competencies
+# Streaming Media & Content Delivery
 
-### OTT & VOD Architecture
-- Video-On-Demand (VOD) system design and operations
-- Over-The-Top (OTT) streaming platform architecture
-- End-to-end content processing pipelines
-- Multi-CDN distribution and management
-- Set-top box integration and legacy system transition
+## Core Expertise
+
+Demonstrated mastery across the full spectrum of streaming technology from pioneering live streaming infrastructure at AOL through record-breaking concurrent viewer delivery and advanced interactive features at NBCUniversal. Deep knowledge of both live and on-demand streaming architectures.
+
+## Specific Capabilities
 
 ### Live Streaming
-- Live event production and delivery
-- Real-time encoding and transcoding
-- Multi-site global live streaming coordination
-- Low-latency streaming (broadcast-grade)
-- Concurrent user scaling for major events
-
-### Video Processing & Delivery
-- Video encoding and transcoding (multiple codecs)
-- Adaptive bitrate streaming (ABR)
-- Streaming protocol implementation (HLS, DASH, CMAF)
-- Video format conversion and multi-platform delivery
-- Quality-of-service optimization
-
-### Content Management & Workflows
-- Digital Asset Management (DAM)
-- Automated content ingestion pipelines
-- Metadata enrichment and standardization
-- Content rights management
-- Editorial workflow automation
-
-### Broadcast Integration
-- Broadcast-to-OTT platform transition
-- Linear channel delivery to streaming platforms
-- Broadcast standards compliance
-- Cable network integration
-- Set-top box application architecture
-
-## Technical Standards & Protocols
-
-### Streaming Protocols
-- HLS (HTTP Live Streaming)
-- MPEG-DASH (Dynamic Adaptive Streaming over HTTP)
-- CMAF (Common Media Application Format)
-- WebRTC (Web Real-Time Communication)
-
-### Video Codecs
-- H.264 (AVC)
-- H.265 (HEVC)
-- Multiple codec support and optimization
-
-### Audio Formats
-- AAC (Advanced Audio Coding)
-- AC3 (Dolby Digital)
-- E-AC3 (Enhanced AC3)
-- Dolby Atmos (immersive audio)
-
-### Industry Standards
-- SCTE 104/35 (Ad insertion signaling)
-- SMPTE (Professional media over IP standards)
-- HLS/DASH specifications
-- Broadcast standards compliance
-- CableLabs standards
-
-### Content & Metadata
-- Closed captioning (608/708 standards)
-- Metadata management and enrichment
-- Content licensing and compliance
-- Multi-territory regulatory compliance
-
-## Infrastructure & Platforms
-
-### Cloud-Based Infrastructure
-- Cloud-native broadcast systems
-- Scalable OTT platform design
-- AWS/GCP/Azure media services
-- Load balancing and auto-scaling for media workloads
-- Container orchestration for video services
-
-### Content Delivery
-- Multi-CDN orchestration
-- Regional distribution optimization
-- Cache management and optimization
-- Global delivery architecture
-
-### Media-Grade Architecture
+- Multi-site global coordination and synchronization
+- Real-time transcoding at scale
+- Millions of concurrent viewer support
 - 24/7 operational reliability
-- Redundancy and failover systems
-- Real-time monitoring and alerting
-- Disaster recovery planning
-- Enterprise-scale system design
+- Low-latency streaming infrastructure
+- WebRTC, RTPM, Low Latency Streaming
 
-## Experience Highlights
+### On-Demand (VOD) Architecture
+- Content acquisition and ingest pipelines
+- Just-in-time encoding (catch-and-encode workflows)
+- Adaptive bitrate packaging and delivery
+- DRM (Digital Rights Management) implementation
+- Multi-region content distribution
+- CDN-based delivery optimization
+- Set top box integration and legacy device support
 
-### Large-Scale Deployments
-- **AOL (2001-2006):** 100+ radio channels, 34+ video channels, live event production
-- **TWC (2006-2012):** Automated content operations serving millions of subscribers
-- **TWC (2012-2017):** Centralized VOD platform for millions of cable subscribers
-- **NBCU (2021-2025):** Streaming platforms serving millions of sports viewers
-- **Harmonic (2025-Present):** Cloud-native broadcast transformation consulting
+### Adaptive Streaming Formats
+- **HLS** (HTTP Live Streaming) — Apple standard
+- **DASH** (Dynamic Adaptive Streaming over HTTP) — open standard
+- **CMAF** (Common Media Application Format) — next-gen unified format
+- **Codec Support**: H.264, H.265 (HEVC)
 
-### Key Technologies Applied
-- **Live 8 Concert (2005):** World record concurrent streaming, multi-site global coordination
-- **TWCTV Application (2012):** OTT platform for millions of subscribers
-- **Key Plays (2021-2025):** Millions of concurrent viewers for sports highlights
-- **Multiple Emmy wins:** Recognition for technical excellence in streaming/broadcast
+### Video Platforms & Infrastructure
+- **Peacock** — NBCU's streaming platform (iOS, tvOS, web)
+- **Sky Showtime** — European streaming platform
+- **Showmax** — Sub-Saharan Africa streaming platform
+- Multi-platform scaling and optimization
 
-## Media-Grade Reliability
+### Content Lifecycle Management
+- VMS/CMS (Video Management System / Content Management System) design and selection
+- SaaS platform transition and integration
+- Metadata management and enrichment
+- Content workflow automation
+- Editorial operations optimization
 
-### System Design Principles
-- Autonomous error detection and recovery
-- Comprehensive logging and audit trails
-- Real-time monitoring and alerting
-- Zero-downtime updates where possible
-- Scalability from hundreds to millions of users
+### Streaming-Specific Challenges Solved
+- **Scale**: From pilot projects to millions of concurrent viewers
+- **Reliability**: 24/7 operations with zero-downtime requirements
+- **Performance**: Sub-second latency for live events
+- **Monetization**: Seamless ad insertion and dynamic content delivery
+- **DRM**: Secure content protection at scale
 
-### Operational Excellence
-- 24/7 system monitoring and management
-- Vendor relationship and technical coordination
-- Cross-platform testing and quality assurance
-- Performance optimization and tuning
-- Capacity planning and forecasting
+## Career Milestones
 
-## Certifications & Recognition
-- AWS Media & Entertainment: Direct to Consumer and Broadcast Foundations
-- 3 Emmy Awards (technology/engineering recognition)
-- Television Academy member (Science & Technology committee)
+### 2005: AOL — Pioneering Era
+- Set world record for concurrent live streaming (Live 8 Concert)
+- Built first all-digital broadcast operations center for streaming
+- 100+ audio, 34+ video channel infrastructure
+
+### 2006-2012: Time Warner Cable — Transition Era
+- Architected catch-and-encode workflows (350%+ ad revenue increase)
+- Designed VMS/CMS SaaS transition
+- Built multi-region centralized VOD headend
+
+### 2012-2017: Time Warner Cable — OTT Platform Era
+- Led TWCTV application (Emmy Award winner)
+- Architected just-in-time encryption DRM
+- Designed dynamic ad insertion for OTT
+
+### 2021-2025: NBCUniversal — Interactive & AI Era
+- Architected in-house overlay platform (Peacock, Sky, Showmax)
+- Designed Live Actions for Olympics (Emmy Award winner)
+- Built Olympic Daily Recap for 7M+ personalized variants
+
+## Technical Depth
+
+### Architecture & System Design
+- Monolithic vs. microservices for streaming
+- Stateless vs. stateful architectures
+- Real-time data processing pipelines
+- Metadata-driven workflow systems
+- Event-driven streaming architecture
+
+### Performance Optimization
+- Latency optimization for live delivery
+- Concurrent user scaling (millions of viewers)
+- Network bandwidth optimization
+- Codec selection for device/network conditions
+- CDN distribution strategy
+
+### Reliability & Operations
+- Redundancy and failover mechanisms
+- 24/7 monitoring and alerting
+- Incident response for live events
+- Graceful degradation under load
+- Multi-region failover and recovery
+
+## Related Projects
+
+- [[projects/live-8-concert]] — World record live streaming
+- [[projects/aol-broadcast-operations-center]] — Foundational infrastructure
+- [[projects/twctv]] — OTT platform
+- [[projects/twc-vod-centralization]] — VOD automation
+- [[projects/live-actions]] — Interactive streaming
+- [[projects/olympic-daily-recap]] — AI-powered personalization
+
+## Resume Language
+
+- 25+ years of streaming media expertise from pioneering live streaming at AOL through record-breaking millions-of-concurrent-viewer delivery at NBCUniversal
+- Deep knowledge of OTT/VOD architecture, adaptive bitrate delivery (HLS, DASH, CMAF), live streaming infrastructure, and DRM implementation
+- Designed and scaled streaming platforms from pilot projects (Live 8 Concert world record) to millions of daily active users (Peacock, Sky Showtime, Showmax)
+- Architected catch-and-encode workflows and SaaS migrations resulting in 350%+ operational efficiency gains
+
+---
+
+## Context Notes
+
+- **Progression**: Live streaming pioneer → OTT platform architect → interactive personalization expert
+- **Recognition**: Three Emmy Awards for streaming innovations (2005, 2014, 2023)
+- **Current Focus**: Interactive and AI-powered streaming experiences

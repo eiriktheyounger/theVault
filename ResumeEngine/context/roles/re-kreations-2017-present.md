@@ -1,73 +1,88 @@
-# RE Kreations LLC — Founder & Product Architect
-## 2017 – Present (Side Project/R&D)
+---
+name: RE Kreations LLC Founder
+description: Side business (2017-Present) developing Dynamic Ad Insertion and AI/ML automation platforms
+type: role
+company: RE Kreations LLC / THE OLDER LLC
+title: Founder
+dates: 2017-Present
+location: Remote
+employment_type: Founder / LLC
+---
 
-### Summary
-Founder and principal architect of an AI-driven orchestration and automation platform inspired by large-scale media and broadcast workflows. Independently designed, built, and maintained all system components from MVP through production, applying media-grade architecture patterns to structured document processing and enterprise automation. Also provide technical consulting and training for clients in online video, broadcast, and hardware-based systems.
+# RE Kreations LLC / THE OLDER LLC — Founder (2017–Present)
 
-### Key Responsibilities
-- Design and architect AI orchestration platform for document processing and metadata extraction
-- Contract and consult on online video, broadcast, and hardware-based training and workflow solutions
-- Lead full lifecycle from RFI/RFP development through technical consultation, training, and system implementation
-- Build and maintain Python-based microservices architecture with multi-model LLM orchestration
-- Develop multi-format ingestion pipelines supporting diverse content inputs
-- Implement autonomous diagnostics and error handling systems
-- Ensure scalability, auditability, and production reliability across automated workflows
+## Role Summary
 
-### Major Achievements
-- **Platform Architecture:** Designed and delivered an AI-driven orchestration platform applying playout automation, metadata management, and workflow orchestration principles to document processing
-- **Technology Stack:** Built prompt orchestration system using Python, Mixtral (vLLM), and Phi-3 supporting multi-format summarization, metadata extraction, and normalization
-- **System Reliability:** Engineered autonomous diagnostics subsystem providing token usage tracking, model call tracing, and repair feedback for workflow stability
-- **Pipeline Development:** Developed multi-format ingestion supporting audio, PDF, markdown, email sources with consistent metadata extraction and delivery readiness
-- **Code Quality:** Refactored and consolidated system scripts, eliminated legacy paths, standardized prompt routing, integrated end-to-end test coverage
-- **Specification Compliance:** Enforced Type A Markdown specifications across all LLM output layers for machine-parseable summaries and glossary data
-- **Client Delivery:** Contracted and advised on multiple client engagements extending media-grade architecture to emerging AI/SaaS environments
+Founder of personal LLC developing cutting-edge Dynamic Ad Insertion (DAI) prototypes and AI/ML automation systems. Designed and built end-to-end solutions spanning client-side (CSAI), server-side (SSAI), and Server-Guided Ad Insertion (SGAI) workflows. Engineered modular media pipelines and dual-LLM architectures for document summarization, metadata extraction, and format validation. Learning platform for next-generation personalized ad experiences and autonomous automation systems.
 
-### Technologies & Tools
-- **Languages:** Python (advanced), Markdown, CLI automation
-- **AI/LLM Systems:** OpenAI Codex, Anthropic Claude Code, Mixtral (vLLM), Phi-3, Vibe Coding, prompt engineering, token management
-- **Architecture:** Microservices orchestration, task automation, multi-format file processing, error handling and fallback logic
-- **Data Management:** Metadata extraction, format validation, structured output enforcement
-- **Product Development:** User research, MVP development, local-first architecture design
+## Key Responsibilities
 
-### Team & Scope
-- **Structure:** Founder-led, autonomous execution
-- **Revenue:** Real customers, real revenue (exact figures [NEEDS VERIFICATION])
-- **Geographic scope:** Distributed/remote clients
-- **Market positioning:** R&D/incubation work combining AI orchestration with media-grade reliability
+- Designed and built an end-to-end Dynamic Ad Insertion (DAI) prototype for both VOD and live streaming, including client-side (CSAI), server-side (SSAI), and Server-Guided Ad Insertion (SGAI) workflows
+- Developed a modular media pipeline with FFmpeg, Python, and AWS Media Services, supporting adaptive bitrate packaging, SCTE-35 cue-based ad breaks, and a simulated "ad buying & scheduling" platform
+- Researched and implemented emerging ad-tech concepts such as server-guided ad insertion, metadata-driven targeting, and AI-assisted creative selection
 
-### Resume Bullets (Technical Focus)
-- Independently designed, built, and maintained every component of an AI orchestration framework for document summarization, metadata extraction, and format validation
-- Developed complete pipeline for automated Markdown analysis and repair, integrating output enforcement, fallback logic, and error propagation for reliable LLM outputs
-- Implemented dual-LLM architecture using OpenAI Codex for system-level automation and Anthropic Claude Code for deep debugging and structure validation
-- Individually refactored and consolidated all system scripts, eliminating legacy paths, standardizing prompt routing, and integrating end-to-end test coverage
-- Built complete audit corpus and test vault containing format specs, trace data, and diagnostic stubs for analyzing and repairing failed generations
-- Enforced Type A Markdown specifications for all LLM output layers, ensuring clean, machine-parseable summaries and glossary data
-- Created Mixtral + Phi-3 integration pipeline for layered summarization with token window management and fully modular orchestration supporting future UI integration
+- **Designed, built, and maintained every component** of the solution framework — an AI orchestration and automation system for structured document summarization, metadata extraction, and format validation
+- **Developed the complete pipeline for automated Markdown analysis and repair**, integrating Type A output enforcement, fallback logic, and error propagation
+- **Created a dual-LLM architecture** using **OpenAI Codex** for automation and system-level repair logic and **Anthropic Claude Code** for Vibe Coding services
+- **Engineered the full prompt orchestration system** using Python, Mixtral (vLLM), and Phi-3 to perform multi-format summarization, glossary generation, and metadata normalization
+- **Individually refactored and consolidated all system scripts**, eliminating legacy paths, standardizing prompt routing, and integrating end-to-end test coverage
+- **Implemented an autonomous debugging and diagnostics subsystem** with token usage tracking, model call tracing, and Codex-driven repair feedback
+- **Built the complete audit corpus and test vault** containing format specs, trace data, and diagnostic stubs
+- **Planned and executed a multi-phased MVP development cycle** spanning architecture design, cleanup, test consolidation, path unification, and debug instrumentation
+- Developed **multi-format input ingestion** for audio, PDF, markdown, and email files with consistent metadata extraction and fallback handling
+- Designed **repair automation** to detect formatting inconsistencies and automatically generate structured corrective logic
+- Enforced **Type A Markdown specifications** for all LLM output layers
+- Implemented **debug and audit systems** for token analysis, root-cause diagnosis, and versioned model behavior tracking
+- Created **Mixtral + Phi-3 integration pipeline** for layered summarization and metadata extraction with token window management
+- Built **fully modular orchestration** supporting future UI integration and asynchronous summarization scheduling
 
-### Resume Bullets (Product Focus)
-- Designed and delivered an AI-driven orchestration and automation platform inspired by large-scale media and broadcast workflows, applying principles of playout automation, metadata management, and workflow orchestration to structured document processing
-- Contracted and advised on online video, broadcast, and hardware-based training and workflow solutions for multiple clients—leading efforts from RFI/RFP development through technical consultation, training, and end-to-end system implementation
-- Applied media-grade architecture and security methodologies to emerging AI and SaaS environments, extending proven content pipeline designs into enterprise automation use cases
-- Architected and implemented a modular, microservices-based solution framework from MVP through production, demonstrating full lifecycle ownership and alignment with scalable, cloud-native media ecosystems
-- Built a prompt orchestration system using Python, Mixtral (vLLM), and Phi-3 to support multi-format summarization, metadata extraction, and normalization across ingest pipelines
-- Engineered an autonomous diagnostics subsystem providing token usage tracking, model call tracing, and repair feedback—ensuring stability and auditability across automated workflows
-- Developed a multi-format input ingestion pipeline supporting audio, PDF, markdown, and email sources, maintaining consistent metadata extraction, error handling, and delivery readiness across diverse content inputs
+## Technologies & Infrastructure
 
-### What NOT to Say
-- Avoid "side project" or "side hustle" language — position as serious R&D/product work
-- Don't minimize business aspect (revenue, clients) if you have them
-- Avoid vague "hobbyist" framing; emphasize professional clients and real deployments
+**Ad Tech Stack**:
+- Dynamic Ad Insertion (DAI), CSAI, SSAI, SGAI, SCTE-35
+- FreeWheel and Google DAI system patterns
+- HLS, DASH, CMAF adaptive bitrate packaging
+- FFmpeg, Python, AWS Media Services
 
-### Needs Verification
-- Specific customer list (or NDA-compliant descriptions)
-- Revenue figures / growth metrics
-- Specific model performance metrics (throughput, accuracy, cost-per-unit)
-- Customer retention / satisfaction data
-- Patents or IP emerging from platform work
-- Public case studies or testimonials
+**AI/LLM Systems**:
+- OpenAI Codex (automation and repair)
+- Anthropic Claude Code (Vibe Coding)
+- Mixtral (vLLM), Phi-3 (summarization and metadata)
+- Prompt design, token management, chunking strategies
+- Structured output enforcement and repair logic
 
-### Maryland Business Registration
-- **Entity:** RE-KREATIONS LLC
-- **Registration Number:** W26115667
-- **State:** Maryland
-- **Status:** Active
+**Architecture & Automation**:
+- Micro Service based orchestration system design
+- Task automation and auditing pipelines
+- Multi-format file processing
+- Error handling and fallback logic
+- Debugging corpus and audit trails
+
+**Testing & Quality Assurance**:
+- Automated format validation (Type A / Type B Markdown)
+- Regression and repair validation
+- Glossary and metadata normalization testing
+- Token and output diagnostics
+
+## Projects
+
+- **Dynamic Ad Insertion Prototype** — end-to-end CSAI/SSAI/SGAI system for VOD and live streaming with SCTE-35 support and ad buying platform simulator
+- **AI Orchestration & Automation Platform** — document summarization, metadata extraction, format validation with dual-LLM architecture
+- **Markdown Analysis & Repair System** — Type A enforcement, fallback logic, error propagation for reliable LLM output
+- **Prompt Orchestration Pipeline** — multi-format summarization, glossary generation, metadata normalization
+
+## Resume Bullet Language
+
+- Designed and built end-to-end Dynamic Ad Insertion (DAI) prototype supporting CSAI, SSAI, and SGAI workflows across HLS, DASH, and CMAF for VOD and live streaming
+- Engineered modular media pipeline with FFmpeg, Python, and AWS Media Services supporting adaptive bitrate packaging, SCTE-35 cue-based ad breaks, and metadata-driven ad insertion simulation
+- Created dual-LLM architecture leveraging OpenAI Codex for automation and Anthropic Claude Code for debugging, enabling robust document summarization and metadata extraction at scale
+- Designed and implemented autonomous debugging system with token tracking, model call tracing, and Codex-driven repair feedback for resilient LLM output
+
+---
+
+## Context Notes
+
+- **Type**: Founder / Side business (concurrent with full-time employment until February 2025)
+- **Focus**: Ad tech learning platform and AI/ML automation systems
+- **Innovation**: Next-generation DAI concepts and dual-LLM orchestration
+- **Status**: Ongoing platform development

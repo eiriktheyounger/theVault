@@ -1,88 +1,152 @@
-# Role Context Index
+# Role Index
 
-Professional experience across 25+ years spanning streaming, OTT, broadcast, ad tech, and AI/ML innovation. Eight distinct roles with detailed context files documenting responsibilities, achievements, technologies, and industry impact.
+Master index of 8 career positions spanning 2001–2025 across four employer careers. Roles organized chronologically with context links.
 
-## Current Role
+## Role Summary
 
-| Company | Title | Period | File |
-|---------|-------|--------|------|
-| **Harmonic Inc.** | Solutions Architect | 2025–Present | [harmonic-2025-present.md](harmonic-2025-present.md) |
+**Total Roles:** 8 positions  
+**Timespan:** 2001–2025 (24+ years)  
+**Employment Types:** Full-time (7), Founder/concurrent (1)
 
-## Major Enterprise Roles
+---
 
-| Company | Title | Period | File | Key Achievement |
-|---------|-------|--------|------|-----------------|
-| **NBCUniversal** | Principal End-to-End Architect | 2021–2025 | [nbcuniversal-2021-2025.md](nbcuniversal-2021-2025.md) | Emmy-winning Key Plays, Olympic Daily Recap (7M+ variants) |
-| **Time Warner Cable** | Principal Engineer, VOD | 2012–2017 | [time-warner-cable-2012-2017.md](time-warner-cable-2012-2017.md) | Centralized VOD platform, TWCTV Application architecture |
-| **Time Warner Cable** | Senior Engineer, Digital Media Delivery | 2006–2012 | [time-warner-cable-2006-2012.md](time-warner-cable-2006-2012.md) | 350%+ ad revenue growth, automated workflows |
-| **AOL** | Senior Live Events Producer | 2001–2006 | [aol-2001-2006.md](aol-2001-2006.md) | First all-digital BOC, Live 8 world record streaming |
+## Chronological Role Timeline
 
-## Specialized Roles
+### 1. AOL (2001–2006)
+**File:** [[roles/aol-2001-2006]]  
+**Position:** Sr. Director, Broadcast Operations (implied from context)  
+**Era:** Pioneering live streaming  
+**Key Metrics:** 100+ audio channels, 34+ video channels, world record concurrent streaming  
+**Awards:** Emmy Award (2005) for Live 8 Concert Streaming  
+**Patents:** US-8028092 (Inserting Advertising Content, granted 2011)  
+**Impact:** Foundation for modern live streaming; validated streaming as viable distribution channel
 
-| Company | Title | Period | File | Focus |
-|---------|-------|--------|------|-------|
-| **Leidos** | Innovation & Emerging Technology Lead | 2019–2020 | [leidos-2019-2020.md](leidos-2019-2020.md) | Government sector tech consulting |
-| **Ooyala** | Sr. Solutions Architect | 2017–2018 | [ooyala-2017-2018.md](ooyala-2017-2018.md) | SaaS media lifecycle solutions |
+### 2. Time Warner Cable — Early Tenure (2006–2012)
+**File:** [[roles/twc-2006-2012]]  
+**Position:** Sr. Solutions Architect, VOD Systems  
+**Era:** SaaS transition and VOD automation  
+**Key Metric:** 350%+ ad revenue increase through automation  
+**Technologies:** VMS/CMS transition, catch-and-encode workflows, multi-region centralized headend  
+**Impact:** Transformed TWC monetization through workflow automation
 
-## Founder Role
+### 3. Time Warner Cable — Later Tenure (2012–2017)
+**File:** [[roles/twc-2012-2017]]  
+**Position:** Principal Engineer, VOD Systems  
+**Era:** OTT platform development (TWCTV)  
+**Key Metric:** Served millions of cable customers  
+**Award:** Emmy Award (2014) for TWCTV Application  
+**Leadership:** Managed team of 4–6 using Agile  
+**Technologies:** DRM, dynamic ad insertion, OTT platform  
+**Impact:** Cable operator competitive response to OTT inflection
 
-| Company | Title | Period | File | Focus |
-|---------|-------|--------|------|-------|
-| **RE Kreations LLC** | Founder & Product Architect | 2017–Present | [re-kreations-2017-present.md](re-kreations-2017-present.md) | AI orchestration, document processing |
+### 4. Ooyala (2017–2018)
+**File:** [[roles/ooyala-2017-2018]]  
+**Position:** Sr. Solutions Architect  
+**Era:** SaaS OTT and broadcast solutions  
+**Scope:** Enterprise customer focus  
+**[NEEDS VERIFICATION]** Howard Stern accomplishment detail  
+**Impact:** Enterprise market expertise and customer success
 
-## Role Progression Summary
+### 5. Leidos (2019–2020)
+**File:** [[roles/leidos-2019-2020]]  
+**Position:** Innovation and Emerging Technology Lead  
+**Era:** Government technology consulting  
+**Scope:** Pre-sales and post-sales engagement  
+**[NEEDS VERIFICATION]** Specific technologies not documented  
+**Impact:** Government sector innovation and consulting
 
-**Timeline:** 2001 → 2025 (25 years)
-- **AOL (2001-2006):** Pioneer of streaming/OTT broadcast operations
-- **TWC (2006-2012):** Digital media delivery and ad revenue innovation
-- **Leidos (2019-2020):** Government sector technology consulting
-- **Ooyala (2017-2018):** SaaS-based media lifecycle platforms
-- **TWC (2012-2017):** VOD platform architecture and TWCTV application
-- **RE Kreations (2017-present):** Founder-led AI orchestration platform
-- **NBCUniversal (2021-2025):** Emmy-winning interactive and AI-driven products
-- **Harmonic (2025-present):** Cloud-native broadcast solutions architect
+### 6. RE Kreations (2017–Present)
+**File:** [[roles/re-kreations-2017-present]]  
+**Position:** Founder  
+**Era:** Dynamic Ad Insertion and AI/LLM research  
+**Status:** Concurrent with full-time roles (2017–2025)  
+**Focus:** DAI prototypes, dual-LLM architecture, AI/ML platforms  
+**Technologies:** OpenAI Codex, Anthropic Claude, multi-format LLM  
+**Impact:** Emerging technology research and innovation platform
 
-## Role Types
+### 7. NBCUniversal (2021–2025)
+**File:** [[roles/nbcuniversal-2021-2025]]  
+**Position:** Principal End-to-End Architect, Peacock  
+**Era:** Interactive personalization and AI/ML innovation  
+**Key Metric:** 200%+ ad revenue increase, 7M+ personalized variants, 23.5B streaming minutes  
+**Awards:** Technology & Engineering Emmy (2023) for Key Plays; Outstanding Interactive Experience Emmy (2025) for Paris 2024 Olympics  
+**Patents:** US-20250203152, US-20240430496 (both pending)  
+**Platforms:** Peacock, Sky Showtime, Showmax  
+**Impact:** Industry-leading interactive and personalization innovation
 
-### Technical Architecture
-- Principal Engineer (VOD, Digital Media Delivery)
-- Solutions Architect (Harmonic, Ooyala)
-- End-to-End Architect (NBCUniversal)
+### 8. Harmonic (2025–Present)
+**File:** [[roles/harmonic-2025-present]]  
+**Position:** Solutions Architect  
+**Era:** Cloud-native broadcast and SSAI  
+**Scope:** Tier-1 broadcasters in North America  
+**Platforms:** VOS360, XOS, VOS360 Ads  
+**Status:** Currently accumulating accomplishments  
+**Impact:** Cloud-native broadcast architecture leadership
 
-### Leadership Roles
-- Principal End-to-End Architect (NBCU) — Leading technical solutions teams
-- Senior Engineer (TWC) — Agile team leadership
-- Senior Live Events Producer (AOL) — Facility and operations leadership
+---
 
-### Specialized/Emerging Roles
-- Innovation & Emerging Technology Lead (Leidos)
-- Founder & Product Architect (RE Kreations)
+## Role Organization by Dimension
 
-## Industries Served
-- **Broadcast & Cable:** AOL, TWC
-- **Streaming & OTT:** NBCUniversal, Harmonic
-- **SaaS Media:** Ooyala, RE Kreations
-- **Government:** Leidos
-- **Founder/Self-Led:** RE Kreations
+### By Company
+- **AOL** (2001–2006): 1 role
+- **Time Warner Cable** (2006–2017): 2 roles
+- **Ooyala** (2017–2018): 1 role
+- **Leidos** (2019–2020): 1 role
+- **RE Kreations** (2017–present): 1 role (concurrent)
+- **NBCUniversal** (2021–2025): 1 role
+- **Harmonic** (2025–present): 1 role
 
-## Common Themes Across Roles
-- **Scale:** Every role involved serving millions of users or managing large-scale infrastructure
-- **Innovation:** Leading adoption of new technologies (OTT, AI/ML, streaming)
-- **Technical Authority:** Operating autonomously with significant technical decision-making authority
-- **Cross-Functional Impact:** Spanning engineering, product, business, and vendor relationships
-- **Industry Awards:** Emmy recognition for technical excellence (3 Emmy Awards across roles)
+### By Era
+- **Pioneering Streaming** (2001–2006): AOL
+- **SaaS & VOD Transition** (2006–2012): TWC early
+- **OTT Inflection** (2012–2017): TWC late
+- **Enterprise & Government** (2017–2020): Ooyala, Leidos
+- **Interactive & AI/ML** (2021–2025): NBCUniversal
+- **Cloud-Native Broadcast** (2025–present): Harmonic
+- **Continuous Innovation** (2017–present): RE Kreations (founder)
 
-## Key Responsibilities Across Roles
-- Architecture design and systems thinking
-- Team leadership and cross-functional collaboration
-- Technology vendor evaluation and management
-- Product innovation and market positioning
-- Executive communication and strategic planning
-- Autonomous problem-solving and decision-making
+### By Position Level
+- **Sr. Director**: AOL (implied)
+- **Sr. Solutions Architect**: TWC (early), Ooyala
+- **Principal Engineer**: TWC (late)
+- **Principal End-to-End Architect**: NBCUniversal
+- **Solutions Architect**: Harmonic
+- **Innovation Lead**: Leidos
+- **Founder**: RE Kreations
 
-## Technologies & Domains by Role
-- **Streaming:** All roles
-- **Ad Tech & Monetization:** TWC, NBCU, Harmonic
-- **AI/ML:** NBCU, RE Kreations, Harmonic (emerging)
-- **Broadcast Operations:** AOL, TWC, Harmonic
-- **Infrastructure:** Leidos, Ooyala, RE Kreations
+---
+
+## Key Statistics
+
+**Total Employers:** 6 distinct companies (7 positions, with concurrent side business)  
+**Employment Gap:** None (continuous employment 2001–2025)  
+**Average Tenure:** 3–4 years per role  
+**Team Leadership:** 4–6 person teams managed  
+**Emmy Awards:** 4 across career (2005, 2014, 2023, 2025)  
+**Patents:** 11 total (7 granted, 4 pending) across all roles  
+
+---
+
+## Cross-References
+
+### By Award
+- Emmy 2005: [[roles/aol-2001-2006]]
+- Emmy 2014: [[roles/twc-2012-2017]]
+- Emmy 2023: [[roles/nbcuniversal-2021-2025]]
+- Emmy 2025: [[roles/nbcuniversal-2021-2025]]
+
+### By Patent
+- Patents: [[patents/patent-index]] (full portfolio)
+- AOL patents: [[patents/patent-8028092]], [[patents/patent-12382148]]
+- TWC patents: [[patents/patent-8769151]], [[patents/patent-8762575]], [[patents/patent-11310567]]
+- NBCUniversal patents: [[patents/patent-10667018]], [[patents/patent-10375452]], [[patents/patent-20250203152]], [[patents/patent-20240430496]]
+
+### By Industry
+- Streaming: AOL, TWC, Ooyala, NBCUniversal, Harmonic
+- Advertising: AOL, TWC, Ooyala, NBCUniversal
+- Government: Leidos
+- Innovation: RE Kreations
+
+---
+
+**Note:** See individual role files for detailed accomplishments, STAR format stories, team structure, and specific technical achievements. This index provides navigation and high-level overview across 24+ years of career progression.

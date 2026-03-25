@@ -1,152 +1,143 @@
-# Ad Tech & Monetization Skills
+---
+name: Advertising Technology
+description: Expert-level capability in ad insertion, monetization, and dynamic ad serving
+type: skill
+level: Expert
+years_of_experience: 24
+---
 
-## Core Competencies
+# Advertising Technology
 
-### Dynamic Ad Insertion
-- Server-Side Ad Insertion (SSAI) architecture and implementation
-- Client-Side Ad Insertion (CSAI) design and integration
-- Server-Guided Ad Insertion (SGAI) systems
-- Dynamic Ad Insertion (DAI) orchestration
-- Real-time ad decisioning and delivery
+## Core Expertise
 
-### Ad Systems Architecture
-- Ad server integration and management
-- Programmatic advertising platform integration
-- Ad trafficking and campaign management systems
-- Real-time bidding (RTB) system design
-- Inventory management and optimization
+Mastery of advertising technology spanning from pioneering early ad targeting systems through modern monetization strategies. Deep knowledge of both technical and business aspects of digital advertising infrastructure.
 
-### Ad Tech Standards
-- VAST (Video Ad Serving Template) implementation
-- SCTE standards for ad insertion (SCTE 104/35)
-- Ad metadata and signaling standards
-- Cross-platform ad delivery standards
-- Privacy and compliance standards (GDPR, CCPA, etc.)
+## Specific Capabilities
 
-## Monetization Strategy
+### Ad Insertion Technologies
+- **SSAI** (Server-Side Ad Insertion) — ad insertion at origin server
+- **CSAI** (Client-Side Ad Insertion) — ad insertion at player level
+- **SGAI** (Server-Guided Ad Insertion) — hybrid approach
+- **Dynamic Ad Insertion** — real-time personalized ad serving
+- Frame-accurate ad delivery for live events
+- Pause ads and interactive ad formats
 
-### Revenue Optimization
-- Ad revenue growth strategies (350%+ demonstrated)
-- Dynamic pricing and yield optimization
-- Premium ad placement and integration
-- Contextual and behavioral targeting
-- Audience segmentation for ad targeting
+### Ad Tech Standards & Protocols
+- **SCTE-35** — Ad break signaling in MPEG-TS
+- **SCTE-104** — Automation messaging for ad insertion
+- **SMPTE** — Timing and synchronization standards
+- **VAST** (Video Ad Serving Template) — ad metadata format
+- **ID3 tags** — metadata insertion
+- **HLS/DASH ad markers** — format-specific ad signaling
 
-### Advertising Products
-- Interactive advertising experiences
-- Branded content integration
-- Native advertising design
-- Dynamic in-scene content insertion
-- Programmatic guaranteed (PG) vs. real-time bidding (RTB)
+### Ad Serving Platforms & Integration
+- **FreeWheel** — Adobe/Comcast ad serving platform
+  - Rolling ad call system
+  - Ad break configuration and scheduling
+  - Impression tracking and reporting
+  - Quartile-based metrics
+- **BrightLine** — Squeeze-back ad format
+  - Frame ad integration
+  - SDK communication patterns
+  - Live and VOD support
+- **Google DAI** — Google's dynamic ad insertion
+- Vendor SDK management and integration
 
-### Advertiser Solutions
-- Campaign management and trafficking
-- Performance analytics and reporting
-- Real-time optimization and adjustments
-- Cross-platform campaign coordination
-- Premium publisher partnerships
+### Monetization Strategies
+- **Pause ads** — ads shown when viewers pause content
+- **Sponsorships** — sponsor logos, bumpers, and branded content
+- **Overlay ads** — interactive ad overlays during playback
+- **Squeeze-back ads** (frame ads) — ads in content frame corner
+- **Mid-roll** and **pre-roll** insertion
+- Ad revenue optimization and scaling
 
-## Production Integration
+### Ad Targeting & Personalization
+- **Weight-based targeting** — numeric trait assignment for targeting
+- User segmentation and audience targeting
+- Context-based ad selection
+- Dynamic stream switching for per-user ad variation
+- Metadata-driven ad decision-making
+- Real-time personalization at scale
 
-### In-Platform Implementation
-- Ad insertion in live broadcasting workflows
-- VOD workflow integration
-- Multi-bitrate ad delivery
-- Ad delivery synchronization across devices
-- Personalized ad selection and delivery
+### Architecture & System Design
+- Rolling ad call systems (initial fetch + trigger-based follow-ups)
+- Client-side caching for ad optimization
+- Quartile-based reporting (Q1, Q2, Q3, Q4)
+- Ad slot tracking and metadata management
+- Multi-vendor integration patterns
 
-### Technical Challenges Solved
-- Maintaining video quality while inserting ads
-- Consistent user experience across platforms
-- Real-time decisioning under latency constraints
-- Scaling to millions of concurrent ad decisions
-- Ad blocking detection and recovery
+## Career Milestones
 
-## Career Achievements in Ad Tech
+### 2002-2004: AOL — Ad Targeting Pioneer
+- Pioneered weight-based ad targeting system
+- Enabled per-user ad variation in live streaming
+- **Patent: US-8028092** (Inserting advertising content)
+- Technology later acquired by Facebook
 
-### Revenue Impact
-- **TWC (2006-2012):** Boosted ad revenue by 350%+ through automated workflows and ad tech innovation
-- **NBCU (2021-2025):** Increased ad revenue by 200%+ through ad tech innovations including Key Plays feature
-- **Harmonic (2025-present):** Architecting SSAI solutions for tier-1 broadcasters
+### 2006-2012: Time Warner Cable
+- Architected catch-and-encode with dynamic ad insertion
+- Increased ad revenue 350%+ through automation
+- Transitioned legacy ad operations to SaaS
 
-### Product Innovation
-- **Dynamic In-Scene Insertion:** Patent-pending technology for seamless ad/content integration
-- **Interactive Ad Products:** Ad tech features enabling viewer engagement without content interruption
-- **Personalized Ad Delivery:** AI-driven ad selection optimization
+### 2012-2017: Time Warner Cable — OTT Ads
+- Designed dynamic ad insertion for OTT/VOD
+- Integrated ads with DRM and content protection
+- TWCTV advertising architecture (Emmy Award winner)
 
-### Scale & Complexity
-- **Millions of Ad Decisions:** Real-time ad selection serving millions of concurrent viewers
-- **Multi-Platform Delivery:** Consistent ad delivery across set-top box, web, mobile
-- **Live Event Advertising:** Ad insertion during major live events with millions of concurrent viewers
-- **Global Scale:** International broadcasting with regional ad insertion and compliance
+### 2021-2025: NBCUniversal — Advanced Ad Tech
+- **BrightLine Frame Ads**: SCTE-35-based squeeze-back integration
+- **Pause Ads & SAM**: Rolling ad calls, client-side caching, quartile reporting
+- **Key Plays Sponsorships**: Multi-sport sponsorship architecture
+- **200%+ ad revenue increase** through innovative formats
+- Cross-platform ad tech standardization (Peacock, Sky, Showmax)
 
-## Technology Stack
+## Technical Depth
 
-### Platforms & Services
-- **Harmonic VOS360 Ads:** Server-Side Ad Insertion platform
-- **AWS Media Services:** AWS Elemental MediaTailor for SSAI
-- **Google Ad Manager:** Ad trafficking and serving
-- **Programmatic Platforms:** Various DSP and SSP integrations
-- **Analytics Systems:** Performance tracking and revenue attribution
+### Problem-Solving Examples
+- **Pause Ads Scaling**: Overcame FreeWheel response size limits (10 ads → unlimited)
+- **BrightLine Integration**: Balanced vendor needs with platform standards while managing cross-team complexity
+- **Sponsorship Automation**: Eliminated manual configuration through CMS-driven architecture
+- **Real-Time Metrics**: Designed quartile reporting tied to pause events and ad slots
 
-### Video Processing
-- Real-time video manipulation for ad insertion
-- Bitrate and resolution matching
-- Audio normalization for ads
-- Video quality preservation across insertion points
-- Manifest manipulation for HLS/DASH delivery
+### Business Impact Examples
+- 350%+ ad revenue increase (TWC VOD automation)
+- 200%+ ad revenue increase (NBCU ad tech innovations)
+- Millions of ad impressions unlocked through new formats
+- Platform-standard sponsorship architecture across multiple sports
 
-### Infrastructure
-- High-availability ad decision engines
-- Real-time decision-making systems
-- Caching and optimization for ad delivery
-- Multi-CDN coordination for ad distribution
-- Monitoring and failover systems
+### Vendor Management
+- Negotiating with major ad platforms (FreeWheel, BrightLine)
+- Managing vendor SDK limitations and workarounds
+- Executive-level vendor alignment on technical requirements
+- Long-term vendor partnership and relationship building
 
-## Advertising Standards & Compliance
+## Related Projects
 
-### Privacy & Compliance
-- GDPR compliance for European audiences
-- CCPA compliance for California residents
-- COPPA compliance for children's content
-- International advertising restrictions
-- Regional content and advertising regulations
+- [[projects/cnn-ad-targeting]] — Weight-based targeting pioneer
+- [[projects/twc-vod-centralization]] — VOD automation and ad optimization
+- [[projects/brightline-frame-ads]] — Frame ad integration
+- [[projects/pause-ads]] — Pause ads and SAM architecture
+- [[projects/key-plays-sponsorships]] — Sponsorship architecture
 
-### Quality Standards
-- Ad quality and brand safety
-- Content appropriateness verification
-- Ad duration and placement standards
-- Frequency capping and user experience
-- Advertiser brand guidelines enforcement
+## Related Patents
 
-### Measurement & Analytics
-- Ad impression tracking and reporting
-- Viewability metrics and optimization
-- Click-through rate (CTR) tracking
-- Conversion attribution
-- ROI and performance analytics
+- [[patents/granted/8028092]] — Weight-based ad targeting (2011)
+- [[patents/granted/8762575]] — Inserting advertising content (2014)
+- [[patents/granted/8769151]] — Adding advertising content to media (2014)
+- [[patents/pending/20240430496]] — Dynamic In-Scene Secondary Content Insertion
 
-## Market Knowledge
+## Resume Language
 
-### Industry Trends
-- Linear-to-streaming advertising transition
-- Shift from CSAI to SSAI (server-side dominance)
-- Privacy-first advertising (cookieless future)
-- Contextual vs. behavioral targeting
-- Programmatic advertising growth and consolidation
+- 24+ years of advertising technology expertise from pioneering weight-based targeting systems to modern SSAI/CSAI/SGAI platforms
+- Deep knowledge of ad insertion standards (SCTE-35, SCTE-104, VAST) and integration with major ad serving platforms (FreeWheel, BrightLine)
+- Designed monetization architectures increasing ad revenue by 200%+ through innovative formats (frame ads, pause ads, sponsorships)
+- Created scalable, auditable sponsorship and pause ad systems supporting cross-sport platform standardization
 
-### Competitive Landscape
-- SSAI platform providers (Harmonic, AWS, Cisco, etc.)
-- Ad tech vendors and integrations
-- Publisher monetization strategies
-- Viewer experience optimization vs. ad load
-- Regulatory environment changes
+---
 
-## Patents
-- **20240430496:** Dynamic In-Scene Secondary Content Insertion (pending, NBCUniversal)
-- Additional granted patents on advertising content insertion (8769151, 8762575, 8028092)
+## Context Notes
 
-## Recognition
-- Emmy Award (2014) for TWCTV Application (includes ad tech recognition)
-- Technology innovation for ad revenue growth (350%+, 200%+)
-- Speaker and thought leader on broadcast ad tech transformation
+- **Evolution**: Pre-DSP era (weight-based targeting) → SSAI/CSAI platforms → AI-driven dynamic insertion
+- **Recognition**: Four patents protecting ad tech innovations
+- **Impact**: Technology acquired by Facebook; millions of ad impressions driven
+- **Current Focus**: Advanced ad formats and monetization strategies at scale

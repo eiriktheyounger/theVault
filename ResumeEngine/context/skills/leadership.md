@@ -1,223 +1,147 @@
-# Leadership & Influence Skills
+---
+name: Technical Leadership & Team Development
+description: Expert-level capability in architectural leadership, cross-functional collaboration, and mentoring
+type: skill
+level: Expert
+years_of_experience: 25
+---
 
-## Core Competencies
+# Technical Leadership & Team Development
 
-### Technical Leadership
-- Autonomous technical decision-making and authority
-- Architecture design and systems thinking
-- Identifying and solving complex technical problems
-- Long-term technical roadmap and vision
-- Translating business objectives into technical strategy
+## Core Expertise
+
+Demonstrated executive-level technical leadership with ability to operate autonomously, align stakeholders at all levels, mentor emerging talent, and deliver complex products under pressure. Recognized pattern of building high-performing teams and leaving lasting positive impact on organizational culture.
+
+## Specific Capabilities
+
+### Executive-Level Architectural Leadership
+- **Independent Technical Decision-Making**: Determining technical direction with minimal top-down direction
+- **Executive Alignment**: Securing C-suite buy-in for major platform changes
+- **VP/SVP Communication**: Tailoring technical depth for executive audience
+- **Strategy & Roadmap**: Long-term product vision with short-term delivery balance
+- **Autonomous Operation**: Operating independently as principal architect
 
 ### Cross-Functional Collaboration
-- Engineering team coordination
-- Product and business alignment
-- Executive communication and influence
-- Client-facing technical leadership
-- Vendor and partner management
-- Distributed team collaboration
+- **Product Partnerships**: Aligning product vision with technical feasibility
+- **Engineering Leadership**: Coordinating teams of 4-6 or managing complex deliverables
+- **Vendor Management**: Negotiating with strategic partners and vendors
+- **Ad Operations Integration**: Translating business requirements into technical solutions
+- **Marketing & Sales Enablement**: Supporting customer acquisition and retention
 
-### Stakeholder Management
-- C-suite communication and relationship building
-- Executive buy-in for major initiatives
-- Budget justification and approval
-- Project sponsorship and advocacy
-- Political savvy without compromising principles
+### Stakeholder Management & Negotiation
+- **Executive-Level Negotiations**: Managing difficult conversations with vendors and partners
+  - Example: Rejecting BrightLine SDK takeover request, negotiating alignment at executive levels
+  - Example: Managing vendor relationships across multiple SaaS providers
+  
+- **Cross-Team Alignment**: Resolving conflicts and building consensus
+  - Example: BrightLine Frame Ads — navigated complex internal resistance with architecture documentation and stakeholder meetings
+  - Example: Pause Ads & SAM — secured SVP buy-in for long-term sustainability approach
+  
+- **Technical Advocacy**: Explaining complex trade-offs to non-technical audiences
+  - Created tailored architecture wikis, low-level diagrams, and detailed documentation
+  - Led VP/SVP review meetings to resolve stakeholder friction
 
-## Product & Innovation Leadership
+### Mentorship & Team Development
+- **Knowledge Transfer**: Foundational training in streaming and ad tech
+- **Emerging Leader Development**: Growing junior architects into lead roles
+- **Confidence Building**: Psychological safety and growth mindset
+- **Autonomy & Ownership**: Gradually increasing scope and responsibility
 
-### Product Vision
-- Market trend anticipation and analysis
-- User need identification and research
-- Product-market fit validation
-- Competitive landscape analysis
-- Go-to-market strategy alignment
+**Case Study: Haannah Wallace Mentorship**
+- **Situation**: Junior joined NBCU with no streaming or ad tech experience
+- **Approach**: 
+  - Delivered foundational "Streaming 101" sessions
+  - Collaborated on complex projects (BrightLine, Frame Ads, SAM, Pause Ads)
+  - Provided strategic guidance while creating space to lead
+  - Enabled independent operation and stakeholder credibility
+- **Result**: 
+  - Became lead TPM for Ad Innovation globally
+  - Credited mentor for her success
+  - Co-delivered major ad innovation products
+  - Left behind culture of mentorship and knowledge transfer
 
-### Innovation Management
-- Identifying breakthrough technology opportunities
-- Prototyping and proof-of-concept development
-- Risk management for innovative initiatives
-- Learning from failures and iterations
-- Scaling innovations from prototype to production
+### Crisis Management & Rapid Recovery
+- **Ideation Under Pressure**: Live Actions recovery
+  - Situation: Product/design team in analysis paralysis after failed testing
+  - Action: Led ideation workshop (4AM train to NYC, overnight prep)
+  - Result: Recovered team direction and shipped Emmy-winning feature
 
-### Strategic Planning
-- Technology roadmap development
-- Vendor and partnership strategy
-- Portfolio decisions (what to build, buy, or partner)
-- Long-term planning with short-term execution
-- Balancing innovation with operational stability
+- **Problem-Solving & Troubleshooting**: NBA Ops reliability
+  - Identified root causes through real-time monitoring
+  - Developed training programs and runbooks
+  - Personally covered shifts until stability confirmed
 
-## Team Leadership
+## Career Milestones
 
-### Direct Team Leadership
-- Technical solutions team leadership
-- Multi-discipline team coordination
-- Engineering team mentorship
-- Knowledge sharing and training
-- Performance management and feedback
+### 2001-2006: AOL — Facility Leadership
+- Led BOC design, build, and operations from concept to Emmy award
+- Managed full vendor lifecycle (finding, vetting, negotiating, managing)
+- Trained operations team for 24/7 reliability
+- Handled multi-site production with minimal staff
 
-### Organizational Influence
-- Cross-functional project leadership
-- Matrix team coordination
-- Influence without direct authority
-- Building organizational consensus
-- Scaling expertise across teams
+### 2006-2012: Time Warner Cable — Program Leadership
+- Led Agile teams (4-6 people) in content operations modernization
+- Managed vendor selection and SaaS platform transition
+- Coordinated multi-region rollout while maintaining uptime
+- Mentored junior engineers in VOD operations
 
-### Hiring & Development
-- Technical interviewing and assessment
-- Team hiring and composition
-- Mentorship and career development
-- Knowledge transfer and documentation
-- Retaining technical talent
+### 2012-2017: Time Warner Cable — Principal Architecture Leadership
+- Independently determined technical direction
+- Secured executive buy-in for major platform changes
+- Managed multi-vendor relationships
+- Led TWCTV team across VOD and advertising
 
-## Vendor & Partner Management
+### 2021-2025: NBCUniversal — Enterprise-Scale Leadership
+- Led technical solutions teams delivering complex products
+- Operated as autonomous principal architect
+- Executed crisis recovery (Live Actions ideation)
+- Mentored Haannah Wallace into lead TPM role
+- Managed cross-team execution from ingest to playback
+- Aligned product, engineering, ad ops, sales, and security teams
 
-### Vendor Relationship Lifecycle
-- Vendor identification and evaluation
-- RFI/RFP development and management
-- Negotiations and contracting
-- Technical integration and implementation
-- Ongoing relationship and performance management
-- Vendor transition and change management
+## Leadership Approaches
 
-### Multi-Vendor Coordination
-- Managing multiple vendors simultaneously
-- Coordinating across vendor boundaries
-- Resolving vendor conflicts and dependencies
-- Optimizing vendor ecosystem
-- Cost negotiation and optimization
+### Philosophy & Principles
+- **Assume Good Intent**: Trust team capabilities and motivations
+- **Psychological Safety**: Create space for ideas, mistakes, and learning
+- **Knowledge Sharing**: Document decisions and teach reasoning
+- **Autonomy with Accountability**: Clear goals with freedom in approach
+- **Credit Sharing**: Celebrate team contributions, decline bonus maximization for shared credit
 
-### Strategic Partnerships
-- Key vendor relationship building
-- Executive-to-executive communication
-- Partnership alignment and collaboration
-- Joint innovation initiatives
-- Ecosystem development
+### Communication Style
+- **Clear & Direct**: No jargon unless necessary
+- **Tailored to Audience**: Technical depth for engineers, business impact for executives
+- **Documentation-Driven**: Wikis, diagrams, data flows
+- **Active Listening**: Understanding before responding
+- **Vulnerability**: Admitting uncertainty and learning from mistakes
 
-## Executive Communication
+### Decision-Making
+- **Data-Driven**: Metrics and evidence over opinions
+- **Transparent Tradeoffs**: Explicit about what we're prioritizing
+- **Long-Term Sustainability**: Avoiding technical debt and patchwork fixes
+- **Team Scalability**: Designing for how the team will grow
 
-### Board/C-Suite Communication
-- Executive summary and abstraction
-- Business outcome focus vs. technical details
-- Budget and investment case development
-- Risk communication and management
-- Strategic alternatives presentation
+## Related Projects
 
-### Presentation & Public Speaking
-- Large group presentations and keynotes
-- Technical conference presentations
-- Industry speaking engagements
-- Training and education delivery
-- Thought leadership communication
+- [[projects/aol-broadcast-operations-center]] — Facility leadership and training
+- [[projects/live-actions]] — Crisis recovery and ideation leadership
+- [[projects/brightline-frame-ads]] — Vendor negotiation and alignment
+- [[projects/key-plays-sponsorships]] — SVP alignment and architectural advocacy
+- [[roles/nbcuniversal-2021-2025]] — Mentorship and team development
 
-### Written Communication
-- Technical architecture documentation
-- Executive summaries and white papers
-- Proposal writing and RFP responses
-- Research and analysis reports
-- Industry publications and thought pieces
+## Resume Language
 
-## Remote Work Leadership
+- 25+ years of technical leadership experience ranging from facility design and operations to enterprise-scale platform architecture at Fortune 500 companies
+- Demonstrated ability to operate autonomously, establish technical direction, and secure executive alignment on major platform decisions
+- Built and mentored high-performing teams, including developing emerging talent into lead roles (e.g., Haannah Wallace, lead TPM for Ad Innovation)
+- Managed complex vendor relationships and cross-functional stakeholder alignment across product, engineering, ad operations, and sales teams
+- Recognized pattern of delivering under pressure—ideation workshop crisis recovery (Live Actions) demonstrates ability to unblock teams and drive innovation
 
-### Distributed Team Management
-- 11+ years remote work experience (2014-present)
-- Virtual team building and culture
-- Asynchronous communication best practices
-- Timezone coordination and inclusivity
-- Remote performance management
-- Virtual meeting facilitation
+---
 
-### Remote Effectiveness
-- Self-directed work with minimal supervision
-- Clear communication without in-person interaction
-- Building trust across distributed organizations
-- Remote mentorship and coaching
-- Knowledge management for distributed teams
+## Context Notes
 
-## Industry & Market Leadership
-
-### Thought Leadership
-- Speaking engagements and conferences
-- Industry advisory roles
-- Emerging technology evaluation
-- Trend forecasting and analysis
-- Opinion leadership in specialization areas
-
-### Professional Affiliations
-- Television Academy member (Science & Technology committee)
-- Industry association participation
-- Standards body involvement
-- Peer network development
-- Continuous learning and development
-
-## Entrepreneurial Leadership
-
-### Founder/Self-Directed Work
-- RE Kreations LLC (2017-present, founder-led)
-- Full lifecycle business responsibility
-- Customer acquisition and retention
-- Pricing and business model development
-- Autonomous decision-making
-- Scaling operations from solo to client engagements
-
-### Business Development
-- Client relationship building
-- RFI/RFP response and sales
-- Contract negotiation
-- Scope management and delivery
-- Customer success and retention
-
-## Career Development
-
-### Career Progression
-- Individual contributor excellence → Principal Engineer
-- Solutions architecture and client-facing roles
-- Founder and entrepreneur
-- Sustained technical relevance (25+ years)
-- Multiple industry transitions (broadcast → streaming → AI/ML)
-
-### Market Awareness
-- Early adoption and foresight (OTT before mainstream)
-- Technology trend understanding
-- Career opportunity identification
-- Industry timing and positioning
-- Continuous skills evolution
-
-## Leadership Under Uncertainty
-
-### Autonomous Decision-Making
-- Operating with incomplete information
-- Making strategic choices without consensus
-- Taking calculated risks
-- Learning from outcomes
-- Adapting strategy based on results
-
-### Problem-Solving Under Pressure
-- Crisis management and response
-- High-stakes decision-making
-- Multi-stakeholder competing interests
-- Timeline and resource constraints
-- Maintaining quality under pressure
-
-### Adaptive Leadership
-- Industry transition navigation (broadcast → OTT → AI)
-- Technology evolution and adoption
-- Organizational change management
-- Talent retention during transitions
-- Continuous learning and reinvention
-
-## Recognition & Impact
-
-### Industry Awards
-- 3 Emmy Awards recognizing technical leadership
-- Patents granted and pending
-- Speaking invitations and conference participation
-- Industry advisory relationships
-- Peer recognition in specialization areas
-
-### Business Impact
-- Revenue growth: 350%+ (TWC), 200%+ (NBCU)
-- Market innovations: Key Plays, Live Actions, Olympic Daily Recap
-- Scale achievements: Millions of users, global reach
-- Company transformation leadership
-- Startup success (RE Kreations)
+- **Leadership Style**: Autonomous principal architect rather than line manager
+- **Scope**: Company-scale technical influence without direct reports (at various times)
+- **Mentorship**: Selective deep mentorship of emerging leaders
+- **Recognition**: Informal recognition through peer reputation, industry awards, and mentee success

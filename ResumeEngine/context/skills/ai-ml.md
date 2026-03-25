@@ -1,166 +1,136 @@
-# AI/ML & Generative AI Skills
+---
+name: AI/ML & Generative AI
+description: Expert-level capability in machine learning systems, generative AI, and large language models
+type: skill
+level: Expert
+years_of_experience: 5
+---
 
-## Core Competencies
+# AI/ML & Generative AI
 
-### AI/ML Systems Architecture
-- Machine learning pipeline design and implementation
-- Near real-time ML model inference at scale
-- Multi-model orchestration and coordination
-- Model selection and optimization for production use
-- Training data management and labeling
+## Core Expertise
+
+Demonstrated expertise in applying AI/ML and generative AI to broadcast-scale systems and consumer applications. Recognized with Emmy Awards for AI/ML innovation in sports and personalization features.
+
+## Specific Capabilities
+
+### Machine Learning (Broadcast Scale)
+- **Key Plays AI/ML Solution**: Automated play selection for near real-time sports highlights
+  - Real-time video analysis and understanding
+  - Automated highlight detection and extraction
+  - Rich metadata enrichment and scoring
+  - Near real-time (minutes) delivery of highlights
+  - Emmy Award recognition (2023)
 
 ### Generative AI & LLMs
-- Large Language Model (LLM) selection and evaluation
-- Multi-LLM orchestration and routing
-- Prompt engineering and optimization
-- Token management and window optimization
-- Structured output enforcement and validation
+- **GenAI-powered personalization**: Olympic Daily Recap
+  - 7M+ personalized video variants generated
+  - AI-synthesized voice narration (Al Michaels clone)
+  - SAG-AFTRA compliance in AI voice generation
+  - Personalized content workflows at scale
+  - Emmy Award recognition (2025)
 
-### Model-Specific Expertise
-- **Mixtral (vLLM):** Multi-model inference, local deployment, performance optimization
-- **Phi-3:** Efficient on-device inference, resource-constrained environments
-- **Claude (Anthropic):** Deep debugging, complex reasoning, structured output
-- **OpenAI Codex:** System automation, code generation, complex task orchestration
-- **Vibe Coding:** Experimental models and emerging LLM platforms
+- **Dual-LLM architecture** (RE Kreations):
+  - OpenAI Codex for automation and system-level repair
+  - Anthropic Claude Code for debugging and refactoring
+  - LLM-driven output validation and correction
 
-### AI-Driven Applications
-- Sports content analysis and highlight detection
-- Automated content summarization and metadata extraction
-- Personalization at scale (7M+ variants generated)
-- Autonomous error detection and repair
-- Real-time content processing and decision-making
+### AI Voice Generation
+- Licensed talent archival material use
+- AI voice synthesis for broadcast narration
+- SAG-AFTRA compliance and union requirements
+- Quality assurance for synthesized voice
+- Real-time voice generation integration
 
-## Production AI/ML Implementation
+### Retrieval-Augmented Generation (RAG)
+- RAG-compatible metadata enrichment
+- Knowledge base integration for LLMs
+- Context-aware content generation
+- Metadata extraction and normalization
 
-### Near Real-Time Systems
-- **Key Plays Feature:** AI/ML-powered sports highlight detection for millions of concurrent viewers
-- **Production Inference:** Sub-second latency AI/ML decisions in broadcast context
-- **Scalability:** ML systems supporting global broadcasting infrastructure
-- **Broadcast Quality:** Maintaining editorial standards while using AI-driven decisions
+### LLM Systems & Prompt Engineering
+- **Mixtral (vLLM)**: Open-source language model
+- **Phi-3**: Lightweight language model
+- **Anthropic Claude**: Advanced reasoning and coding
+- **OpenAI GPT**: General-purpose language models
+- Prompt design and optimization
+- Token management and cost optimization
+- Multi-turn conversation management
 
-### Generative AI Products
-- **Olympic Daily Recap:** GenAI voice synthesis, 7M+ personalized variants
-- **Narrative Generation:** Multi-stage GenAI pipelines for content creation
-- **Voice Synthesis:** AI voice replication and personality modeling
-- **Personalization:** Individual variant generation at massive scale
+### Structured Output Enforcement
+- Type A/Type B Markdown specification enforcement
+- JSON schema validation
+- Fallback logic and error correction
+- Repair automation for malformed output
+- Token usage tracking and optimization
 
-## LLM Orchestration
+## Career Milestones
 
-### Prompt Engineering
-- Complex prompt design for multi-step tasks
-- Model-specific prompt optimization
-- Token-efficient prompting techniques
-- Chain-of-thought prompting and reasoning
-- Structured output prompting (JSON, Markdown, etc.)
+### 2023: Key Plays AI/ML Sports Highlights
+- Head architect for automated highlight selection
+- AI/ML models for play detection
+- Real-time metadata extraction
+- **Technology & Engineering Emmy Award** recognition
+- Scaled across multiple sports (EPL, NFL, etc.)
 
-### Multi-Model Systems
-- Model selection based on task requirements
-- Coordinating multiple LLM calls in pipelines
-- Fallback routing when primary model fails
-- Cost optimization across model choices
-- Latency management in sequential model calls
+### 2023-2024: Olympic Daily Recap
+- Designed content workflows for 7M+ personalized variants
+- Integrated AI voice synthesis for broadcast
+- Managed compliance for AI-generated talent voice
+- **Emmy Award recognition** as part of Outstanding Interactive Experience
 
-### Output Quality & Reliability
-- Structured output enforcement (Type A Markdown specifications)
-- Validation and repair pipelines for generated content
-- Format compliance verification
-- Error detection and autonomous recovery
-- Quality metrics and assessment
+### 2024-2025: RE Kreations AI Orchestration Platform
+- Designed dual-LLM architecture
+- Built structured output enforcement system
+- Created autonomous debugging subsystem
+- Implemented token tracking and diagnostics
+- Developed Mixtral + Phi-3 integration pipeline
 
-### Token Management
-- Window optimization for context length limitations
-- Token budgeting across multi-stage pipelines
-- Compression techniques for long-context tasks
-- Cost estimation and optimization
-- Real-time token usage tracking
+## Technical Depth
 
-## AI-Powered Automation
+### Problem-Solving Examples
+- **Key Plays Real-Time**: Solved challenge of automated highlight selection during live events
+- **Olympic Personalization**: Generated 7M+ unique variants with synthesized narration at scale
+- **LLM Output Reliability**: Designed repair logic to ensure consistent structured output
+- **Token Optimization**: Implemented token tracking and cost management for LLM operations
 
-### Document Processing
-- Multi-format document ingestion (PDF, email, audio, markdown)
-- Automated summarization and abstraction
-- Metadata extraction and standardization
-- Format validation and repair
-- Audit and compliance tracking
+### Scale & Performance
+- Millions of viewers using AI/ML features daily
+- Real-time processing of live broadcast video
+- 7M+ personalized content variants generated
+- Sub-minute latency for highlight delivery
+- Reliable LLM output under production load
 
-### Workflow Automation
-- Task orchestration and dependency management
-- Error handling and recovery logic
-- Autonomous diagnostics and self-healing
-- Real-time monitoring and alerting
-- Scaling from single documents to enterprise volumes
+### Compliance & Governance
+- SAG-AFTRA union requirements for AI voice
+- Licensed talent archival material usage
+- Compliance documentation and audit trails
+- Ethical AI implementation
+- Transparent AI usage in user-facing features
 
-### Autonomous Systems
-- Self-diagnosing error detection
-- Feedback-driven repair and improvement
-- Learning from historical failures
-- Proactive issue identification
-- Minimal human intervention required
+## Related Projects
 
-## AI/ML in Media & Broadcasting
+- [[projects/key-plays]] — AI/ML sports highlights
+- [[projects/olympic-daily-recap]] — GenAI personalization
+- [[roles/re-kreations-2017-present]] — AI orchestration platform
 
-### Sports Analytics
-- Real-time highlight detection and extraction
-- Event classification and tagging
-- Player/team identification and tracking
-- Moment relevance scoring
-- Multi-sport coverage (NFL, Premier League, NBA, Olympics)
+## Related Awards
 
-### Content Personalization
-- User preference modeling
-- Individual content variant generation
-- Recommendation optimization
-- Engagement prediction
-- Personalization at scale (millions of concurrent users)
+- **Technology & Engineering Emmy Award (2023)** — Key Plays AI/ML innovation
+- **Outstanding Interactive Experience Emmy (2025)** — Olympic Daily Recap with GenAI narration
 
-### Content Intelligence
-- Automated metadata generation
-- Scene and action recognition
-- Emotional tone detection
-- Audience appeal estimation
-- Content quality assessment
+## Resume Language
 
-## Technology Stack
+- Led architecture for Key Plays AI/ML solution recognized with Technology & Engineering Emmy Award—automated near real-time sports highlight selection using machine learning
+- Designed content workflows for Olympic Daily Recap generating 7M+ personalized video variants with AI-synthesized Al Michaels narration (SAG-AFTRA compliant)
+- Created dual-LLM architecture leveraging OpenAI Codex and Anthropic Claude for autonomous document summarization, metadata extraction, and output repair
+- Demonstrated broadcast-scale AI/ML and generative AI implementation with millions of daily users
 
-### Languages & Frameworks
-- **Python:** Advanced proficiency, production systems
-- **Prompt Languages:** SQL-like prompt syntax, Markdown-based structuring
-- **API Integrations:** REST APIs for LLM services, streaming platforms
+---
 
-### AI/LLM Platforms
-- OpenAI (GPT models, Codex)
-- Anthropic (Claude, Claude Code)
-- Open source (Mixtral via vLLM, Phi-3)
-- Experimental platforms (Vibe Coding)
+## Context Notes
 
-### Supporting Technologies
-- Vector databases for semantic search
-- Token counting and management libraries
-- Structured output parsing and validation
-- Async/concurrent request orchestration
-- Monitoring and tracing systems
-
-## Industry Recognition
-- **Emmy Award:** Technology & Engineering Emmy (2023) for Key Plays Feature
-- **Patents:** Multiple pending patents on AI/ML-driven media applications
-- **Innovation Leadership:** Recognized for applying AI/ML to broadcast-scale systems
-
-## Career Progression
-
-### Early AI/ML Work
-- Machine learning for highlight detection (NBCUniversal 2021-2025)
-- GenAI voice synthesis for personalization
-- Real-time ML inference in broadcast context
-
-### Current Focus
-- LLM orchestration for enterprise automation (RE Kreations 2017-present)
-- Multi-model coordination and prompt optimization
-- Production-grade AI systems with reliability guarantees
-- Extending media-grade architecture principles to AI domain
-
-## Next-Generation Expertise Areas
-- Agentic systems and autonomous decision-making
-- Multimodal AI (vision + language + audio)
-- Fine-tuning and model adaptation
-- Distributed AI systems at scale
-- Cost optimization for production LLM systems
+- **Career Stage**: Recent focus area (last 2-3 years) with rapid skill development
+- **Recognition**: Two Emmy Awards for AI/ML innovation
+- **Focus**: Practical broadcast-scale AI/ML applications, not research
+- **Impact**: Millions of viewers using AI/ML-powered features daily
