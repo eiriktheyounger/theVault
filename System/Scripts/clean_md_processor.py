@@ -97,21 +97,41 @@ def parse_srt(content: str) -> str:
 
 def split_base_and_suffix(stem: str) -> tuple[str, str]:
     """
-    Split a filename stem on the LAST '-' to get (session_base, suffix_type).
-    Trailing duplicate markers like ' (1)' are removed from the suffix.
+    Split a filename stem into (session_base, suffix_type).
 
-    '03-19 Interview_ Eric Manchester - Architect-Meeting Highlights'
-        → ('03-19 Interview_ Eric Manchester - Architect', 'Meeting Highlights')
+    First tries to match a known SECTION_ORDER suffix (longest first) so that
+    hyphenated types like 'Scene-Based Script Summary' are not cut at their
+    internal hyphen.  Falls back to splitting on the last '-' for unknown types
+    (e.g. 'transcript') and bare duplicate files.
 
-    '03-24 Meeting_ Foo-transcript (1)'
-        → ('03-24 Meeting_ Foo', 'transcript')
+    Trailing duplicate markers like ' (1)' are stripped from the suffix.
+
+    Examples:
+        '03-19 Interview_ Eric Manchester - Architect-Meeting Highlights'
+            → ('03-19 Interview_ Eric Manchester - Architect', 'Meeting Highlights')
+
+        '02-19 Analysis-Scene-Based Script Summary'
+            → ('02-19 Analysis', 'Scene-Based Script Summary')
+
+        '03-24 Meeting_ Foo-transcript (1)'
+            → ('03-24 Meeting_ Foo', 'transcript')
     """
-    idx = stem.rfind("-")
+    # Strip trailing duplicate marker before matching
+    clean = re.sub(r"\s*\(\d+\)\s*$", "", stem).strip()
+
+    # Try known suffixes longest-first so 'Scene-Based Script Summary' wins
+    # over a shorter accidental match
+    for known in sorted(SECTION_ORDER, key=len, reverse=True):
+        candidate = f"-{known}"
+        if clean.endswith(candidate):
+            base = clean[: -len(candidate)]
+            return base, known
+
+    # Unknown suffix type — split on last '-'
+    idx = clean.rfind("-")
     if idx == -1:
         return stem, ""
-    base   = stem[:idx]
-    suffix = re.sub(r"\s*\(\d+\)\s*$", "", stem[idx + 1:]).strip()
-    return base, suffix
+    return clean[:idx], clean[idx + 1:].strip()
 
 
 def group_sessions(inbox: Path) -> dict[str, dict[str, list[Path]]]:
