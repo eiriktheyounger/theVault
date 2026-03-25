@@ -522,6 +522,7 @@ class EveningWorkflow:
         # Execute each step
         step_methods = [
             self._step_generate_day_review,
+            self._step_email_summary,
             self._step_highlight_tomorrow,
             self._step_queue_overnight_jobs,
         ]
