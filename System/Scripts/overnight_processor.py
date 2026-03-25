@@ -95,11 +95,11 @@ def summarize_with_claude(text):
         logger.error(f"Claude summarization failed: {e}")
         return "Summarization failed — check API key."
 
-def main():
+def main(target_date=None):
     logger.info("=== Overnight processing started ===")
     check_nas()
 
-    note_path = get_today_note_path()
+    note_path = get_today_note_path(target_date)
     if not note_path.exists():
         logger.warning(f"No daily note found: {note_path}")
         return
