@@ -97,9 +97,10 @@ class EveningWorkflow:
 
         # Define workflow steps
         self.steps = [
-            WorkflowStep(1, "Generate Day Review", 3),
-            WorkflowStep(2, "Highlight Tomorrow's Focus", 3),
-            WorkflowStep(3, "Queue Overnight Jobs", 3),
+            WorkflowStep(1, "Generate Day Review", 4),
+            WorkflowStep(2, "Email Summary → Daily Note", 4),
+            WorkflowStep(3, "Highlight Tomorrow's Focus", 4),
+            WorkflowStep(4, "Queue Overnight Jobs", 4),
         ]
 
         self.errors = []
