@@ -416,8 +416,8 @@ class EveningWorkflow:
             return False
 
     def _step_queue_overnight_jobs(self) -> bool:
-        """Step 3: Queue overnight documentation/batch jobs."""
-        step = self.steps[2]
+        """Step 4: Queue overnight documentation/batch jobs."""
+        step = self.steps[3]
         step.start()
         self._notify_callback(step)
 
