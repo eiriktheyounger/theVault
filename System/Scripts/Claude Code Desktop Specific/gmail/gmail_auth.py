@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/Users/ericmanchester/theVault/.venv/bin/python3
 """
 Shared Gmail API authentication.
 References existing token from gmail-cleanup project.
