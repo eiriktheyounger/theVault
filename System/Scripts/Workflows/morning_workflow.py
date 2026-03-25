@@ -536,51 +536,52 @@ class MorningWorkflow:
             self._notify_callback(step)
             return False
 
-    def _step_update_tocs(self) -> bool:
-        """Step 7: Update all TOC files."""
-        step = self.steps[self._get_step_index(7)]
-        step.start()
-        self._notify_callback(step)
-
-        try:
-            step.update_progress(20, ["Scanning vault directories..."])
-            self._notify_callback(step)
-
-            generator = TOCGenerator(self.vault_path)
-
-            step.update_progress(50, ["Updating TOC files..."])
-            self._notify_callback(step)
-
-            results = generator.update_all_tocs()
-
-            summary = [
-                f"TOCs created: {results['stats']['tocs_created']}",
-                f"TOCs updated: {results['stats']['tocs_updated']}",
-                f"TOCs unchanged: {results['stats']['tocs_unchanged']}"
-            ]
-
-            # Add created TOCs
-            if results['stats']['tocs_created'] > 0 and 'created_tocs' in results:
-                summary.append("--- Created TOCs ---")
-                for toc in results.get('created_tocs', [])[:10]:
-                    toc_name = Path(toc).name
-                    summary.append(f"  + {toc_name}")
-
-            # Add updated TOCs
-            if results['stats']['tocs_updated'] > 0 and 'updated_tocs' in results:
-                summary.append("--- Updated TOCs ---")
-                for toc in results.get('updated_tocs', [])[:10]:
-                    toc_name = Path(toc).name
-                    summary.append(f"  ↻ {toc_name}")
-
-            step.complete(summary)
-            self._notify_callback(step)
-            return results['success']
-
-        except Exception as e:
-            step.error(str(e))
-            self._notify_callback(step)
-            return False
+    # EOL 2026-03-25 — TOC generation permanently disabled per Eric
+    # def _step_update_tocs(self) -> bool:
+    #     """Step 7: Update all TOC files."""
+    #     step = self.steps[self._get_step_index(7)]
+    #     step.start()
+    #     self._notify_callback(step)
+    #
+    #     try:
+    #         step.update_progress(20, ["Scanning vault directories..."])
+    #         self._notify_callback(step)
+    #
+    #         generator = TOCGenerator(self.vault_path)
+    #
+    #         step.update_progress(50, ["Updating TOC files..."])
+    #         self._notify_callback(step)
+    #
+    #         results = generator.update_all_tocs()
+    #
+    #         summary = [
+    #             f"TOCs created: {results['stats']['tocs_created']}",
+    #             f"TOCs updated: {results['stats']['tocs_updated']}",
+    #             f"TOCs unchanged: {results['stats']['tocs_unchanged']}"
+    #         ]
+    #
+    #         # Add created TOCs
+    #         if results['stats']['tocs_created'] > 0 and 'created_tocs' in results:
+    #             summary.append("--- Created TOCs ---")
+    #             for toc in results.get('created_tocs', [])[:10]:
+    #                 toc_name = Path(toc).name
+    #                 summary.append(f"  + {toc_name}")
+    #
+    #         # Add updated TOCs
+    #         if results['stats']['tocs_updated'] > 0 and 'updated_tocs' in results:
+    #             summary.append("--- Updated TOCs ---")
+    #             for toc in results.get('updated_tocs', [])[:10]:
+    #                 toc_name = Path(toc).name
+    #                 summary.append(f"  ↻ {toc_name}")
+    #
+    #         step.complete(summary)
+    #         self._notify_callback(step)
+    #         return results['success']
+    #
+    #     except Exception as e:
+    #         step.error(str(e))
+    #         self._notify_callback(step)
+    #         return False
 
     def run(self) -> Dict:
         """
