@@ -45,7 +45,8 @@ sys.path.insert(0, str(scripts_dir))
 # Import our new workflow components
 from file_organizer import FileOrganizer
 from calendar_mapper import CalendarMapper
-from toc_generator import TOCGenerator
+# EOL 2026-03-25 — TOC generation permanently disabled per Eric
+# from toc_generator import TOCGenerator
 
 logger = logging.getLogger(__name__)
 
