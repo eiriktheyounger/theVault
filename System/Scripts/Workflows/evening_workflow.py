@@ -332,8 +332,8 @@ class EveningWorkflow:
             return True  # Non-fatal
 
     def _step_highlight_tomorrow(self) -> bool:
-        """Step 2: Highlight tomorrow's focus areas."""
-        step = self.steps[1]
+        """Step 3: Highlight tomorrow's focus areas."""
+        step = self.steps[2]
         step.start()
         self._notify_callback(step)
 
