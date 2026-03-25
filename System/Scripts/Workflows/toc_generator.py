@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# EOL 2026-03-25 — This script is no longer called. Archived copy in Vault/_archive/eol-scripts/
+# Kept in place to prevent import errors if anything references it. Safe to delete after 2026-04-25.
 """
 TOC Generator and Backlink Manager
 
