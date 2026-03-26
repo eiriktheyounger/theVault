@@ -1,69 +1,117 @@
 # theVault
 
-**PRIMARY PROJECT** — Local-first AI knowledge management system on Mac Mini M4. Python 3.12.5, FastAPI, SQLite+HNSW, Obsidian vault on NAS.
-
-## Migration Notice (March 17, 2026)
-**Active development has migrated from ~/NeroSpicy to ~/theVault.** This is now the primary project directory.
-- **Old project**: ~/NeroSpicy (archived, read-only reference)
-- **New project**: ~/theVault (active development)
-- Both share the same NAS-backed Vault, Inbox, and Processed directories
-- All new work goes in ~/theVault/
+**PRIMARY PROJECT** — Local-first AI knowledge management system on Mac Mini M4. Python 3.12.5, FastAPI, SQLite+FAISS, Obsidian vault on NAS.
 
 ## Architecture
 - API server: FastAPI on port 5055 (RAG search, chat, ingest)
 - LLM server: FastAPI on port 5111 (Ollama proxy)
-- Ollama: port 11434 (qwen2.5:7b, nomic-embed-text)
-- Database: SQLite (chunks.sqlite3) + HNSW (chunks_hnsw.bin), 768-dim embeddings
-- Vector index: FAISS (IndexIDMap2/IndexFlatIP), saved as chunks_hnsw.bin
+- Ollama: port 11434 (qwen2.5:7b, llama3.1:8b, nomic-embed-text)
+- Database: SQLite (chunks.sqlite3) + FAISS (chunks_hnsw.bin), 768-dim embeddings
+- Vector index: FAISS (IndexIDMap2/IndexFlatIP), saved as chunks_hnsw.bin — do NOT import hnswlib
 - Vault: ~/theVault/Vault → NAS symlink (/Volumes/home/MacMiniStorage/Vault)
 - Inbox: ~/theVault/Inbox → NAS symlink
 - Processed: ~/theVault/Processed → NAS symlink
+- UI: React/Vite on port 5173
+
+## Multi-Session Configuration
+This project runs three Claude Code Desktop sessions simultaneously (Opus, Sonnet, Haiku).
+All sessions share this CLAUDE.md, .claude/memory/, .claude/skills/, and .agents/.
+
+### Session Roles
+- **Opus**: Architecture decisions, complex reasoning, planning, review. Ask before acting.
+- **Sonnet**: Build scripts, daily coding tasks, workflow development. Primary workhorse.
+- **Haiku**: Fast extraction, lookups, high-volume processing, resume context generation.
+
+### Coordination Rules
+1. Read `.agents/SHARED_CONTEXT.md` at session start — know what other sessions have done
+2. Append your actions to `.agents/SHARED_CONTEXT.md` before session end
+3. One session writes to a file at a time — check SHARED_CONTEXT for active edits
+4. If you're unsure whether another session is working on something, ask Eric
 
 ## Before You Code
-1. Verify vault: bash System/Scripts/check_vault_laptop.sh (laptop) or check_nas.sh (Mac Mini)
-2. Activate venv: source .venv/bin/activate
-3. Check Ollama: curl -s http://localhost:11434/api/tags | head -5
+1. Verify NAS: `bash System/Scripts/check_nas.sh` (Mac Mini) or `bash System/Scripts/check_vault_laptop.sh` (laptop)
+2. Activate venv: `source .venv/bin/activate`
+3. Check Ollama: `curl -s http://localhost:11434/api/tags | head -5`
+4. Read current state: `cat .agents/SHARED_CONTEXT.md`
 
 ## Server Startup — IMPORTANT
 Always start the server from ~/theVault root using the full package path:
   python3 -m uvicorn System.Scripts.RAG.llm.server:app --host 0.0.0.0 --port 5055
 
 Do NOT start from inside System/Scripts/RAG — relative imports will break:
-  ❌ cd System/Scripts/RAG && python3 -m uvicorn llm.server:app  (breaks imports)
+  ❌ cd System/Scripts/RAG && python3 -m uvicorn llm.server:app
 
 ## Key Paths
-- RAG server: System/Scripts/RAG/
-- Routes: System/Scripts/RAG/routes/ (chat.py, fast.py)
+- RAG server: System/Scripts/RAG/llm/server.py (port 5055)
+- Routes: System/Scripts/RAG/routes/
 - Indexer: System/Scripts/RAG/retrieval/indexer.py
 - Databases: System/Scripts/RAG/rag_data/
 - Workflows: System/Scripts/Workflows/
-- Daily notes: Vault → Daily/YYYY/MM/YYYY-MM-DD-DLY.md
-- Laptop setup: LAPTOP_SETUP_GUIDE.md (Obsidian Sync + QuickAdd for secondary machine)
-- Laptop checks: System/Scripts/check_vault_laptop.sh
+- Task pipeline: System/Scripts/task_*.py → overnight_processor.py
+- Daily notes: Vault/Daily/YYYY/MM/YYYY-MM-DD-DLY.md
+- ResumeEngine: ~/theVault/ResumeEngine/
+- Career source docs: Vault/Personal/Career/
+- Laptop setup: LAPTOP_SETUP_GUIDE.md
+
+## System Audit Reference
+Full audit of all scripts completed 2026-03-25. Before modifying any workflow or script, read:
+`Vault/System/SYSTEM-AUDIT-2026-03-25.md`
+
+Do NOT delete or modify any script without:
+1. Checking the audit to understand what references it
+2. Creating a backup: `cp script.py script.py.backup-YYYY-MM-DD`
+3. Verifying nothing else breaks after the change
+
+### Known Missing Scripts (DO NOT reference as if they exist)
+- System/Scripts/Services/ — entire directory missing (start_all, stop_all, emergency_kill)
+- System/Scripts/Calendar/sync_calendar.py — missing
+- System/Scripts/generate_daily_dashboard.py — missing
+- System/Scripts/clean_md_processor.py — CRITICAL MISSING, blocks ingest pipeline
+- orchestration_system_start.py — missing, blocks /ingest/start API
+
+### Working & Don't Touch
+- Plaud pipeline (capture → Inbox/Plaud/MarkdownOnly/)
+- Task pipeline (scan → dedup → categorize → date → reminders sync)
+- theVaultPilot Reminders sync
+- /chat and /fast RAG endpoints
+- Evening workflow (self-contained, no external deps)
+- overnight_processor.py (10 PM cron)
+
+## Operations Reference
+For startup commands, health checks, and workflow details: `Vault/System/OPERATIONS-INDEX.md`
+For script relationships and Mermaid flow diagrams: `Vault/System/WORKFLOW-MAP.md`
+
+## Current Priority (Updated 2026-03-25)
+1. Build clean_md_processor.py — 65 Plaud sessions waiting in Inbox
+2. Build orchestration_system_start.py — connect /ingest/start endpoint
+3. Build Services/*.py — service management
+4. Resume Engine — JD analyzer for job applications
+5. Job applications — DraftKings waiting, pipeline thin
 
 ## Rules
 - Use Path objects, not strings, for all file paths
 - Validate NAS mount before any vault write
 - Never hardcode absolute paths — use environment variables or relative paths
-- Test every change against the existing 41,976 chunks
-- Do not modify production endpoints without creating a backup route first
-- One agent writes code at a time — no parallel sessions editing the same files
+- Test changes against existing 41,976 chunks
+- Create backup route before modifying production endpoints
+- One session writes code at a time — coordinate via SHARED_CONTEXT.md
 - The vector index uses FAISS, not hnswlib — do not import hnswlib for search
 
 ## What NOT to Do
 - Do not install Docker or reference Docker configs
-- Do not use ChromaDB — the database is SQLite + HNSW
+- Do not use ChromaDB — the database is SQLite + FAISS
 - Do not reference PostgreSQL or pgvector
 - Do not create microservice directories — this is a monolithic FastAPI app
 - Do not copy Vault/ Inbox/ or Processed/ to local disk — they live on NAS
+- Do not reference scripts listed as MISSING above as if they work
+- Do not run TOC generation — permanently disabled as of 2026-03-25
+- Do not modify task_*.py or overnight_processor.py without explicit approval
 - Do not use hnswlib for search — the index is FAISS despite the filename
 
-## System Audit Reference
-A full audit of all scripts (working, broken, missing, orphaned) was completed
-on 2026-03-25. Before modifying any workflow or script, read:
-Vault/System/SYSTEM-AUDIT-2026-03-25.md
+## Banned Resume Words
+spearheaded, leveraged, revolutionized, best-in-class, thought leader,
+passionate about, results-driven, dynamic professional, synergy, impactful
 
-Do NOT delete or modify any script without:
-1. Checking the audit to understand what references it
-2. Creating a backup: cp script.py script.py.backup-YYYY-MM-DD
-3. Verifying nothing else breaks after the change
+## NBCUniversal Departure Framing
+"Organizational restructuring" ONLY. Two sentences maximum, then redirect.
+Never reference personal circumstances or specific individuals.
