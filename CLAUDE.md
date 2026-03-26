@@ -28,6 +28,12 @@ All sessions share this CLAUDE.md, .claude/memory/, .claude/skills/, and .agents
 3. One session writes to a file at a time — check SHARED_CONTEXT for active edits
 4. If you're unsure whether another session is working on something, ask Eric
 
+### Cross-Session Memory
+- **CLI sessions** use `~/.claude/projects/-Users-ericmanchester-theVault/memory/MEMORY.md` (auto-loaded)
+- **Desktop sessions** should read `Vault/System/DesktopClaudeCode/` for Desktop-specific context
+- **Both** should read `.agents/SHARED_CONTEXT.md` for handoffs and active work
+- When making decisions that affect other sessions, write to SHARED_CONTEXT.md so they pick it up
+
 ## Before You Code
 1. Verify NAS: `bash System/Scripts/check_nas.sh` (Mac Mini) or `bash System/Scripts/check_vault_laptop.sh` (laptop)
 2. Activate venv: `source .venv/bin/activate`
