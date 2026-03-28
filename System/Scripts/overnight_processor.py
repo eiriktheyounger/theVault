@@ -45,7 +45,7 @@ def read_section(content, start_marker, end_marker):
     """Extract text between HTML comment markers or headings."""
     # Special case: if markers are heading-based, use heading extraction
     if start_marker == "## Captures" and end_marker == "## Evening":
-        pattern = r'## Captures\s*\n(.*?)(?=\n## Evening)'
+        pattern = r'## Captures\s*\n(.*?)(?=\n## |\Z)'
         match = re.search(pattern, content, re.DOTALL)
         return match.group(1).strip() if match else ""
 
