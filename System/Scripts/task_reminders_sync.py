@@ -172,7 +172,7 @@ def check() -> bool:
     try:
         from pyremindkit import RemindKit  # type: ignore
         rk = RemindKit()
-        lists = rk.calendars.list()
+        lists = list(rk.calendars.list())
         print(f"PyRemindKit: OK — {len(lists)} lists found")
         list_names = [l.name for l in lists]
         for required in ["Vault", "Do Today!!!!"]:
