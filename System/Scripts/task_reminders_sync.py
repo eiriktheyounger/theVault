@@ -87,7 +87,7 @@ def sync_tasks_to_reminders(
                     title=task.normalized_text,
                     due_date=due_date,
                     notes=f"Source: {task.source_file}\nKey: {key}",
-                    list_name="Do Today",
+                    list_name="Do Today!!!!",
                 )
         except Exception as e:
             logger.warning(f"Failed to sync task to Reminders: {e}")
