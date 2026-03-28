@@ -170,10 +170,12 @@ def check() -> bool:
         print("Install with: pip install pyremindkit")
         return False
     try:
-        lists = pyremindkit.get_lists()  # type: ignore
+        from pyremindkit import RemindKit  # type: ignore
+        rk = RemindKit()
+        lists = rk.calendars.list()
         print(f"PyRemindKit: OK — {len(lists)} lists found")
         list_names = [l.name for l in lists]
-        for required in ["Vault", "Do Today"]:
+        for required in ["Vault", "Do Today!!!!"]:
             status = "✓" if required in list_names else "✗ (will be created)"
             print(f"  {required}: {status}")
         return True
