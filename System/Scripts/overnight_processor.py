@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 theVault Overnight Processor
-Runs at 10 PM daily via cron.
+Runs at 11 PM daily via cron.
 Reads today's daily note, extracts tasks, summarizes chats,
 updates context files, and indexes new content.
 """
