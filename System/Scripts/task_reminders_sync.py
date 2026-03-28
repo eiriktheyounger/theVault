@@ -122,11 +122,45 @@ def clear_do_today() -> None:
 
 
 def _upsert_reminder(title: str, due_date: str, notes: str, list_name: str) -> None:
-    """Create or update a reminder. Uses pyremindkit when available."""
-    # TODO: implement full upsert using pyremindkit API
-    # Key pattern: check existing reminders in list for matching notes key
-    # before creating a new one to avoid duplicates.
-    pass
+    """Create or update a reminder in the named Reminders list."""
+    from datetime import datetime
+    from pyremindkit import RemindKit, Reminder  # type: ignore
+
+    rk = RemindKit()
+
+    # Resolve list_id by name
+    calendars = rk.calendars.list()
+    list_id = None
+    for cal in calendars:
+        if cal.name == list_name:
+            list_id = cal.id
+            break
+
+    # Extract the Key hash from notes for dedup search
+    key_hash = None
+    for line in notes.splitlines():
+        if line.startswith("Key: "):
+            key_hash = line[5:].strip()
+            break
+
+    # Convert ISO date string to datetime at midnight local time
+    due_dt = datetime.fromisoformat(due_date).replace(hour=0, minute=0, second=0, microsecond=0)
+
+    # Search for existing reminder by Key hash
+    existing = None
+    if key_hash:
+        for reminder in rk.search_reminders(key_hash):
+            if not reminder.completed:
+                existing = reminder
+                break
+
+    if existing is not None:
+        rk.update_reminder(existing.id, title=title, due_date=due_dt)
+    else:
+        create_kwargs: dict = dict(title=title, notes=notes, due_date=due_dt)
+        if list_id is not None:
+            create_kwargs["list_id"] = list_id
+        rk.create_reminder(**create_kwargs)
 
 
 def check() -> bool:
