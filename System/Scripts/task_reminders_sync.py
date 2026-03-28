@@ -129,7 +129,7 @@ def _upsert_reminder(title: str, due_date: str, notes: str, list_name: str) -> N
     rk = RemindKit()
 
     # Resolve list_id by name
-    calendars = rk.calendars.list()
+    calendars = list(rk.calendars.list())
     list_id = None
     for cal in calendars:
         if cal.name == list_name:
