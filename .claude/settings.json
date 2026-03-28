@@ -26,6 +26,23 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "async": true,
+            "command": "cd ~/theVault && git push 2>/dev/null || true"
+          },
+          {
+            "type": "agent",
+            "model": "claude-haiku-4-5-20251001",
+            "timeout": 60,
+            "prompt": "You are a memory-update agent running after a Claude Code session turn in ~/theVault.\n\nCheck for recent commits:\n  cd ~/theVault && git log --oneline --since='10 minutes ago'\n\nIf there are NO recent commits, output exactly: NO_COMMITS and stop.\n\nIf there ARE recent commits:\n1. Read the commit messages to understand what was completed.\n2. Read /Users/ericmanchester/.claude/projects/-Users-ericmanchester-theVault/memory/project_priorities_2026_03.md\n3. If any completed work maps to a listed priority item that is NOT already marked ✅, update that file to mark it ✅ with the date (format: ✅ YYYY-MM-DD).\n4. Append a one-line entry to /Users/ericmanchester/theVault/.agents/SHARED_CONTEXT.md under '## Active Work' describing what was completed and when (format: | CLI Sonnet | <what was done> | <files touched> | <date> |).\n5. Only edit files if something actually changed — do not make trivial edits."
+          }
+        ]
+      }
     ]
   }
 }
