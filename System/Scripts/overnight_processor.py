@@ -63,8 +63,10 @@ def write_section(content, start_marker, end_marker, new_text):
     else:
         return content + f"\n\n{replacement}"
 
-def extract_tasks_local(text):
+def extract_tasks_local(text, note_date=None):
     """Use local Ollama to extract actionable tasks."""
+    from datetime import timedelta
+    due_date = ((note_date if note_date else datetime.now()) + timedelta(days=6)).strftime('%Y-%m-%d')
     try:
         import ollama
         response = ollama.chat(
@@ -75,7 +77,14 @@ def extract_tasks_local(text):
             ],
             options={'temperature': 0},
         )
-        return response['message']['content']
+        raw = response['message']['content']
+        # Stamp default due date (note date + 6 days) onto each extracted task line
+        lines = []
+        for line in raw.splitlines():
+            if line.strip().startswith('- [ ]') and '📅' not in line:
+                line = line.rstrip() + f' 📅 {due_date}'
+            lines.append(line)
+        return '\n'.join(lines)
     except Exception as e:
         logger.error(f"Task extraction failed: {e}")
         return "Task extraction failed — Ollama may not be running."
