@@ -126,8 +126,9 @@ def main(target_date=None):
 
     logger.info(f"Processing {len(captures)} chars of captures")
 
-    # Extract tasks (local LLM)
-    tasks = extract_tasks_local(captures)
+    # Extract tasks (local LLM) — default due date: note date + 6 days
+    note_date = target_date if target_date else datetime.now()
+    tasks = extract_tasks_local(captures, note_date=note_date)
     logger.info(f"Tasks extracted: {len(tasks.splitlines())} lines")
 
     # Summarize (Claude API)
