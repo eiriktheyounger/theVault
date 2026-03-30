@@ -23,6 +23,11 @@
           {
             "type": "command",
             "command": "cd ~/theVault && git add -A && git diff --cached --quiet || git commit -m \"auto: $(date +%Y-%m-%d_%H:%M:%S)\" > /dev/null 2>&1"
+          },
+          {
+            "type": "command",
+            "async": true,
+            "command": "INPUT=$(cat); FILE_PATH=$(echo \"$INPUT\" | grep -o '\"file_path\"[[:space:]]*:[[:space:]]*\"[^\"]*\"' | head -1 | sed 's/.*\"\\([^\"]*\\)\"$/\\1/'); case \"$FILE_PATH\" in *memory/*|*SHARED_CONTEXT*|*DesktopClaudeCode/*|*CLAUDE.md) bash ~/theVault/System/Scripts/sync_session_state.sh 'hook:PostToolUse' 2>/dev/null ;; esac"
           }
         ]
       }
