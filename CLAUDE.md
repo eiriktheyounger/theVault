@@ -86,12 +86,27 @@ Do NOT delete or modify any script without:
 For startup commands, health checks, and workflow details: `Vault/System/OPERATIONS-INDEX.md`
 For script relationships and Mermaid flow diagrams: `Vault/System/WORKFLOW-MAP.md`
 
-## Current Priority (Updated 2026-03-25)
-1. Build clean_md_processor.py — 65 Plaud sessions waiting in Inbox
-2. Build orchestration_system_start.py — connect /ingest/start endpoint
-3. Build Services/*.py — service management
-4. Resume Engine — JD analyzer for job applications
-5. Job applications — DraftKings waiting, pipeline thin
+## Current Priority (Updated 2026-03-30)
+See full priority map: `~/.claude/projects/-Users-ericmanchester-theVault/memory/project_priorities_2026_03.md`
+
+### P0 — Must proceed ASAP
+1. Overnight processor — ANTHROPIC_API_KEY empty in cron env (summarization fails)
+2. orchestration_system_start.py — blocks /ingest/start API
+
+### P1 — Enables daily workflows
+3. Gmail → Vault pipeline — Sonnet Desktop build. Context: `Vault/System/DesktopClaudeCode/gmail_pipeline_context.md`
+4. Services/ directory (start_all, stop_all, emergency_kill)
+5. Calendar sync + Daily dashboard
+
+### P2 — Build incrementally
+6. Content classifier (classify_content.py) — Sonnet Desktop building
+7. FAISS embedding repair — script ready, run `--dry-run` first
+
+### Completed
+- ✅ clean_md_processor.py — 65 Plaud sessions processed (2026-03-25)
+- ✅ Resume Engine / JD Analyzer — built (2026-03-28)
+- ✅ Post-ingest file organization — 47 files organized (2026-03-30)
+- ✅ repair_embeddings.py — built, ready to run (2026-03-30)
 
 ## Rules
 - Use Path objects, not strings, for all file paths
