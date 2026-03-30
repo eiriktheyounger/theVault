@@ -58,6 +58,11 @@ Do NOT start from inside System/Scripts/RAG — relative imports will break:
 - ResumeEngine: ~/theVault/ResumeEngine/
 - Career source docs: Vault/Personal/Career/
 - Laptop setup: LAPTOP_SETUP_GUIDE.md
+- Plaud processor: System/Scripts/clean_md_processor.py
+- Embedding repair: System/Scripts/RAG/repair_embeddings.py
+- Content classifier: System/Scripts/Workflows/classify_content.py (being built by Sonnet Desktop)
+- Classification DB: System/Scripts/RAG/rag_data/classification.db (separate from chunks.sqlite3)
+- Classification manifest: Vault/System/ClassificationReview.md
 
 ## System Audit Reference
 Full audit of all scripts completed 2026-03-25. Before modifying any workflow or script, read:
