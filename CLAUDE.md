@@ -110,7 +110,7 @@ See full priority map: `~/.claude/projects/-Users-ericmanchester-theVault/memory
 
 ### P2 — Build incrementally
 6. Content classifier (classify_content.py) — Sonnet Desktop building
-7. FAISS embedding repair — script ready, run `--dry-run` first
+7. FAISS embedding repair — DONE (95.8% coverage, 53,381 vectors)
 
 ### Completed
 - ✅ clean_md_processor.py — 65 Plaud sessions processed (2026-03-25)
