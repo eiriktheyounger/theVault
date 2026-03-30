@@ -14,6 +14,8 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 - **2026-03-26**: Gmail pipeline remaining build work → Sonnet Desktop (Pro plan, not CLI API). Full context at `Vault/System/DesktopClaudeCode/gmail_pipeline_context.md`
 - **2026-03-30**: Post-ingest file organization DONE — 47 files organized from Notes/ into HarmonicInternal/, Personal/, Knowledge/, Reference/
 - **2026-03-30**: Content classifier (classify_content.py) design locked — Haiku API, SQLite DB, markdown manifest review, learning feedback loop
+- **2026-03-30**: repair_embeddings.py built — fixes ~5,200 orphan chunks missing FAISS vectors. Run from ~/theVault: `python3 -m System.Scripts.RAG.repair_embeddings --dry-run`
+- **2026-03-30**: Vault file organization pattern established: `Space/FocusedSpace/[data-driven breakdown]/file`. HarmonicInternal uses `HarmonicInternal/{Client}/{Project}/`
 
 ## Handoffs
 
