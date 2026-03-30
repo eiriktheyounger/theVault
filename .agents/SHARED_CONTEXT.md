@@ -16,6 +16,8 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 - **2026-03-30**: Content classifier (classify_content.py) design locked — Haiku API, SQLite DB, markdown manifest review, learning feedback loop
 - **2026-03-30**: repair_embeddings.py built — fixes ~5,200 orphan chunks missing FAISS vectors. Run from ~/theVault: `python3 -m System.Scripts.RAG.repair_embeddings --dry-run`
 - **2026-03-30**: Vault file organization pattern established: `Space/FocusedSpace/[data-driven breakdown]/file`. HarmonicInternal uses `HarmonicInternal/{Client}/{Project}/`
+- **2026-03-30**: RAG full rebuild DONE — 53,381 vectors in FAISS (up from 42,293, +26%). Coverage 95.8% (passes threshold). batch_reindex.py 10/10 batches. Q/A gate still missing (rag_qa_agent.py not found).
+- **2026-03-30**: OPERATIONS-INDEX.md updated — added Ingest section, RAG Indexing section, File Classification section; marked classify_content.py live, toc_generator.py EOL'd.
 
 ## Handoffs
 
