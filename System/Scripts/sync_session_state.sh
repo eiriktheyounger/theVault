@@ -91,8 +91,8 @@ echo "" >> "$STATE_FILE"
 for f in "${CLI_MEMORY_DIR}"/feedback_*.md; do
     [ -f "$f" ] || continue
     NAME=$(grep '^name:' "$f" | sed 's/^name: //')
-    # Extract content after frontmatter closing ---
-    CONTENT=$(sed -n '/^---$/,/^---$/!p; /^---$/{n; /^---$/!p}' "$f" | tail -n +2)
+    # Extract content after frontmatter (everything after second ---)
+    CONTENT=$(awk 'BEGIN{c=0} /^---$/{c++; next} c>=2{print}' "$f")
     if [ -n "$NAME" ]; then
         echo "### ${NAME}" >> "$STATE_FILE"
         echo "$CONTENT" >> "$STATE_FILE"
