@@ -24,5 +24,6 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 
 ## Handoffs
 
-- **Gmail pipeline → Sonnet Desktop**: Test with real emails, run inbox_processor.py, backdate summaries. Read `gmail_pipeline_context.md` first.
+- **Email Thread Ingester → Sonnet CLI or Desktop**: Full build spec at `.agents/email_ingester_build_prompt.md`, architecture plan at `ResumeEngine/.claude/worktrees/naughty-shaw/.claude/plans/delegated-questing-lagoon.md`. 12 files to build in `System/Scripts/email_thread_ingester/`. Sonnet builds all modules. Haiku tests AppleScript extraction + validates high-volume output. Opus reviews only — do NOT build with Opus. Replaces/supersedes the Gmail pipeline handoff below.
+- **Gmail pipeline → Sonnet Desktop**: SUPERSEDED by Email Thread Ingester above. Old context at `gmail_pipeline_context.md` is still useful reference but the new ingester handles both Exchange + Gmail with threading.
 - **classify_content.py → Sonnet Desktop**: Full build spec provided in chat. DB at rag_data/classification.db, manifest at Vault/System/ClassificationReview.md. See prompt in Opus CLI session for full spec.
