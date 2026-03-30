@@ -6,7 +6,8 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 
 | Session | Working On | Files Touched | Updated |
 |---------|-----------|---------------|---------|
-| CLI Opus | Gmail pipeline review, memory setup | memory files only | 2026-03-26 |
+| CLI Opus | Priority plan, file organization, classifier design | memory files, CLAUDE.md, SHARED_CONTEXT.md | 2026-03-30 |
+| Sonnet Desktop | **Building classify_content.py** | System/Scripts/Workflows/classify_content.py, rag_data/classification.db | 2026-03-30 |
 
 ## Decisions Made
 
