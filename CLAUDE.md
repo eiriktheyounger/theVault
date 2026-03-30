@@ -112,7 +112,7 @@ See full priority map: `~/.claude/projects/-Users-ericmanchester-theVault/memory
 - Use Path objects, not strings, for all file paths
 - Validate NAS mount before any vault write
 - Never hardcode absolute paths — use environment variables or relative paths
-- Test changes against existing 41,976 chunks
+- Test changes against existing 47,496 chunks
 - Create backup route before modifying production endpoints
 - One session writes code at a time — coordinate via SHARED_CONTEXT.md
 - The vector index uses FAISS, not hnswlib — do not import hnswlib for search
