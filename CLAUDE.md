@@ -72,7 +72,6 @@ Do NOT delete or modify any script without:
 - System/Scripts/Services/ — entire directory missing (start_all, stop_all, emergency_kill)
 - System/Scripts/Calendar/sync_calendar.py — missing
 - System/Scripts/generate_daily_dashboard.py — missing
-- System/Scripts/clean_md_processor.py — CRITICAL MISSING, blocks ingest pipeline
 - orchestration_system_start.py — missing, blocks /ingest/start API
 
 ### Working & Don't Touch
