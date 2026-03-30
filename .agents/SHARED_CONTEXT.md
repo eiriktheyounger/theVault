@@ -6,7 +6,8 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 
 | Session | Working On | Files Touched | Updated |
 |---------|-----------|---------------|---------|
-| CLI Sonnet (condescending-mccarthy) | OPERATIONS-INDEX.md updates, RAG full rebuild | OPERATIONS-INDEX.md, memory files, SHARED_CONTEXT.md | 2026-03-30 |
+| CLI Opus (naughty-shaw) | Built auto-sync system: sync_session_state.sh, PostToolUse/Stop hooks, SESSION_STATE.md. Updated all 4 sync points. | settings.json, sync_session_state.sh, CLAUDE.md, CONTEXT.md, SESSION_STATE.md | 2026-03-30 |
+| CLI Sonnet (condescending-mccarthy) | OPERATIONS-INDEX.md updates, RAG full rebuild (53,381 vectors, 95.8%) | OPERATIONS-INDEX.md, memory files, SHARED_CONTEXT.md | 2026-03-30 |
 | Sonnet Desktop | **Building classify_content.py** | System/Scripts/Workflows/classify_content.py, rag_data/classification.db | 2026-03-30 |
 
 ## Decisions Made
