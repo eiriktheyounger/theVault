@@ -316,6 +316,12 @@ def main() -> None:
         datefmt="%H:%M:%S",
     )
 
+    # Validate date formats
+    _DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}$")
+    for date_arg, name in [(args.start_date, "--start-date"), (args.end_date, "--end-date")]:
+        if date_arg and not _DATE_RE.match(date_arg):
+            parser.error(f"{name} must be YYYY-MM-DD format")
+
     accounts: list[str]
     if args.account == "both":
         accounts = ["Exchange", "Gmail"]
@@ -325,6 +331,9 @@ def main() -> None:
     stats = run_orchestration(
         accounts=accounts,
         job_filter=args.job,
+        start_date=args.start_date,
+        end_date=args.end_date,
+        max_messages=args.limit,
         dry_run=args.dry_run,
         verbose=args.verbose,
         update_daily=not args.no_daily,
