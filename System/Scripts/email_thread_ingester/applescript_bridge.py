@@ -234,7 +234,7 @@ def _run_applescript(script: str) -> Optional[str]:
             ["osascript", "-e", script],
             capture_output=True,
             text=True,
-            timeout=120,
+            timeout=240,  # Increased from 120s for large mailboxes
         )
         if result.returncode != 0:
             log.error(f"AppleScript error: {result.stderr.strip()}")
@@ -245,7 +245,7 @@ def _run_applescript(script: str) -> Optional[str]:
             return None
         return output
     except subprocess.TimeoutExpired:
-        log.error("AppleScript timed out after 120s")
+        log.error("AppleScript timed out after 240s")
         return None
     except Exception as e:
         log.error(f"Failed to run AppleScript: {e}")
