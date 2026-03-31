@@ -120,3 +120,16 @@ def _extract_domain(email: str) -> str | None:
     if "@" in email:
         return email.split("@", 1)[1].lower()
     return None
+
+
+def _has_job_domain(thread: EmailThread) -> bool:
+    """Return True if any participant's domain is in JOB_RELATED_DOMAINS."""
+    for email in thread.participants:
+        domain = _extract_domain(email)
+        if domain and domain in config.JOB_RELATED_DOMAINS:
+            return True
+    for msg in thread.messages:
+        domain = _extract_domain(msg.sender_email)
+        if domain and domain in config.JOB_RELATED_DOMAINS:
+            return True
+    return False
