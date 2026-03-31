@@ -280,6 +280,24 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Skip daily note injection",
     )
     p.add_argument(
+        "--start-date",
+        metavar="YYYY-MM-DD",
+        default=None,
+        help="Only process emails received on or after this date",
+    )
+    p.add_argument(
+        "--end-date",
+        metavar="YYYY-MM-DD",
+        default=None,
+        help="Only process emails received on or before this date",
+    )
+    p.add_argument(
+        "--limit",
+        type=int,
+        default=99999,
+        help="Max messages to extract per account (default: 99999)",
+    )
+    p.add_argument(
         "--verbose",
         action="store_true",
         help="Enable debug-level logging",
