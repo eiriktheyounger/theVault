@@ -73,12 +73,22 @@ def run_orchestration(
 
     if job_filter:
         log.info(f"Job mode: scanning all mailboxes for domain '{job_filter}'")
-        raw_messages = applescript_bridge.extract_job_emails(job_filter)
+        raw_messages = applescript_bridge.extract_job_emails(
+            job_filter, start_date=start_date, end_date=end_date, max_messages=max_messages
+        )
     else:
         if "Exchange" in accounts:
-            raw_messages.extend(applescript_bridge.extract_exchange_vault_emails())
+            raw_messages.extend(
+                applescript_bridge.extract_exchange_vault_emails(
+                    start_date=start_date, end_date=end_date, max_messages=max_messages
+                )
+            )
         if "Gmail" in accounts:
-            raw_messages.extend(applescript_bridge.extract_gmail_vault_emails())
+            raw_messages.extend(
+                applescript_bridge.extract_gmail_vault_emails(
+                    start_date=start_date, end_date=end_date, max_messages=max_messages
+                )
+            )
 
     stats["extracted"] = len(raw_messages)
     log.info(f"Extracted {len(raw_messages)} message(s)")
