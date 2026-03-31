@@ -25,6 +25,6 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 
 ## Handoffs
 
-- **Email Thread Ingester → Sonnet CLI or Desktop**: Full build spec at `.agents/email_ingester_build_prompt.md`, architecture plan at `ResumeEngine/.claude/worktrees/naughty-shaw/.claude/plans/delegated-questing-lagoon.md`. 12 files to build in `System/Scripts/email_thread_ingester/`. Sonnet builds all modules. Haiku tests AppleScript extraction + validates high-volume output. Opus reviews only — do NOT build with Opus. Replaces/supersedes the Gmail pipeline handoff below.
+- ~~**Email Thread Ingester → Sonnet CLI or Desktop**~~: **COMPLETE** (2026-03-31). All 12 modules built at `System/Scripts/email_thread_ingester/`. Dry-run verified. Run: `python -m System.Scripts.email_thread_ingester --dry-run`. Needs `ANTHROPIC_API_KEY` env var for Haiku; Ollama fallback works without it. Exchange AppleScript times out on large inboxes.
 - **Gmail pipeline → Sonnet Desktop**: SUPERSEDED by Email Thread Ingester above. Old context at `gmail_pipeline_context.md` is still useful reference but the new ingester handles both Exchange + Gmail with threading.
 - **classify_content.py → Sonnet Desktop**: Full build spec provided in chat. DB at rag_data/classification.db, manifest at Vault/System/ClassificationReview.md. See prompt in Opus CLI session for full spec.
