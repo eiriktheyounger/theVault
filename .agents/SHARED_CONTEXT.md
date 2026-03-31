@@ -8,6 +8,7 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 |---------|-----------|---------------|---------|
 | CLI Opus (naughty-shaw) | Built auto-sync system: sync_session_state.sh, PostToolUse/Stop hooks, SESSION_STATE.md. Updated all 4 sync points. | settings.json, sync_session_state.sh, CLAUDE.md, CONTEXT.md, SESSION_STATE.md | 2026-03-30 |
 | CLI Sonnet (condescending-mccarthy) | **Email Thread Ingester BUILT** — all 12 modules. Dry-run verified (Gmail: 4 msgs → 3 threads, Ollama fallback working). | System/Scripts/email_thread_ingester/*.py | 2026-03-31 |
+| CLI Haiku (silly-gauss) | **Email ingester AppleScript testing** — Verified Gmail extraction ✅ (4/4 messages, all keys valid). Exchange times out @ 240s (2,327 messages). Updated memory: project_applescript_bridge_test, project_priorities_2026_03, project_email_ingester, project_plaud_processor, SHARED_CONTEXT | System/Scripts/email_thread_ingester/applescript_bridge.py (tested), memory files | 2026-03-31 |
 | Sonnet Desktop | **Building classify_content.py** | System/Scripts/Workflows/classify_content.py, rag_data/classification.db | 2026-03-30 |
 
 ## Decisions Made
