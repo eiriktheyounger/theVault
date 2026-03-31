@@ -50,6 +50,9 @@ def _clean_messages(raw_messages: list[dict]) -> list[dict]:
 def run_orchestration(
     accounts: list[str] = ("Exchange", "Gmail"),
     job_filter: str | None = None,
+    start_date: str | None = None,
+    end_date: str | None = None,
+    max_messages: int = 99999,
     dry_run: bool = False,
     verbose: bool = False,
     update_daily: bool = True,
