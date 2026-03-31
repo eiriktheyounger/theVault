@@ -32,7 +32,12 @@ def route_thread(thread: EmailThread) -> tuple[str, Path]:
     senders = " ".join(p.lower() for p in thread.participants)
     probe = f"{subject} {senders}"
 
-    topic = _match_topic_rules(probe)
+    # Check JOB_RELATED_DOMAINS before generic TOPIC_RULES
+    # (company domains like nebius.com won't appear in keyword list)
+    if _has_job_domain(thread):
+        topic = "Job Search"
+    else:
+        topic = _match_topic_rules(probe)
 
     if topic == "Work":
         dir_path = _work_subdir(thread)
