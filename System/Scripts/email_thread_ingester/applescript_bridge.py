@@ -58,22 +58,37 @@ tell application "Mail"
     set msgList to messages of targetMailbox
     repeat with theMsg in msgList
         try
-            set msgHeaders to ""
-            try
-                set msgHeaders to all headers of theMsg
-            end try
-            -- Check for vault keyword in headers or categories
+            -- Quick check: subject or sender contains "vault" (avoid reading all headers for 2300+ msgs)
+            set msgSubject to subject of theMsg
+            set msgSender to sender of theMsg
+            set subjectLower to do shell script "echo " & quoted form of msgSubject & " | tr '[:upper:]' '[:lower:]'"
+            set senderLower to do shell script "echo " & quoted form of msgSender & " | tr '[:upper:]' '[:lower:]'"
+
             set isVault to false
-            set headerLower to do shell script "echo " & quoted form of msgHeaders & " | tr '[:upper:]' '[:lower:]'"
-            if headerLower contains "vault" then
+            if subjectLower contains "vault" or senderLower contains "vault" then
                 set isVault to true
+            else
+                -- Only read headers if quick check fails
+                set msgHeaders to ""
+                try
+                    set msgHeaders to all headers of theMsg
+                end try
+                if msgHeaders is not "" then
+                    set headerLower to do shell script "echo " & quoted form of msgHeaders & " | tr '[:upper:]' '[:lower:]'"
+                    if headerLower contains "vault" then
+                        set isVault to true
+                    end if
+                end if
             end if
+
             if isVault then
-                set msgSubject to subject of theMsg
-                set msgSender to sender of theMsg
                 set msgDate to date received of theMsg
                 set msgID to message id of theMsg
                 set msgBody to content of theMsg
+                set msgHeaders to ""
+                try
+                    set msgHeaders to all headers of theMsg
+                end try
                 set recipientList to ""
                 repeat with r in to recipients of theMsg
                     if recipientList is "" then
