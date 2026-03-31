@@ -25,6 +25,7 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 - **2026-03-30**: Email Thread Ingester architecture complete (Opus CLI). Plan at `ResumeEngine/.claude/worktrees/naughty-shaw/.claude/plans/delegated-questing-lagoon.md`. Build prompt at `.agents/email_ingester_build_prompt.md`. Covers: Exchange+Gmail via AppleScript, thread grouping with fork detection, job-specific bulk import (`--job`), daily note backlinks, Haiku API summarizer. Assigned to Sonnet for build, Haiku for extraction testing.
 - **2026-03-31**: Email Thread Ingester BUILT by Sonnet CLI (condescending-mccarthy). All 12 modules at `System/Scripts/email_thread_ingester/`. Gmail verified OK. Exchange AppleScript times out on large inboxes (known, workaround: tag fewer at a time). Needs `ANTHROPIC_API_KEY` for Haiku; Ollama qwen2.5:7b fallback works.
 - **2026-03-31**: Email batch tagging decision — Start with Gmail-only extraction (avoids Exchange timeout). Tag Exchange emails in smaller batches (~100 at a time) once Gmail pipeline validated. First production run: Gmail-only, no Exchange extraction.
+- **2026-03-31**: Exchange AppleScript timeout RESOLVED — `--start-date`/`--end-date`/`--limit` added to all three extraction functions. Exchange uses AppleScript early-exit (`if msgDate < startDate then exit repeat`) since Mail.app returns newest-first. Both accounts tested clean: 188 msgs → 61 threads, 0 errors. Ready for production run (drop `--dry-run`). Goal: set `ANTHROPIC_API_KEY` so Haiku summarizer runs instead of Ollama fallback.
 
 ## Handoffs
 
