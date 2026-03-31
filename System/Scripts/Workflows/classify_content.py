@@ -392,10 +392,10 @@ def parse_manifest() -> tuple[Path, list[dict]]:
     in_table = False
     for line in content.splitlines():
         stripped = line.strip()
-        if stripped.startswith('| # | Status'):
+        if re.match(r'\|\s*#\s*\|', stripped) and 'Status' in stripped:
             in_table = True
             continue
-        if in_table and stripped.startswith('|---'):
+        if in_table and re.match(r'\|\s*-+\s*\|', stripped):
             continue
         if in_table and stripped.startswith('|'):
             cols = [c.strip() for c in stripped.split('|')[1:-1]]
