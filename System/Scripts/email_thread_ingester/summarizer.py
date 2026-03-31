@@ -66,8 +66,13 @@ Return ONLY valid JSON. No markdown fences, no extra text."""
 def _summarize_anthropic(prompt: str) -> Optional[dict]:
     """Call Anthropic Haiku API. Returns parsed JSON dict or None."""
     try:
+        import os
         import anthropic
-        client = anthropic.Anthropic()
+        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        if not api_key:
+            log.debug("ANTHROPIC_API_KEY not set, skipping Haiku summarizer")
+            return None
+        client = anthropic.Anthropic(api_key=api_key)
         response = client.messages.create(
             model=_HAIKU_MODEL,
             max_tokens=1024,
