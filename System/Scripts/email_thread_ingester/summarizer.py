@@ -161,8 +161,12 @@ def summarize_for_daily(body: str) -> str:
         + body[:2000]
     )
     try:
+        import os
         import anthropic
-        client = anthropic.Anthropic()
+        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        if not api_key:
+            raise ValueError("ANTHROPIC_API_KEY not set")
+        client = anthropic.Anthropic(api_key=api_key)
         response = client.messages.create(
             model=_HAIKU_MODEL,
             max_tokens=60,
