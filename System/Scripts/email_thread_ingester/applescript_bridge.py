@@ -58,14 +58,13 @@ tell application "Mail"
     set msgList to messages of targetMailbox
     repeat with theMsg in msgList
         try
-            -- Quick check: subject or sender contains "vault" (avoid reading all headers for 2300+ msgs)
+            -- Quick check: subject or sender contains "vault" (case-insensitive)
             set msgSubject to subject of theMsg
             set msgSender to sender of theMsg
-            set subjectLower to do shell script "echo " & quoted form of msgSubject & " | tr '[:upper:]' '[:lower:]'"
-            set senderLower to do shell script "echo " & quoted form of msgSender & " | tr '[:upper:]' '[:lower:]'"
 
             set isVault to false
-            if subjectLower contains "vault" or senderLower contains "vault" then
+            -- AppleScript's contains is case-insensitive, so no need for lowercase conversion
+            if msgSubject contains "vault" or msgSender contains "vault" then
                 set isVault to true
             else
                 -- Only read headers if quick check fails
@@ -74,8 +73,7 @@ tell application "Mail"
                     set msgHeaders to all headers of theMsg
                 end try
                 if msgHeaders is not "" then
-                    set headerLower to do shell script "echo " & quoted form of msgHeaders & " | tr '[:upper:]' '[:lower:]'"
-                    if headerLower contains "vault" then
+                    if msgHeaders contains "vault" then
                         set isVault to true
                     end if
                 end if
