@@ -390,6 +390,15 @@ class MorningWorkflow:
             ])
             self._notify_callback(step)
 
+            # Extract tags and glossary terms
+            try:
+                from System.Scripts.daily_vault_activity import run_vault_activity
+                activity_stats = run_vault_activity(days=1, extract_tasks=False, verbose=False)
+                logger.info(f"Vault activity: {activity_stats.get('files_tracked', 0)} files, "
+                            f"{activity_stats.get('glossary_terms_added', 0)} glossary terms")
+            except Exception as e:
+                logger.error(f"Vault activity (tags/glossary) failed: {e}")
+
             # Run clean ingest processor as subprocess
             clean_processor = scripts_dir / "clean_md_processor.py"
             result = subprocess.run(
