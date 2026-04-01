@@ -627,7 +627,7 @@ def _build_vault_activity_section(
         lines.append("### Action Items")
         lines.append("")
         for task in all_tasks:
-            lines.append(task)
+            lines.append(str(task))
         lines.append("")
 
     lines.append("<!-- vault-activity-end -->")
