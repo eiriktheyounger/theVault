@@ -6,10 +6,10 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 
 | Session | Working On | Files Touched | Updated |
 |---------|-----------|---------------|---------|
-| CLI Opus (naughty-shaw) | **Daily Vault Activity Tracker BUILT** — `daily_vault_activity.py` (scan→glossary→tags→daily injection). Email ingester patched: output to `Vault/Notes/Email/`, existing-thread location check. Wired into overnight_processor.py + morning_workflow.py. | daily_vault_activity.py, email_thread_ingester/config.py, email_thread_ingester/__main__.py, overnight_processor.py, morning_workflow.py | 2026-04-01 |
-| CLI Sonnet (condescending-mccarthy) | **FIRST PRODUCTION RUN COMPLETE** — 156 extracted, 53 threads written, 0 errors. Summarizer: Ollama qwen2.5:7b (ANTHROPIC_API_KEY not set). Job Search (TCGplayer ✅, DraftKings ✅, Nebius ✅), Finance ✅, Work ✅. Daily note updated. All _Index.md files created. | Vault/Notes/Email/ (53 files), Vault/Daily/2026/04/2026-04-01-DLY.md | 2026-04-01 |
-| CLI Haiku (silly-gauss) | **Memory & context sync** — Verified all state files current, updated MEMORY.md/SHARED_CONTEXT.md/project_priorities_2026_03.md. All sessions synchronized. | Memory files, SHARED_CONTEXT.md, CLAUDE.md | 2026-04-01 |
-| Sonnet Desktop | **Building classify_content.py** | System/Scripts/Workflows/classify_content.py, rag_data/classification.db | 2026-03-30 |
+| CLI Opus (naughty-shaw) | **Idle** — Last: memory/context sync + ANTHROPIC_API_KEY fix (crontab, .bash_profile, .env). Daily Vault Activity Tracker built. Email ingester patched. | daily_vault_activity.py, .env, crontab, memory files | 2026-04-01 |
+| CLI Sonnet (condescending-mccarthy) | **Idle** — Last: Email ingester first production run (156→53 threads, 0 errors). | Vault/Notes/Email/ (53 files), 2026-04-01-DLY.md | 2026-04-01 |
+| CLI Haiku (silly-gauss) | **Idle** — Last: memory sync 2026-04-01, AppleScript testing 2026-03-31. | — | 2026-04-01 |
+| Sonnet Desktop | **Idle/Unknown** — Last known: building classify_content.py (2026-03-30). | System/Scripts/Workflows/classify_content.py, rag_data/classification.db | 2026-03-30 |
 
 ## Decisions Made
 
