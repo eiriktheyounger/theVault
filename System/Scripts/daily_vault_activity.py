@@ -547,7 +547,7 @@ CONTENT:
         if isinstance(result, dict) and "tasks" in result:
             tasks = result["tasks"]
             if isinstance(tasks, list):
-                return tasks
+                return [str(t) for t in tasks if t]
     except Exception as e:
         log.debug(f"Task extraction via LLM failed: {e}")
 
