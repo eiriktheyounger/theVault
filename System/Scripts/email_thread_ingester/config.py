@@ -11,7 +11,7 @@ from pathlib import Path
 VAULT_HOME  = Path.home() / "theVault"
 VAULT_ROOT  = VAULT_HOME / "Vault"
 
-EMAIL_DIR   = VAULT_ROOT / "Email"
+EMAIL_DIR   = VAULT_ROOT / "Notes" / "Email"
 PEOPLE_DIR  = EMAIL_DIR / "People"
 
 # Tracking DB lives next to the package, not in Vault
