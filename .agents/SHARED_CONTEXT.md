@@ -8,7 +8,7 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 |---------|-----------|---------------|---------|
 | CLI Opus (naughty-shaw) | **Idle** — Last: memory/context sync + ANTHROPIC_API_KEY fix (crontab, .bash_profile, .env). Daily Vault Activity Tracker built. Email ingester patched. | daily_vault_activity.py, .env, crontab, memory files | 2026-04-01 |
 | CLI Sonnet (condescending-mccarthy) | **Idle** — Last: Email ingester first production run (156→53 threads, 0 errors). | Vault/Notes/Email/ (53 files), 2026-04-01-DLY.md | 2026-04-01 |
-| CLI Haiku (silly-gauss) | **Memory & context sync in progress** — updating priorities, verifying state. | memory files, SHARED_CONTEXT, project files | 2026-04-01 |
+| CLI Haiku (silly-gauss) | **Idle** — Last: Memory & context sync 2026-04-01 (priorities updated, project_email_ingester verified current). | memory files, SHARED_CONTEXT | 2026-04-01 |
 | Sonnet Desktop | **Idle/Unknown** — Last known: building classify_content.py (2026-03-30). | System/Scripts/Workflows/classify_content.py, rag_data/classification.db | 2026-03-30 |
 
 ## Decisions Made
