@@ -7,7 +7,7 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 | Session | Working On | Files Touched | Updated |
 |---------|-----------|---------------|---------|
 | CLI Opus (naughty-shaw) | **Daily Vault Activity Tracker BUILT** — `daily_vault_activity.py` (scan→glossary→tags→daily injection). Email ingester patched: output to `Vault/Notes/Email/`, existing-thread location check. Wired into overnight_processor.py + morning_workflow.py. | daily_vault_activity.py, email_thread_ingester/config.py, email_thread_ingester/__main__.py, overnight_processor.py, morning_workflow.py | 2026-04-01 |
-| CLI Sonnet (condescending-mccarthy) | **Email Thread Ingester COMPLETE** — 12 modules built + Exchange timeout fixed via `--start-date`/`--limit`/early-exit. Tests: Gmail 48→29 threads, Exchange 106→23 threads, Both 188→61 threads, 0 errors. Memory + SHARED_CONTEXT synced. | System/Scripts/email_thread_ingester/applescript_bridge.py, __main__.py | 2026-03-31 |
+| CLI Sonnet (condescending-mccarthy) | **FIRST PRODUCTION RUN COMPLETE** — 156 extracted, 53 threads written, 0 errors. Summarizer: Ollama qwen2.5:7b (ANTHROPIC_API_KEY not set). Job Search (TCGplayer ✅, DraftKings ✅, Nebius ✅), Finance ✅, Work ✅. Daily note updated. All _Index.md files created. | Vault/Notes/Email/ (53 files), Vault/Daily/2026/04/2026-04-01-DLY.md | 2026-04-01 |
 | CLI Haiku (silly-gauss) | **Idle** — Last work: AppleScript testing 2026-03-31 (Gmail ✅, Exchange timeout). Exchange since fixed by Sonnet. | — | 2026-03-31 |
 | Sonnet Desktop | **Building classify_content.py** | System/Scripts/Workflows/classify_content.py, rag_data/classification.db | 2026-03-30 |
 
