@@ -87,7 +87,9 @@ Do NOT delete or modify any script without:
 
 ### Working & Don't Touch
 - Plaud pipeline (capture → Inbox/Plaud/MarkdownOnly/)
-- clean_md_processor.py (Plaud → Vault, 65 sessions processed)
+- clean_md_processor.py (Plaud → Vault, 93 sessions processed)
+- Email Thread Ingester (System/Scripts/email_thread_ingester/, 53 threads in production)
+- daily_vault_activity.py (scan→glossary→tags→DLY injection, wired into overnight+morning)
 - Task pipeline (scan → dedup → categorize → date → reminders sync)
 - theVaultPilot Reminders sync
 - /chat and /fast RAG endpoints
