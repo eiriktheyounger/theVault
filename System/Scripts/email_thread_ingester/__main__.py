@@ -166,8 +166,21 @@ def _process_thread(
     """Process a single thread through routing → summarize → write → track."""
     from . import config
 
-    # Route
-    topic, dest_dir = route_thread(thread)
+    # Check if thread already exists in tracking DB → reuse same directory
+    existing = tracking_db.get_thread(thread.thread_id)
+    if existing and existing.get("vault_path"):
+        existing_path = Path(existing["vault_path"])
+        if existing_path.parent.exists():
+            dest_dir = existing_path.parent
+            try:
+                topic = str(existing_path.parent.relative_to(config.EMAIL_DIR)).split("/")[0]
+            except ValueError:
+                topic = "General"
+        else:
+            topic, dest_dir = route_thread(thread)
+    else:
+        topic, dest_dir = route_thread(thread)
+
     if job_filter:
         topic = "Job Search"
         # Detect company from domain
