@@ -693,6 +693,11 @@ def main() -> None:
 
     set_verbose(args.verbose)
 
+    # --- Handle batch mode ---
+    if args.batch:
+        run_batch(verbose=args.verbose)
+        return
+
     # --- Load JD ---
     if args.jd:
         jd_path = args.jd if args.jd.is_absolute() else Path.cwd() / args.jd
