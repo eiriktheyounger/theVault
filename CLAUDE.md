@@ -65,6 +65,8 @@ Do NOT start from inside System/Scripts/RAG — relative imports will break:
 - Content classifier: System/Scripts/Workflows/classify_content.py (being built by Sonnet Desktop)
 - Classification DB: System/Scripts/RAG/rag_data/classification.db (separate from chunks.sqlite3)
 - Classification manifest: Vault/System/ClassificationReview.md
+- Email Thread Ingester: System/Scripts/email_thread_ingester/ (12 modules, Exchange+Gmail)
+- Vault Activity Tracker: System/Scripts/daily_vault_activity.py (scan→glossary→tags→DLY injection)
 - Session sync script: System/Scripts/sync_session_state.sh (auto-generates .agents/SESSION_STATE.md)
 - Session state (shared): .agents/SESSION_STATE.md (auto-generated, all instances read this)
 
