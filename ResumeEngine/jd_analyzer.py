@@ -551,9 +551,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="JD Analyzer — generate a tailored resume from a job description"
     )
-    group = parser.add_mutually_exclusive_group(required=True)
+    group = parser.add_mutually_exclusive_group(required=False)
     group.add_argument("--jd", type=Path, help="Path to a .txt file with the job description")
     group.add_argument("--jd-text", type=str, help="Paste JD text directly")
+    parser.add_argument("--batch", action="store_true", help="Process all .txt files in ResumeEngine/jds/, move to processed/ on success or failed/ on error")
     parser.add_argument(
         "--output",
         type=Path,
@@ -562,6 +563,10 @@ def main() -> None:
     )
     parser.add_argument("--verbose", action="store_true", help="Print scoring details")
     args = parser.parse_args()
+
+    # Validation: ensure one of --batch, --jd, or --jd-text is provided
+    if not args.batch and not args.jd and not args.jd_text:
+        parser.error("Either --batch, --jd, or --jd-text is required")
 
     set_verbose(args.verbose)
 
