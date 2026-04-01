@@ -96,25 +96,27 @@ Do NOT delete or modify any script without:
 For startup commands, health checks, and workflow details: `Vault/System/OPERATIONS-INDEX.md`
 For script relationships and Mermaid flow diagrams: `Vault/System/WORKFLOW-MAP.md`
 
-## Current Priority (Updated 2026-03-30)
+## Current Priority (Updated 2026-04-01)
 See full priority map: `~/.claude/projects/-Users-ericmanchester-theVault/memory/project_priorities_2026_03.md`
 
 ### P0 — Must proceed ASAP
-1. Overnight processor — ANTHROPIC_API_KEY empty in cron env (summarization fails)
-2. orchestration_system_start.py — blocks /ingest/start API
+1. orchestration_system_start.py — blocks /ingest/start API
 
 ### P1 — Enables daily workflows
-3. Gmail → Vault pipeline — Sonnet Desktop build. Context: `Vault/System/DesktopClaudeCode/gmail_pipeline_context.md`
-4. Services/ directory (start_all, stop_all, emergency_kill)
-5. Calendar sync + Daily dashboard
+2. Services/ directory (start_all, stop_all, emergency_kill)
+3. Calendar sync + Daily dashboard
 
 ### P2 — Build incrementally
-6. Content classifier (classify_content.py) — Sonnet Desktop building
-7. FAISS embedding repair — DONE (95.8% coverage, 53,381 vectors)
+4. Content classifier (classify_content.py) — Sonnet Desktop building
+5. RAG Q/A gate — rag_qa_agent.py missing
 
 ### Completed
-- ✅ clean_md_processor.py — 65 Plaud sessions processed (2026-03-25)
+- ✅ Overnight processor stabilization — all fixes applied, ANTHROPIC_API_KEY in cron (2026-04-01)
+- ✅ clean_md_processor.py — 93 Plaud sessions processed (2026-03-25 + 2026-03-31)
 - ✅ Resume Engine / JD Analyzer — built (2026-03-28)
+- ✅ Email Thread Ingester — built + first production run (2026-04-01, 156→53 threads)
+- ✅ Daily Vault Activity Tracker — built (2026-04-01, scan→glossary→tags→DLY injection)
+- ✅ FAISS embedding repair — DONE (95.8% coverage, 53,381 vectors)
 - ✅ Post-ingest file organization — 47 files organized (2026-03-30)
 - ✅ repair_embeddings.py — built, ready to run (2026-03-30)
 
