@@ -544,6 +544,129 @@ RESUME:
 
 
 # ---------------------------------------------------------------------------
+# Batch processing
+# ---------------------------------------------------------------------------
+
+def process_single_jd(
+    client: anthropic.Anthropic,
+    jd_text: str,
+    output_path: Path,
+    context: dict[str, dict[str, str]],
+    config: dict[str, str],
+    banned: list[str],
+    verbose: bool = False,
+) -> None:
+    """Process a single JD and write the resume to output_path."""
+    # Parse JD
+    jd_analysis = parse_jd(client, jd_text)
+
+    # Score context
+    scored_context = score_all_context(client, context, jd_analysis, verbose=verbose)
+
+    # Select template
+    template_name, template_content = select_template(jd_analysis, config)
+
+    # Build prompt
+    prompt = build_generation_prompt(
+        jd_text=jd_text,
+        jd_analysis=jd_analysis,
+        scored_context=scored_context,
+        template_name=template_name,
+        template_content=template_content,
+        config=config,
+    )
+
+    # Generate
+    resume_text = generate_resume(client, prompt)
+
+    # Validate banned words
+    found_banned = check_banned_words(resume_text, banned)
+    if found_banned:
+        resume_text = fix_banned_words(client, resume_text, found_banned)
+        remaining = check_banned_words(resume_text, banned)
+        if remaining:
+            logger.warning(f"Banned words remaining after fix: {remaining}")
+
+    # Write output
+    output_path.write_text(resume_text, encoding="utf-8")
+
+
+def run_batch(verbose: bool = False) -> None:
+    """Process all .txt files in jds/ directory, FIFO by modification time."""
+    JDS_DIR.mkdir(parents=True, exist_ok=True)
+    JDS_PROCESSED.mkdir(parents=True, exist_ok=True)
+    JDS_FAILED.mkdir(parents=True, exist_ok=True)
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    pending = sorted(JDS_DIR.glob("*.txt"), key=lambda p: p.stat().st_mtime)
+
+    if not pending:
+        print("No .txt files found in ResumeEngine/jds/ — nothing to process.")
+        return
+
+    print(f"\n{'='*60}")
+    print(f"  ResumeEngine Batch — {len(pending)} JD(s) to process")
+    print(f"{'='*60}\n")
+
+    # Load context & config once
+    print("Loading context files...")
+    context = load_all_context()
+    config = load_config()
+    banned = parse_banned_words(config.get("banned_words", ""))
+    total_items = sum(len(v) for v in context.values())
+    print(f"  Loaded {total_items} context items across {len(context)} categories\n")
+
+    # Create client
+    client = anthropic.Anthropic()
+
+    results = []
+
+    for jd_file in pending:
+        output_name = jd_file.stem + ".md"
+        output_path = OUTPUT_DIR / output_name
+        print(f"Processing: {jd_file.name} → {output_name}")
+
+        try:
+            jd_text = jd_file.read_text(encoding="utf-8").strip()
+            if not jd_text:
+                raise ValueError("Empty JD file")
+
+            # Process the JD
+            process_single_jd(
+                client=client,
+                jd_text=jd_text,
+                output_path=output_path,
+                context=context,
+                config=config,
+                banned=banned,
+                verbose=verbose,
+            )
+
+            # Move to processed
+            dest = JDS_PROCESSED / jd_file.name
+            jd_file.rename(dest)
+            results.append((jd_file.name, "OK", str(output_path)))
+            print(f"  ✓ Done → moved to processed/\n")
+
+        except Exception as e:
+            dest = JDS_FAILED / jd_file.name
+            jd_file.rename(dest)
+            results.append((jd_file.name, "FAILED", str(e)))
+            print(f"  ✗ Failed: {e} → moved to failed/\n")
+            logger.error(f"Batch failed for {jd_file.name}: {e}")
+
+    # Summary
+    ok_count = sum(1 for r in results if r[1] == "OK")
+    print(f"\n{'='*60}")
+    print(f"  Batch Complete: {ok_count}/{len(results)} succeeded")
+    print(f"{'='*60}")
+    for name, status, detail in results:
+        icon = "✓" if status == "OK" else "✗"
+        print(f"  {icon} {name} — {detail}")
+    print()
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
