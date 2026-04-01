@@ -147,6 +147,16 @@ def main(target_date=None):
         logger.error(f"Task normalizer failed: {e}")
         task_report_text = "\n\n### Task Processing\n- **Error**: normalizer failed — check logs"
 
+    # ── Vault Activity Tracking ────────────────────────────────────────────────
+    try:
+        from System.Scripts.daily_vault_activity import run_vault_activity
+        activity_stats = run_vault_activity(days=1, verbose=False)
+        logger.info(f"Vault activity: {activity_stats.get('files_tracked', 0)} files tracked, "
+                    f"{activity_stats.get('glossary_terms_added', 0)} glossary terms, "
+                    f"{activity_stats.get('tags_enriched', 0)} tags enriched")
+    except Exception as e:
+        logger.error(f"Vault activity tracking failed: {e}")
+
     # Build overnight section
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
     overnight_content = f"""
