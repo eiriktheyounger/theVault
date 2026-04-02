@@ -144,7 +144,12 @@ def _process_inbox_files_background(job_id: str):
         logger.info(f"Starting ingest job {job_id}")
 
         # Import and run the orchestration system
-        from ...orchestration_system_start import run_orchestration
+        import sys
+        from pathlib import Path
+        scripts_dir = str(Path(__file__).resolve().parents[2])  # System/Scripts/
+        if scripts_dir not in sys.path:
+            sys.path.insert(0, scripts_dir)
+        from orchestration_system_start import run_orchestration
 
         # Run the orchestration (this processes all inboxes)
         run_orchestration()
