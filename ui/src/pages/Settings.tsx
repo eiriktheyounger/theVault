@@ -327,6 +327,58 @@ export default function Settings() {
           </p>
         </div>
       </div>
+
+      {/* Cost Estimator */}
+      <div className="card p-6 max-w-3xl mx-auto">
+        <h2 className="mb-4 text-lg font-semibold text-text">Cost Estimator</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border text-muted">
+                <th className="text-left py-2">Model</th>
+                <th className="text-center py-2">Cost/Query</th>
+                <th className="text-center py-2">Daily (avg)</th>
+                <th className="text-right py-2">Projected Cost</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              <tr className="hover:bg-panel/50">
+                <td className="py-3 font-medium">Gemma 4B</td>
+                <td className="text-center">$0.00</td>
+                <td className="text-center text-muted">Local</td>
+                <td className="text-right">$0.00/mo</td>
+              </tr>
+              <tr className="hover:bg-panel/50">
+                <td className="py-3 font-medium">Qwen 7B</td>
+                <td className="text-center">$0.00</td>
+                <td className="text-center text-muted">Local</td>
+                <td className="text-right">$0.00/mo</td>
+              </tr>
+              <tr className="hover:bg-panel/50">
+                <td className="py-3 font-medium">Claude Haiku</td>
+                <td className="text-center text-yellow-600">~$0.001</td>
+                <td className="text-center text-muted">~10 queries</td>
+                <td className="text-right text-yellow-600">~$0.30/mo</td>
+              </tr>
+              <tr className="hover:bg-panel/50">
+                <td className="py-3 font-medium">Claude Sonnet</td>
+                <td className="text-center text-orange-600">~$0.012</td>
+                <td className="text-center text-muted">~1 query</td>
+                <td className="text-right text-orange-600">~$3.60/mo</td>
+              </tr>
+              <tr className="hover:bg-panel/50">
+                <td className="py-3 font-medium">Claude Opus</td>
+                <td className="text-center text-red-600">~$0.063</td>
+                <td className="text-center text-muted">~1-2 queries</td>
+                <td className="text-right text-red-600">~$18.90/mo</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p className="text-xs text-muted mt-4">
+          Estimates assume 30 days/month. Actual costs depend on query complexity and token usage. Local models (Gemma, Qwen) have no API costs.
+        </p>
+      </div>
     </div>
   );
 }
