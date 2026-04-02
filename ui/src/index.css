@@ -58,7 +58,10 @@
 @layer base {
   html,
   body {
-    @apply bg-bg text-text;
+    @apply bg-bg text-text font-sans;
+    font-family: 'OpenDyslexic', 'Inter', sans-serif;
+    line-height: 1.6;
+    letter-spacing: 0.3px;
   }
 
   input,
