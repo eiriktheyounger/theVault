@@ -164,7 +164,6 @@ async def _lifespan(app: FastAPI):
     try:
         from ..retrieval.entity_graph import build_graph
         from ..config import VAULT_ROOT
-        import asyncio
 
         loop = asyncio.get_event_loop()
         graph = await loop.run_in_executor(None, build_graph, VAULT_ROOT)
