@@ -89,10 +89,10 @@ META_CSV_PATH: Path = Path(os.getenv("META_CSV_PATH", RAG_DATA_DIR / "meta.csv")
 # --- Models / backends -------------------------------------------------------
 OLLAMA_HOST: str = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434")
 
-FAST_MODEL: str = os.getenv("FAST_MODEL", "phi3:mini")
-DEEP_MODEL: str = os.getenv("DEEP_MODEL", "llama3.1:8b")
+FAST_MODEL: str = os.getenv("FAST_MODEL", "gemma3:4b")
+DEEP_MODEL: str = os.getenv("DEEP_MODEL", "qwen2.5:7b")
 INGEST_MODEL: str = os.getenv(
-    "INGEST_MODEL", "mixtral:latest"
+    "INGEST_MODEL", "qwen2.5:7b"
 )  # Prioritize accuracy over speed for ingest
 
 # Some code expects a single 'LLM_MODEL_NAME'
