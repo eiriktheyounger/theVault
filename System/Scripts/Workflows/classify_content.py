@@ -39,7 +39,7 @@ import anthropic
 # ── Paths ──────────────────────────────────────────────────────────────────────
 
 VAULT_BASE = Path.home() / 'theVault'
-VAULT_ROOT = VAULT_BASE / 'Vault'
+VAULT_ROOT = VAULT_BASE / 'Vault'  # ~/theVault/Vault — do NOT double with --source args
 NAS_PATH = Path('/Volumes/home/MacMiniStorage')
 DB_PATH = VAULT_BASE / 'System' / 'Scripts' / 'RAG' / 'rag_data' / 'classification.db'
 MANIFEST_PATH = VAULT_ROOT / 'System' / 'ClassificationReview.md'
