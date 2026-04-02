@@ -35,7 +35,7 @@ def run_orchestration(dry_run: bool = False) -> dict:
 
     # 1. Plaud inbox (clean_md_processor)
     try:
-        from System.Scripts.clean_md_processor import run_orchestration as plaud_run
+        from clean_md_processor import run_orchestration as plaud_run
 
         log.info("Running Plaud inbox processor...")
         result = plaud_run(dry_run=dry_run)
