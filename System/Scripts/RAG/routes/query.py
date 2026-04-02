@@ -127,25 +127,43 @@ def _apply_recency_boost(
     return citations
 
 
-def _build_discovery_links(
-    citations: List[Dict[str, Any]], limit: int = 10
-) -> List[Dict[str, Any]]:
-    """Extract top vault files from citations as discovery links."""
-    discovery = []
-    for citation in citations[:limit]:
-        title = citation.get("title", "").replace(".md", "")
-        path = citation.get("path", "")
-        score = citation.get("score", 0.0)
-        relevance_pct = min(100.0, score * 100.0)
+def _parse_citation_string(cit: str) -> Dict[str, str]:
+    """Parse 'Title (path/to/file.md)' citation string from hybrid()."""
+    import re
+    m = re.match(r'^(.+?)\s*\((.+)\)$', cit)
+    if m:
+        return {"title": m.group(1).strip(), "path": m.group(2).strip()}
+    return {"title": cit, "path": ""}
 
-        # Build obsidian:// URI
+
+def _build_discovery_links(
+    citations: List[Any], limit: int = 10
+) -> List[Dict[str, Any]]:
+    """Extract top vault files from citations as discovery links.
+
+    Citations from hybrid() are strings like 'Title (path/to/file.md)'.
+    """
+    discovery = []
+    total = min(len(citations), limit)
+    for i, citation in enumerate(citations[:limit]):
+        if isinstance(citation, str):
+            parsed = _parse_citation_string(citation)
+            title = parsed["title"].replace(".md", "")
+            path = parsed["path"]
+        else:
+            title = citation.get("title", "").replace(".md", "")
+            path = citation.get("path", "")
+
+        # Approximate relevance from rank position
+        relevance_pct = round(max(10.0, 100.0 - (i * (90.0 / max(total, 1)))), 1)
+
         obsidian_uri = f"obsidian://open?vault=Vault&file={path.replace('.md', '')}"
 
         discovery.append(
             {
                 "title": title,
                 "path": path,
-                "relevance_pct": round(relevance_pct, 1),
+                "relevance_pct": relevance_pct,
                 "obsidian_uri": obsidian_uri,
             }
         )
