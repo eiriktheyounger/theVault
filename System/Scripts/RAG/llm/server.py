@@ -29,6 +29,7 @@ from ..retrieval import search_deep, search_fast
 # Import route modules
 from ..routes import health as health_routes
 from ..routes import graph as graph_routes
+from ..routes import query as query_routes
 
 # ---- Logger setup ----
 log = logging.getLogger(__name__)
