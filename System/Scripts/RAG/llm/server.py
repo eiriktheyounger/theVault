@@ -55,8 +55,8 @@ load_dotenv()
 log = logging.getLogger("llm.server")
 logging.basicConfig(level=logging.INFO)
 
-FAST_MODEL_DEFAULT = "qwen2.5:7b"
-DEEP_MODEL_DEFAULT = "llama3.1:8b"
+FAST_MODEL_DEFAULT = "gemma3:4b"
+DEEP_MODEL_DEFAULT = "qwen2.5:7b"
 
 # ---- Runtime configuration ----
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434").rstrip("/")
