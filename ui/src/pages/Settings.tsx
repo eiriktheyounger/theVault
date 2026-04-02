@@ -9,8 +9,8 @@ export default function Settings() {
   const { settings, setSettings } = useSettings();
   const [apiBase, setApiBase] = useState(settings.apiBase || '');
   const [ragBase, setRagBase] = useState(settings.ragBase || '');
-  const [fastModel, setFastModel] = useState(settings.fastModel || 'phi3:mini');
-  const [deepModel, setDeepModel] = useState(settings.deepModel || 'mixtral:latest');
+  const [fastModel, setFastModel] = useState(settings.fastModel || 'gemma3:4b');
+  const [deepModel, setDeepModel] = useState(settings.deepModel || 'qwen2.5:7b');
 
   const {
     compatibilityBanner,
