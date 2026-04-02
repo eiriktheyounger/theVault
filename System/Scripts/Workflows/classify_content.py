@@ -677,7 +677,12 @@ Examples:
     if args.verbose:
         log.setLevel(logging.DEBUG)
 
-    source_dir = VAULT_ROOT / (args.source if args.source else 'Notes')
+    if args.source:
+        # --source can be absolute or relative to VAULT_BASE
+        candidate = Path(args.source)
+        source_dir = candidate if candidate.is_absolute() else VAULT_BASE / candidate
+    else:
+        source_dir = DEFAULT_SOURCE
 
     if args.scan:
         run_scan(source_dir, auto=args.auto, verbose=args.verbose)
