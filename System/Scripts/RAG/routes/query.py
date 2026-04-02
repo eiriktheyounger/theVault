@@ -15,7 +15,7 @@ from ..retrieval.entity_graph import get_connections, get_entity_context, get_gr
 from ..retrieval.query_log import calculate_cost, log_query
 from ..retrieval.search_fast import hybrid
 
-router = APIRouter(prefix="/query", tags=["query"])
+router = APIRouter(prefix="/api/query", tags=["query"])
 
 
 # ---- Request/Response Models ----
