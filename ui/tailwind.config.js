@@ -8,6 +8,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['OpenDyslexic', 'Inter', 'sans-serif'],
+      },
       colors: {
         brand: 'var(--brand)',
         bg: 'var(--bg)',
