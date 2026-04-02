@@ -392,7 +392,7 @@ async def get_models() -> Dict[str, List[ModelInfo]]:
     return {"models": models}
 
 
-@router.get("/query/usage")
+@router.get("/usage")
 async def get_usage(days: int = 30) -> Dict[str, Any]:
     """Return usage statistics from query log."""
     try:
