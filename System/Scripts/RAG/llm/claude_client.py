@@ -5,9 +5,15 @@ Supports Claude models with token tracking and cost calculation.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 from typing import Any, Dict
 
+from dotenv import load_dotenv
 from anthropic import Anthropic, AsyncAnthropic
+
+# Ensure ANTHROPIC_API_KEY is loaded (override=True in case env has empty value)
+_env_path = Path(__file__).resolve().parents[4] / ".env"  # theVault/.env
+load_dotenv(_env_path, override=True)
 
 # Client instances (created lazily)
 _sync_client: Anthropic | None = None
