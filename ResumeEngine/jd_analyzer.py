@@ -25,6 +25,11 @@ from datetime import datetime
 from pathlib import Path
 
 import anthropic
+from dotenv import load_dotenv
+
+# Load .env from ResumeEngine/ first, then project root as fallback
+load_dotenv(Path(__file__).parent / ".env")
+load_dotenv(Path(__file__).parent.parent / ".env")
 
 # ---------------------------------------------------------------------------
 # Paths (all relative to this file's parent — ResumeEngine/)
