@@ -17,6 +17,11 @@ log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent  # ~/theVault
+SCRIPTS_DIR = PROJECT_ROOT / "System" / "Scripts"
+
+# Ensure scripts dir is importable
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
 
 
 def run_orchestration(dry_run: bool = False) -> dict:
