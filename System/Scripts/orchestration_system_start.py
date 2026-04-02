@@ -53,7 +53,7 @@ def run_orchestration(dry_run: bool = False) -> dict:
 
     # 2. Email thread ingester (optional)
     try:
-        from System.Scripts.email_thread_ingester import run_orchestration as email_run
+        from email_thread_ingester import run_orchestration as email_run
 
         log.info("Running email thread ingester...")
         result = email_run(dry_run=dry_run)
