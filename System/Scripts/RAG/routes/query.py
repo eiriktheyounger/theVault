@@ -339,7 +339,7 @@ async def query_endpoint(body: QueryRequest, request: Request) -> QueryResponse:
     )
 
 
-@router.get("/query/models")
+@router.get("/models")
 async def get_models() -> Dict[str, List[ModelInfo]]:
     """Return available models with metadata."""
     models = [
