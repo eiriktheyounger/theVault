@@ -295,11 +295,16 @@ class MorningWorkflow:
         self._notify_callback(step)
 
         try:
+            # Calendar sync deferred — sync_calendar.py not yet built
+            calendar_script = scripts_dir / "Calendar" / "sync_calendar.py"
+            if not calendar_script.exists():
+                step.complete(["Calendar sync skipped — sync_calendar.py not yet available"])
+                self._notify_callback(step)
+                return True
+
             step.update_progress(30, ["Syncing Harmonic calendar to Work calendar..."])
             self._notify_callback(step)
 
-            # Call calendar sync script with deletion enabled
-            calendar_script = scripts_dir / "Calendar" / "sync_calendar.py"
             result = subprocess.run(
                 [sys.executable, str(calendar_script), "--date", self.date, "--allow-delete"],
                 capture_output=True,
@@ -309,7 +314,6 @@ class MorningWorkflow:
             )
 
             if result.returncode == 0:
-                # Parse output for event count
                 lines = result.stdout.split("\n")
                 event_count = "calendar synced"
                 for line in lines:
