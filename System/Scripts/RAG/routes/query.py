@@ -174,7 +174,7 @@ async def _call_ollama_generate(
 # ---- Endpoints ----
 
 
-@router.post("/query", response_model=QueryResponse)
+@router.post("", response_model=QueryResponse)
 async def query_endpoint(body: QueryRequest, request: Request) -> QueryResponse:
     """Unified query endpoint with multi-model + context mode support.
 
