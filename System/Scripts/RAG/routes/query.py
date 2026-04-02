@@ -343,6 +343,8 @@ async def query_endpoint(body: QueryRequest, request: Request) -> QueryResponse:
         entities_detected=entities_detected,
         citations=[
             Citation(
+                **_parse_citation_string(c), score=0.0
+            ) if isinstance(c, str) else Citation(
                 title=c.get("title", ""),
                 path=c.get("path", ""),
                 score=c.get("score", 0.0),
