@@ -485,9 +485,13 @@ def process_session(
             char_count = len(transcript_text)
             log.info(f"  SRT: {char_count:,} chars, {len(srt_paths)} file(s)")
 
-            # Format the full SRT as readable markdown (with timestamps + speakers)
-            transcript_md = format_srt_as_markdown(raw_srt)
-            log.info(f"  Transcript formatted: {len(transcript_md):,} chars")
+            # Quality gate: skip transcript if mostly filler/noise
+            substantive = _count_substantive_segments(raw_srt)
+            if substantive >= MIN_TRANSCRIPT_SEGMENTS:
+                transcript_md = format_srt_as_markdown(raw_srt)
+                log.info(f"  Transcript formatted: {len(transcript_md):,} chars ({substantive} substantive segments)")
+            else:
+                log.info(f"  Transcript below quality threshold ({substantive} < {MIN_TRANSCRIPT_SEGMENTS} substantive segments) — skipping append")
 
             if dry_run:
                 ai_summary = "_[DRY RUN — AI summary would be generated here]_"
