@@ -440,8 +440,9 @@ def process_session(
 
     processed_date = datetime.now().strftime("%Y-%m-%d")
 
-    # ── SRT → AI summary ──────────────────────────────────────────────────────
+    # ── SRT → AI summary + formatted transcript ────────────────────────────
     ai_summary: Optional[str] = None
+    transcript_md: Optional[str] = None
     srt_paths = files.get("transcript", [])
 
     if srt_paths:
@@ -453,6 +454,11 @@ def process_session(
         if transcript_text.strip():
             char_count = len(transcript_text)
             log.info(f"  SRT: {char_count:,} chars, {len(srt_paths)} file(s)")
+
+            # Format the full SRT as readable markdown (with timestamps + speakers)
+            transcript_md = format_srt_as_markdown(raw_srt)
+            log.info(f"  Transcript formatted: {len(transcript_md):,} chars")
+
             if dry_run:
                 ai_summary = "_[DRY RUN — AI summary would be generated here]_"
             else:
