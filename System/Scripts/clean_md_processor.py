@@ -522,6 +522,9 @@ def main() -> int:
                         help="Preview what would be processed — no writes, no moves")
     parser.add_argument("--session", metavar="FILTER",
                         help="Process only sessions whose name contains FILTER (case-insensitive)")
+    parser.add_argument("--reprocess", action="store_true",
+                        help="Re-run already-processed sessions from Processed/Plaud/ — "
+                             "overwrites existing output, does not move source files")
     parser.add_argument("--verbose", "-v", action="store_true",
                         help="Enable debug logging")
     args = parser.parse_args()
@@ -529,7 +532,11 @@ def main() -> int:
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
 
-    result = run_orchestration(session_filter=args.session, dry_run=args.dry_run)
+    result = run_orchestration(
+        session_filter=args.session,
+        dry_run=args.dry_run,
+        reprocess=args.reprocess,
+    )
     return 1 if result.get("failed", 0) > 0 else 0
 
 
