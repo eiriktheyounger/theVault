@@ -30,6 +30,7 @@ Usage:
 """
 
 import logging
+import os
 import sys
 import subprocess
 import time
@@ -37,6 +38,23 @@ import socket
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Optional, Callable, Any
+
+# Load .env so ANTHROPIC_API_KEY is available to this process and all subprocesses.
+# Reads ~/theVault/.env without requiring python-dotenv.
+def _load_dotenv() -> None:
+    env_file = Path.home() / "theVault" / ".env"
+    if not env_file.exists():
+        return
+    for raw in env_file.read_text().splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, val = line.partition("=")
+        key = key.strip()
+        val = val.strip().strip('"').strip("'")
+        os.environ.setdefault(key, val)  # setdefault: never overrides an already-set env var
+
+_load_dotenv()
 
 # Add parent to path for imports
 scripts_dir = Path(__file__).parent.parent
