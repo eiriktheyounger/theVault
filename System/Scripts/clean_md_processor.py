@@ -476,7 +476,7 @@ def process_session(
         return "failed"
 
     # ── Write output ──────────────────────────────────────────────────────────
-    content = build_output(base_name, ai_summary, note_files, processed_date)
+    content = build_output(base_name, ai_summary, note_files, processed_date, transcript_md)
 
     if dry_run:
         section_names = (["AI Summary"] if ai_summary else []) + list(note_files.keys())
