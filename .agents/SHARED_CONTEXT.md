@@ -7,7 +7,7 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 | Session | Working On | Files Touched | Updated |
 |---------|-----------|---------------|---------|
 | CLI Opus (naughty-shaw) | **Idle** — Last: memory/context sync + ANTHROPIC_API_KEY fix (crontab, .bash_profile, .env). Daily Vault Activity Tracker built. Email ingester patched. | daily_vault_activity.py, .env, crontab, memory files | 2026-04-01 |
-| CLI Sonnet (condescending-mccarthy) | **Idle** — Last: Email ingester first production run (156→53 threads, 0 errors). | Vault/Notes/Email/ (53 files), 2026-04-01-DLY.md | 2026-04-01 |
+| CLI Sonnet (condescending-mccarthy) | **Idle** — Last: morning_workflow.py ANTHROPIC_API_KEY fix (_load_dotenv() added). clean_md_processor.py --reprocess flag added. Memory/SHARED_CONTEXT sync. | System/Scripts/Workflows/morning_workflow.py, System/Scripts/clean_md_processor.py, memory files | 2026-04-03 |
 | CLI Haiku (silly-gauss) | **Active** — overnight_processor.py API key fix (logger init order). Overnight run for 2026-04-02 SUCCESS: Haiku summary generated, 9 tasks normalized, reminders synced. | System/Scripts/overnight_processor.py, SHARED_CONTEXT | 2026-04-03 08:14 |
 | Sonnet Desktop | **Idle/Unknown** — Last known: building classify_content.py (2026-03-30). | System/Scripts/Workflows/classify_content.py, rag_data/classification.db | 2026-03-30 |
 
