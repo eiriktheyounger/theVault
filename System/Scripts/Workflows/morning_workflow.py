@@ -53,6 +53,7 @@ def _load_dotenv() -> None:
         key = key.strip()
         val = val.strip().strip('"').strip("'")
         if not os.environ.get(key):  # set if missing or empty-string (e.g. cron blank env)
+            os.environ[key] = val
 
 _load_dotenv()
 
