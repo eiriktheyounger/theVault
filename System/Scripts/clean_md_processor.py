@@ -443,14 +443,17 @@ def run_orchestration(
             "failed": int,
         }
     """
-    if not INBOX_DIR.exists():
-        log.error(f"Inbox not found: {INBOX_DIR}")
-        return {"error": "Inbox not found", "groups": 0, "succeeded": 0, "skipped": 0, "failed": 0}
+    source_dir = PROCESSED_DIR if reprocess else INBOX_DIR
+    source_label = "Processed/Plaud" if reprocess else "Inbox"
 
-    sessions = group_sessions(INBOX_DIR)
+    if not source_dir.exists():
+        log.error(f"{source_label} not found: {source_dir}")
+        return {"error": f"{source_label} not found", "groups": 0, "succeeded": 0, "skipped": 0, "failed": 0}
+
+    sessions = group_sessions(source_dir)
 
     if not sessions:
-        print("📭 No files found in inbox")
+        print(f"📭 No files found in {source_label}")
         return {"groups": 0, "succeeded": 0, "skipped": 0, "failed": 0}
 
     if session_filter:
