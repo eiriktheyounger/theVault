@@ -164,6 +164,31 @@ def format_srt_as_markdown(content: str) -> str:
     return "\n\n".join(segments)
 
 
+def _count_substantive_segments(content: str) -> int:
+    """Count SRT segments that contain more than filler/non-lexical content."""
+    filler_re = re.compile(
+        r"^(mm-?hmm|uh-?huh|yeah|um|oh|hmm|cough|ahem|shhh|thank you|"
+        r"thanks for watching|i know|go|all right)[\.\!\?]?$",
+        re.IGNORECASE,
+    )
+    count = 0
+    for line in content.strip().splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if re.fullmatch(r"\d+", stripped):
+            continue
+        if _TS_RE.fullmatch(stripped):
+            continue
+        # Strip speaker label before checking
+        speaker_match = re.match(r"^[^:]{1,50}:\s*", stripped)
+        text = stripped[speaker_match.end():] if speaker_match else stripped
+        text = text.strip()
+        if text and not filler_re.fullmatch(text):
+            count += 1
+    return count
+
+
 # ── Session Grouping ──────────────────────────────────────────────────────────
 
 def split_base_and_suffix(stem: str) -> tuple[str, str]:
