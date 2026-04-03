@@ -74,6 +74,11 @@ SECTION_ORDER = [
 # context limits for every model tier.
 MAX_TRANSCRIPT_CHARS = 40_000
 
+# Minimum substantive segments to include transcript in output.
+# Sessions below this threshold (e.g. "Null Signal" recordings with only coughs
+# and filler words) are too noisy for the vault or RAG indexing.
+MIN_TRANSCRIPT_SEGMENTS = 5
+
 # ── SRT Parsing ───────────────────────────────────────────────────────────────
 
 def parse_srt(content: str) -> str:
