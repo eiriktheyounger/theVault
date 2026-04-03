@@ -401,6 +401,18 @@ def build_output(
         body = ("\n\n---\n\n").join(body_parts) if len(body_parts) > 1 else body_parts[0]
         parts += [f"## {key}", "", body, "", "---", ""]
 
+    # ── Collapsible full transcript (from SRT) ────────────────────────────
+    if transcript_md:
+        parts += [
+            "<details>",
+            "<summary><strong>Full Transcript</strong></summary>",
+            "",
+            transcript_md,
+            "",
+            "</details>",
+            "",
+        ]
+
     return "\n".join(parts)
 
 
