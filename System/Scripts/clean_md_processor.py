@@ -353,6 +353,7 @@ def build_output(
     ai_summary: Optional[str],
     note_files: dict[str, list[Path]],
     processed_date: str,
+    transcript_md: Optional[str] = None,
 ) -> str:
     """
     Assemble the consolidated -Full.md document.
@@ -366,6 +367,8 @@ def build_output(
         ---
         ## Meeting Minutes ← from -Meeting Minutes.md
         ... (remaining sections in SECTION_ORDER, then alphabetical)
+        ---
+        <details> Full Transcript (collapsed) </details>
     """
     date_match = re.match(r"^(\d{2})-(\d{2})\s", base_name)
     title = base_name[6:].strip() if date_match else base_name
