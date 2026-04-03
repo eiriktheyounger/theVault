@@ -341,13 +341,19 @@ def process_session(
     base_name: str,
     files: dict[str, list[Path]],
     dry_run: bool = False,
+    force: bool = False,
+    move_sources: bool = True,
 ) -> str:
     """
     Process one session. Returns 'processed', 'skipped', or 'failed'.
+
+    force=True  — overwrite existing output even if it already exists.
+    move_sources=False — skip moving source files to Processed/ (use when
+                         they are already there, e.g. --reprocess mode).
     """
     output_path = VAULT_NOTES_DIR / f"{base_name}-Full.md"
 
-    if output_path.exists():
+    if output_path.exists() and not force:
         log.info(f"  Already exists — skipping")
         return "skipped"
 
