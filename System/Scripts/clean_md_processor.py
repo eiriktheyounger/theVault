@@ -427,7 +427,11 @@ def process_session(
 
 # ── Main Orchestration ────────────────────────────────────────────────────────
 
-def run_orchestration(session_filter: Optional[str] = None, dry_run: bool = False) -> dict:
+def run_orchestration(
+    session_filter: Optional[str] = None,
+    dry_run: bool = False,
+    reprocess: bool = False,
+) -> dict:
     """
     Public entry point used by morning_workflow.py and routes/ingest.py.
 
