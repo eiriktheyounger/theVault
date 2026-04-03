@@ -479,7 +479,12 @@ def run_orchestration(
         log.info(f"  Files: {suffix_summary}")
 
         try:
-            result = process_session(base_name, files, dry_run=dry_run)
+            result = process_session(
+                base_name, files,
+                dry_run=dry_run,
+                force=reprocess,
+                move_sources=not reprocess,
+            )
         except Exception as e:
             log.error(f"  FAILED: {e}", exc_info=True)
             result = "failed"
