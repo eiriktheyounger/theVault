@@ -17,11 +17,6 @@ from dotenv import load_dotenv
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-# Load .env from vault root (with override for cron env)
-env_file = Path.home() / 'theVault' / '.env'
-load_dotenv(env_file, override=True)
-logger.info(f"Loaded .env from {env_file}, ANTHROPIC_API_KEY={'SET' if os.getenv('ANTHROPIC_API_KEY') else 'NOT SET'}")
-
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -30,6 +25,11 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger('overnight')
+
+# Load .env from vault root (with override for cron env)
+env_file = Path.home() / 'theVault' / '.env'
+load_dotenv(env_file, override=True)
+logger.info(f"Loaded .env from {env_file}, ANTHROPIC_API_KEY={'SET' if os.getenv('ANTHROPIC_API_KEY') else 'NOT SET'}")
 
 VAULT_PATH = Path.home() / 'theVault'
 NAS_PATH = Path('/Volumes/home/MacMiniStorage')
