@@ -17,8 +17,10 @@ from dotenv import load_dotenv
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-# Load .env from vault root
-load_dotenv(Path.home() / 'theVault' / '.env')
+# Load .env from vault root (with override for cron env)
+env_file = Path.home() / 'theVault' / '.env'
+load_dotenv(env_file, override=True)
+logger.info(f"Loaded .env from {env_file}, ANTHROPIC_API_KEY={'SET' if os.getenv('ANTHROPIC_API_KEY') else 'NOT SET'}")
 
 logging.basicConfig(
     level=logging.INFO,
