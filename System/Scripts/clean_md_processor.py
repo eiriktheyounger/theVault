@@ -93,6 +93,72 @@ def parse_srt(content: str) -> str:
     return "\n".join(text_lines)
 
 
+_TS_RE = re.compile(
+    r"(\d{2}):(\d{2}):(\d{2}),\d{3}\s*-->\s*(\d{2}):(\d{2}):(\d{2}),\d{3}"
+)
+
+
+def _fmt_ts(h: str, m: str, s: str) -> str:
+    """Format HH:MM:SS, dropping leading hour if zero."""
+    if h == "00":
+        return f"{m}:{s}"
+    return f"{h}:{m}:{s}"
+
+
+def format_srt_as_markdown(content: str) -> str:
+    """
+    Convert raw SRT content into a readable markdown transcript.
+
+    Output format per segment:
+        **[01:23 → 01:45]** **Speaker Name:** Dialogue text here.
+
+    Segments are separated by blank lines for readability.
+    """
+    segments: list[str] = []
+    current_ts = ""
+    current_text_lines: list[str] = []
+
+    def _flush():
+        if current_text_lines:
+            text = " ".join(current_text_lines)
+            if current_ts:
+                segments.append(f"{current_ts} {text}")
+            else:
+                segments.append(text)
+
+    for line in content.strip().splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+
+        # Skip sequence number lines
+        if re.fullmatch(r"\d+", stripped):
+            continue
+
+        # Timestamp line — flush previous segment and start new one
+        ts_match = _TS_RE.fullmatch(stripped)
+        if ts_match:
+            _flush()
+            current_text_lines = []
+            start = _fmt_ts(ts_match.group(1), ts_match.group(2), ts_match.group(3))
+            end = _fmt_ts(ts_match.group(4), ts_match.group(5), ts_match.group(6))
+            current_ts = f"**[{start} → {end}]**"
+            continue
+
+        # Text line — bold the speaker label if present
+        speaker_match = re.match(r"^([^:]{1,50}):\s*", stripped)
+        if speaker_match:
+            speaker = speaker_match.group(1)
+            rest = stripped[speaker_match.end():]
+            current_text_lines.append(f"**{speaker}:** {rest}")
+        else:
+            current_text_lines.append(stripped)
+
+    _flush()
+
+    return "\n\n".join(segments)
+
+
 # ── Session Grouping ──────────────────────────────────────────────────────────
 
 def split_base_and_suffix(stem: str) -> tuple[str, str]:
