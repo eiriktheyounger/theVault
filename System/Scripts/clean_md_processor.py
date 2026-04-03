@@ -403,7 +403,9 @@ def process_session(
     # ── Move source files to Processed ───────────────────────────────────────
     all_sources = [p for paths in files.values() for p in paths]
 
-    if dry_run:
+    if not move_sources:
+        log.info(f"  Source files already in Processed/ — not moving")
+    elif dry_run:
         log.info(f"  [DRY RUN] Would move {len(all_sources)} source file(s) → Processed/Plaud/")
     else:
         PROCESSED_DIR.resolve().mkdir(parents=True, exist_ok=True)
