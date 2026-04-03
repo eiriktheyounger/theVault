@@ -97,7 +97,11 @@ def summarize_with_claude(text):
     """Use Claude Haiku to summarize daily content."""
     try:
         import anthropic
-        client = anthropic.Anthropic()
+        api_key = os.getenv('ANTHROPIC_API_KEY')
+        if not api_key:
+            logger.error("ANTHROPIC_API_KEY not found in environment")
+            return "Summarization failed — check API key."
+        client = anthropic.Anthropic(api_key=api_key)
         response = client.messages.create(
             model="claude-haiku-4-5-20251001",
             max_tokens=512,
