@@ -462,6 +462,19 @@ def run_orchestration(
             log.warning(f"No sessions matching filter: {session_filter!r}")
             return {"groups": 0, "succeeded": 0, "skipped": 0, "failed": 0}
 
+    # In reprocess mode, only touch sessions whose output already exists directly
+    # in Vault/Notes/ (not in subdirectories). Prevents accidentally processing
+    # sessions that were never run or whose output has been relocated.
+    if reprocess:
+        before = len(sessions)
+        sessions = {
+            k: v for k, v in sessions.items()
+            if (VAULT_NOTES_DIR / f"{k}-Full.md").exists()
+        }
+        filtered = before - len(sessions)
+        if filtered:
+            log.info(f"  Reprocess filter: {filtered} session(s) have no existing output in Vault/Notes/ — skipping")
+
     total     = len(sessions)
     succeeded = 0
     skipped   = 0
