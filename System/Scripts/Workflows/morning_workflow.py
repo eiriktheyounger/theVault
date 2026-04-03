@@ -52,7 +52,7 @@ def _load_dotenv() -> None:
         key, _, val = line.partition("=")
         key = key.strip()
         val = val.strip().strip('"').strip("'")
-        os.environ.setdefault(key, val)  # setdefault: never overrides an already-set env var
+        if not os.environ.get(key):  # set if missing or empty-string (e.g. cron blank env)
 
 _load_dotenv()
 
