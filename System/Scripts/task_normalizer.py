@@ -341,6 +341,17 @@ def run_normalizer(
             logger.warning(f"New task import failed: {e}")
             report["errors"].append(f"New task import: {e}")
 
+    # ── Step 7.7: Push Obsidian completions → Reminders ──
+    if sync_reminders:
+        try:
+            from System.Scripts.task_reminders_sync import sync_completions_to_reminders
+            report["completions_to_reminders"] = sync_completions_to_reminders(tasks)
+        except ImportError:
+            logger.info("Completion push skipped (module not available)")
+        except Exception as e:
+            logger.warning(f"Completion push to Reminders failed: {e}")
+            report["errors"].append(f"Completion push: {e}")
+
     # ── Step 8: Apple Reminders sync ──
     if sync_reminders:
         try:
