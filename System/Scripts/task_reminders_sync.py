@@ -209,6 +209,47 @@ def sync_completions_from_reminders() -> int:
     return updated
 
 
+def sync_completions_to_reminders(tasks: list) -> int:
+    """
+    Mark reminders complete when their corresponding vault task is done.
+
+    For each completed vault task (`- [x]`) that has a matching reminder
+    (found via Key hash search), marks the reminder complete in Reminders.
+
+    Returns count of reminders marked complete.
+    """
+    if not _PYREMINDKIT_AVAILABLE:
+        logger.info("PyRemindKit not available — skipping completion push to Reminders.")
+        return 0
+
+    from pyremindkit import RemindKit  # type: ignore
+
+    completed_tasks = [t for t in tasks if t.is_completed]
+    if not completed_tasks:
+        logger.info("sync_completions_to_reminders: no completed vault tasks")
+        return 0
+
+    logger.info(f"sync_completions_to_reminders: checking {len(completed_tasks)} completed tasks")
+
+    rk = RemindKit()
+    marked = 0
+
+    for task in completed_tasks:
+        key = _task_key(task.normalized_text, task.source_file)
+        try:
+            for reminder in rk.search_reminders(key):
+                if not reminder.completed:
+                    rk.update_reminder(reminder.id, completed=True)
+                    logger.info(f"sync_completions_to_reminders: ✅ {task.normalized_text[:60]}")
+                    marked += 1
+                    break
+        except Exception as e:
+            logger.warning(f"sync_completions_to_reminders: failed for '{task.normalized_text[:50]}': {e}")
+
+    logger.info(f"sync_completions_to_reminders: marked {marked} reminders complete")
+    return marked
+
+
 def sync_new_tasks_from_reminders(vault_path: Optional[Path] = None) -> int:
     """
     Pull tasks created natively in Reminders (no Source/Key) into today's DLY note.
