@@ -209,44 +209,100 @@ def sync_completions_from_reminders() -> int:
     return updated
 
 
-def sync_completions_to_reminders(tasks: list) -> int:
+def sync_completions_to_reminders(tasks: list = None) -> int:
     """
-    Mark reminders complete when their corresponding vault task is done.
+    Delete reminders whose corresponding vault task has been completed.
 
-    For each completed vault task (`- [x]`) that has a matching reminder
-    (found via Key hash search), marks the reminder complete in Reminders.
+    Walks all incomplete reminders in the "Vault" list that have a Source: + Key:
+    in their notes. For each, reads the source vault file and checks whether the
+    task line is now `- [x]`. If so, deletes the reminder (Obsidian is source of
+    truth — completed tasks don't need to live in Reminders).
 
-    Returns count of reminders marked complete.
+    Returns count of reminders deleted.
     """
     if not _PYREMINDKIT_AVAILABLE:
         logger.info("PyRemindKit not available — skipping completion push to Reminders.")
         return 0
 
+    import re as _re
     from pyremindkit import RemindKit  # type: ignore
 
-    completed_tasks = [t for t in tasks if t.is_completed]
-    if not completed_tasks:
-        logger.info("sync_completions_to_reminders: no completed vault tasks")
+    rk = RemindKit()
+
+    # Resolve "Vault" list
+    vault_list_id = None
+    for cal in rk.calendars.list():
+        if cal.name == "Vault":
+            vault_list_id = cal.id
+            break
+
+    if vault_list_id is None:
+        logger.warning("sync_completions_to_reminders: 'Vault' list not found")
         return 0
 
-    logger.info(f"sync_completions_to_reminders: checking {len(completed_tasks)} completed tasks")
+    try:
+        open_reminders = [
+            r for r in rk.get_reminders(calendar_id=vault_list_id, is_completed=False)
+            if r.notes and "Key:" in r.notes and "Source:" in r.notes
+        ]
+    except Exception as e:
+        logger.warning(f"sync_completions_to_reminders: failed to fetch reminders: {e}")
+        return 0
 
-    rk = RemindKit()
-    marked = 0
+    if not open_reminders:
+        logger.info("sync_completions_to_reminders: no tracked reminders to check")
+        return 0
 
-    for task in completed_tasks:
-        key = _task_key(task.normalized_text, task.source_file)
+    logger.info(f"sync_completions_to_reminders: checking {len(open_reminders)} open reminders")
+    deleted = 0
+
+    for reminder in open_reminders:
+        source_path = None
+        key_hash = None
+        for line in reminder.notes.splitlines():
+            if line.startswith("Source: "):
+                source_path = line[8:].strip()
+            elif line.startswith("Key: "):
+                key_hash = line[5:].strip()
+
+        if not source_path or not key_hash:
+            continue
+
+        vault_file = Path(source_path)
+        if not vault_file.exists():
+            continue
+
+        # Check if the task line in the source file is now completed
         try:
-            for reminder in rk.search_reminders(key):
-                rk.delete_reminder(reminder.id)
-                logger.info(f"sync_completions_to_reminders: 🗑 {task.normalized_text[:60]}")
-                marked += 1
-                break
-        except Exception as e:
-            logger.warning(f"sync_completions_to_reminders: failed for '{task.normalized_text[:50]}': {e}")
+            text = vault_file.read_text(encoding="utf-8", errors="replace")
+        except Exception:
+            continue
 
-    logger.info(f"sync_completions_to_reminders: marked {marked} reminders complete")
-    return marked
+        # Search for a completed line matching this key
+        task_completed = False
+        for line in text.splitlines():
+            stripped = line.lstrip()
+            if not stripped.startswith("- [x] ") and not stripped.startswith("- [X] "):
+                continue
+            raw_text = stripped[6:].rstrip("\n")
+            # Strip ✅ date suffix added by Phase 1
+            clean_text = _re.sub(r'\s*✅\s*\S+$', '', raw_text)
+            clean_text = _re.sub(r'\s*📅\s*\S+', '', clean_text)
+            clean_text = _re.sub(r'\s*#\S+', '', clean_text).strip()
+            if _task_key(clean_text, str(vault_file)) == key_hash:
+                task_completed = True
+                break
+
+        if task_completed:
+            try:
+                rk.delete_reminder(reminder.id)
+                logger.info(f"sync_completions_to_reminders: 🗑 {reminder.title[:60]}")
+                deleted += 1
+            except Exception as e:
+                logger.warning(f"sync_completions_to_reminders: delete failed for '{reminder.title[:50]}': {e}")
+
+    logger.info(f"sync_completions_to_reminders: deleted {deleted} completed reminders")
+    return deleted
 
 
 def sync_new_tasks_from_reminders(vault_path: Optional[Path] = None) -> int:
