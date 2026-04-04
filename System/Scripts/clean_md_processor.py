@@ -757,12 +757,25 @@ def main() -> int:
     parser.add_argument("--reprocess", action="store_true",
                         help="Re-run already-processed sessions from Processed/Plaud/ — "
                              "overwrites existing output, does not move source files")
+    parser.add_argument("--repair", action="store_true",
+                        help="Scan existing -Full.md files and append missing transcript sections "
+                             "using SRT files from Processed/Plaud/")
     parser.add_argument("--verbose", "-v", action="store_true",
                         help="Enable debug logging")
     args = parser.parse_args()
 
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
+
+    if args.repair:
+        stats = repair_missing_transcripts(dry_run=args.dry_run)
+        print(f"\n📊 Repair Summary:")
+        print(f"  • Scanned:  {stats['scanned']} Full.md files")
+        print(f"  • Repaired: {stats['repaired']}")
+        print(f"  • Skipped:  {stats['skipped']} (already have transcript or no SRT)")
+        if stats["errors"]:
+            print(f"  • Errors:   {len(stats['errors'])}")
+        return 1 if stats["errors"] else 0
 
     result = run_orchestration(
         session_filter=args.session,
