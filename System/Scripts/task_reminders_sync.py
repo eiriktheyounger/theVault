@@ -238,11 +238,10 @@ def sync_completions_to_reminders(tasks: list) -> int:
         key = _task_key(task.normalized_text, task.source_file)
         try:
             for reminder in rk.search_reminders(key):
-                if not reminder.completed:
-                    rk.update_reminder(reminder.id, completed=True)
-                    logger.info(f"sync_completions_to_reminders: ✅ {task.normalized_text[:60]}")
-                    marked += 1
-                    break
+                rk.delete_reminder(reminder.id)
+                logger.info(f"sync_completions_to_reminders: 🗑 {task.normalized_text[:60]}")
+                marked += 1
+                break
         except Exception as e:
             logger.warning(f"sync_completions_to_reminders: failed for '{task.normalized_text[:50]}': {e}")
 
