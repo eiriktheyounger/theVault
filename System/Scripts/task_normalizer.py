@@ -293,6 +293,18 @@ def run_normalizer(
 
     logger.info(f"Normalized {report['tasks_normalized']} tasks across {files_written} files")
 
+    # ── Step 7.5: Pull completions from Reminders → vault (before outbound push) ──
+    if sync_reminders:
+        try:
+            from System.Scripts.task_reminders_sync import sync_completions_from_reminders
+            completions_synced = sync_completions_from_reminders()
+            report["completions_from_reminders"] = completions_synced
+        except ImportError:
+            logger.info("Completions sync skipped (module not available)")
+        except Exception as e:
+            logger.warning(f"Completions sync failed: {e}")
+            report["errors"].append(f"Completions sync: {e}")
+
     # ── Step 8: Apple Reminders sync ──
     if sync_reminders:
         try:
