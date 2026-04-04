@@ -209,6 +209,124 @@ def sync_completions_from_reminders() -> int:
     return updated
 
 
+def sync_new_tasks_from_reminders(vault_path: Optional[Path] = None) -> int:
+    """
+    Pull tasks created natively in Reminders (no Source/Key) into today's DLY note.
+
+    For each incomplete reminder in the "Vault" list without a Key: in notes:
+    - Formats as `- [ ] title 📅 YYYY-MM-DD` (due date included if set)
+    - Injects/replaces `## From Reminders` section in today's DLY file
+    - Updates the reminder's notes with Source: + Key: so it won't be re-imported
+      and will be picked up by the outbound sync on the next run
+
+    Returns count of tasks written to DLY.
+    """
+    if not _PYREMINDKIT_AVAILABLE:
+        logger.info("PyRemindKit not available — skipping new task import.")
+        return 0
+
+    from datetime import date as _date, datetime as _datetime
+    from pyremindkit import RemindKit  # type: ignore
+
+    rk = RemindKit()
+
+    # Resolve "Vault" list
+    vault_list_id = None
+    for cal in rk.calendars.list():
+        if cal.name == "Vault":
+            vault_list_id = cal.id
+            break
+
+    if vault_list_id is None:
+        logger.warning("sync_new_tasks_from_reminders: 'Vault' list not found")
+        return 0
+
+    # Fetch incomplete reminders without a Key (native Reminders tasks)
+    try:
+        new_reminders = [
+            r for r in rk.get_reminders(list_id=vault_list_id, completed=False)
+            if not r.notes or "Key:" not in r.notes
+        ]
+    except Exception as e:
+        logger.warning(f"sync_new_tasks_from_reminders: failed to fetch reminders: {e}")
+        return 0
+
+    if not new_reminders:
+        logger.info("sync_new_tasks_from_reminders: no new reminders to import")
+        return 0
+
+    logger.info(f"sync_new_tasks_from_reminders: {len(new_reminders)} new reminders to import")
+
+    # Resolve today's DLY path
+    if vault_path is None:
+        vault_path = Path.home() / "theVault" / "Vault"
+
+    today = _date.today()
+    dly_path = (
+        vault_path / "Daily"
+        / today.strftime("%Y")
+        / today.strftime("%m")
+        / f"{today.strftime('%Y-%m-%d')}-DLY.md"
+    )
+
+    if not dly_path.exists():
+        logger.warning(f"sync_new_tasks_from_reminders: DLY not found: {dly_path}")
+        return 0
+
+    # Build task lines
+    task_lines = []
+    for r in new_reminders:
+        line = f"- [ ] {r.title}"
+        if r.due_date:
+            try:
+                due_str = r.due_date.strftime("%Y-%m-%d")
+                line += f" 📅 {due_str}"
+            except Exception:
+                pass
+        task_lines.append((r, line))
+
+    # Build section content (idempotent markers)
+    section_lines = ["## From Reminders", "<!-- from-reminders-start -->", ""]
+    for _, line in task_lines:
+        section_lines.append(line)
+    section_lines += ["", "<!-- from-reminders-end -->"]
+    section_content = "\n".join(section_lines)
+
+    # Inject/replace in DLY
+    existing = dly_path.read_text(encoding="utf-8")
+    section_re = re.compile(
+        r"## From Reminders\n<!-- from-reminders-start -->.*?<!-- from-reminders-end -->",
+        re.DOTALL,
+    )
+
+    if section_re.search(existing):
+        updated = section_re.sub(section_content, existing)
+    else:
+        nav_match = re.search(r"\n## Navigation", existing)
+        if nav_match:
+            updated = existing[:nav_match.start()] + "\n\n" + section_content + existing[nav_match.start():]
+        else:
+            updated = existing.rstrip() + "\n\n" + section_content + "\n"
+
+    tmp = dly_path.with_suffix(".tmp_rimport")
+    tmp.write_text(updated, encoding="utf-8")
+    tmp.replace(dly_path)
+    logger.info(f"sync_new_tasks_from_reminders: wrote {len(task_lines)} tasks to {dly_path.name}")
+
+    # Tag each reminder with Source + Key so it won't be re-imported
+    for r, line in task_lines:
+        task_text = r.title
+        key = _task_key(task_text, str(dly_path))
+        new_notes = f"Source: {dly_path}\nKey: {key}"
+        try:
+            rk.update_reminder(r.id, notes=new_notes)
+            logger.debug(f"sync_new_tasks_from_reminders: tagged reminder '{task_text[:50]}'")
+        except Exception as e:
+            logger.warning(f"sync_new_tasks_from_reminders: failed to tag reminder '{task_text[:50]}': {e}")
+
+    return len(task_lines)
+
+
 def clear_do_today() -> None:
     """Remove completed/stale items from the Do Today list."""
     if not _PYREMINDKIT_AVAILABLE:
