@@ -685,7 +685,12 @@ def repair_missing_transcripts(dry_run: bool = False) -> dict:
         return stats
 
     # Scan entire Vault recursively — files may be in Notes/, Personal/, HarmonicInternal/, etc.
-    full_files = sorted(vault_dir.rglob("*-Full.md"))
+    # Exclude System/ and Templates/ directories
+    exclude_dirs = {"System", "Templates", "Daily"}
+    full_files = sorted(
+        p for p in vault_dir.rglob("*-Full.md")
+        if not any(part in exclude_dirs for part in p.relative_to(vault_dir).parts)
+    )
     stats["scanned"] = len(full_files)
 
     for full_path in full_files:
