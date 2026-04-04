@@ -99,18 +99,113 @@ def sync_tasks_to_reminders(
 def sync_completions_from_reminders() -> int:
     """
     Check Reminders for completed items and mark matching vault tasks as done.
-    Returns count of vault files updated.
+
+    Queries completed reminders from the "Vault" list that have a Key: hash
+    in their notes. For each match, finds the source file and flips the
+    `- [ ]` line to `- [x] ✅ YYYY-MM-DD`.
+
+    Returns count of vault task lines updated.
     """
     if not _PYREMINDKIT_AVAILABLE:
         logger.info("PyRemindKit not available — skipping completion sync.")
         return 0
 
-    # TODO: implement when pyremindkit is available
-    # 1. Get completed reminders from "Vault" list
-    # 2. For each, find matching vault file by source note
-    # 3. Update - [ ] → - [x] on matching line
-    logger.warning("sync_completions_from_reminders: not yet implemented")
-    return 0
+    from datetime import date as _date
+    from pyremindkit import RemindKit  # type: ignore
+
+    rk = RemindKit()
+
+    # Resolve "Vault" list id
+    vault_list_id = None
+    for cal in rk.calendars.list():
+        if cal.name == "Vault":
+            vault_list_id = cal.id
+            break
+
+    if vault_list_id is None:
+        logger.warning("sync_completions_from_reminders: 'Vault' list not found")
+        return 0
+
+    # Fetch completed reminders from the Vault list
+    try:
+        completed_reminders = [
+            r for r in rk.get_reminders(list_id=vault_list_id, completed=True)
+            if r.notes and "Key:" in r.notes
+        ]
+    except Exception as e:
+        logger.warning(f"sync_completions_from_reminders: failed to fetch reminders: {e}")
+        return 0
+
+    if not completed_reminders:
+        logger.info("sync_completions_from_reminders: no completed reminders with Key found")
+        return 0
+
+    logger.info(f"sync_completions_from_reminders: {len(completed_reminders)} completed reminders to process")
+
+    updated = 0
+    for reminder in completed_reminders:
+        # Parse Source and Key from notes
+        source_path = None
+        key_hash = None
+        for line in reminder.notes.splitlines():
+            if line.startswith("Source: "):
+                source_path = line[8:].strip()
+            elif line.startswith("Key: "):
+                key_hash = line[5:].strip()
+
+        if not source_path or not key_hash:
+            continue
+
+        vault_file = Path(source_path)
+        if not vault_file.exists():
+            logger.debug(f"sync_completions_from_reminders: source file not found: {source_path}")
+            continue
+
+        # Determine completion date from reminder modified_date or today
+        try:
+            completion_date = reminder.modified_date.date().isoformat()
+        except Exception:
+            completion_date = _date.today().isoformat()
+
+        # Scan file for matching unchecked task line
+        try:
+            text = vault_file.read_text(encoding="utf-8", errors="replace")
+        except Exception as e:
+            logger.warning(f"sync_completions_from_reminders: cannot read {source_path}: {e}")
+            continue
+
+        lines = text.splitlines(keepends=True)
+        file_changed = False
+        for i, line in enumerate(lines):
+            stripped = line.lstrip()
+            if not stripped.startswith("- [ ] "):
+                continue
+            # Extract task text (everything after "- [ ] ", strip metadata tags/dates)
+            raw_task_text = stripped[6:].rstrip("\n")
+            # Strip Obsidian metadata (📅 date, #tag) for key computation
+            clean_text = re.sub(r'\s*📅\s*\S+', '', raw_task_text)
+            clean_text = re.sub(r'\s*#\S+', '', clean_text).strip()
+            computed_key = _task_key(clean_text, str(vault_file))
+            if computed_key == key_hash:
+                indent = line[: len(line) - len(stripped)]
+                # Preserve everything after "- [ ] " (including metadata), append ✅
+                new_line = f"{indent}- [x] {raw_task_text} ✅ {completion_date}\n"
+                lines[i] = new_line
+                file_changed = True
+                logger.info(f"sync_completions_from_reminders: ✅ {clean_text[:60]} in {vault_file.name}")
+                break  # one key per reminder
+
+        if file_changed:
+            try:
+                tmp = vault_file.with_suffix(".tmp_rsync")
+                tmp.write_text("".join(lines), encoding="utf-8")
+                tmp.replace(vault_file)
+                updated += 1
+            except Exception as e:
+                logger.warning(f"sync_completions_from_reminders: failed to write {source_path}: {e}")
+
+    logger.info(f"sync_completions_from_reminders: updated {updated} task lines")
+    return updated
 
 
 def clear_do_today() -> None:
