@@ -665,6 +665,85 @@ def run_orchestration(
     }
 
 
+def repair_missing_transcripts(dry_run: bool = False) -> dict:
+    """
+    Scan Vault/Notes/ for -Full.md files missing the <details> transcript
+    section, find their SRT in Processed/Plaud/, and append the collapsible
+    transcript with absolute timestamps.
+
+    Called by overnight_processor.py to auto-fix files that were ingested
+    before the transcript feature existed or on platforms (e.g. iOS) that
+    skipped transcript stitching.
+
+    Returns:
+        {"scanned": int, "repaired": int, "skipped": int, "errors": list[str]}
+    """
+    stats = {"scanned": 0, "repaired": 0, "skipped": 0, "errors": []}
+
+    if not VAULT_NOTES_DIR.exists():
+        return stats
+
+    full_files = sorted(VAULT_NOTES_DIR.glob("*-Full.md"))
+    stats["scanned"] = len(full_files)
+
+    for full_path in full_files:
+        try:
+            content = full_path.read_text(encoding="utf-8", errors="replace")
+
+            # Already has transcript section — skip
+            if "<details>" in content and "Full Transcript" in content:
+                stats["skipped"] += 1
+                continue
+
+            # Derive session base name from filename
+            base_name = full_path.stem.removesuffix("-Full")
+
+            # Look for SRT in Processed/Plaud/
+            srt_paths = sorted(PROCESSED_DIR.glob(f"{base_name}-transcript*.srt"))
+            if not srt_paths:
+                stats["skipped"] += 1
+                continue
+
+            # Read and format transcript
+            raw_srt = "\n\n".join(
+                p.read_text(encoding="utf-8", errors="replace") for p in srt_paths
+            )
+
+            substantive = _count_substantive_segments(raw_srt)
+            if substantive < MIN_TRANSCRIPT_SEGMENTS:
+                log.info(f"  {full_path.name}: below quality threshold ({substantive} segments) — skipping")
+                stats["skipped"] += 1
+                continue
+
+            session_date = _extract_session_date(base_name)
+            transcript_md = format_srt_as_markdown(raw_srt, session_date=session_date)
+
+            if dry_run:
+                log.info(f"  [DRY RUN] Would append transcript to {full_path.name} ({substantive} segments)")
+                stats["repaired"] += 1
+                continue
+
+            # Append collapsible transcript section
+            transcript_block = (
+                "\n<details>\n"
+                "<summary><strong>Full Transcript</strong></summary>\n\n"
+                f"{transcript_md}\n\n"
+                "</details>\n"
+            )
+
+            # Remove trailing whitespace and append
+            updated = content.rstrip() + "\n\n" + transcript_block
+            full_path.write_text(updated, encoding="utf-8")
+            log.info(f"  Repaired: {full_path.name} (+{substantive} segments)")
+            stats["repaired"] += 1
+
+        except Exception as e:
+            log.error(f"  Repair failed for {full_path.name}: {e}")
+            stats["errors"].append(f"{full_path.name}: {e}")
+
+    return stats
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Process Plaud inbox files into consolidated vault notes",
