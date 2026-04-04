@@ -667,9 +667,9 @@ def run_orchestration(
 
 def repair_missing_transcripts(dry_run: bool = False) -> dict:
     """
-    Scan Vault/Notes/ for -Full.md files missing the <details> transcript
-    section, find their SRT in Processed/Plaud/, and append the collapsible
-    transcript with absolute timestamps.
+    Scan all of Vault/ recursively for -Full.md files missing the <details>
+    transcript section, find their SRT in Processed/Plaud/, and append the
+    collapsible transcript with absolute timestamps.
 
     Called by overnight_processor.py to auto-fix files that were ingested
     before the transcript feature existed or on platforms (e.g. iOS) that
@@ -680,10 +680,12 @@ def repair_missing_transcripts(dry_run: bool = False) -> dict:
     """
     stats = {"scanned": 0, "repaired": 0, "skipped": 0, "errors": []}
 
-    if not VAULT_NOTES_DIR.exists():
+    vault_dir = VAULT_HOME / "Vault"
+    if not vault_dir.exists():
         return stats
 
-    full_files = sorted(VAULT_NOTES_DIR.glob("*-Full.md"))
+    # Scan entire Vault recursively — files may be in Notes/, Personal/, HarmonicInternal/, etc.
+    full_files = sorted(vault_dir.rglob("*-Full.md"))
     stats["scanned"] = len(full_files)
 
     for full_path in full_files:
