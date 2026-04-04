@@ -16,6 +16,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).parent))  # System/Scripts/ for clean_md_processor etc.
 
 logging.basicConfig(
     level=logging.INFO,
