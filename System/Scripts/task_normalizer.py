@@ -163,6 +163,7 @@ def run_normalizer(
         "stale_flagged": 0,
         "completed_today": 0,
         "completed_today_list": [],
+        "completions_from_reminders": 0,
         "synced_to_reminders": 0,
         "errors": [],
         "format_breakdown": {},
