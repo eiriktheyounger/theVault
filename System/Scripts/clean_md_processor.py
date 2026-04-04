@@ -506,7 +506,8 @@ def process_session(
             # Quality gate: skip transcript if mostly filler/noise
             substantive = _count_substantive_segments(raw_srt)
             if substantive >= MIN_TRANSCRIPT_SEGMENTS:
-                transcript_md = format_srt_as_markdown(raw_srt)
+                session_date = _extract_session_date(base_name)
+                transcript_md = format_srt_as_markdown(raw_srt, session_date=session_date)
                 log.info(f"  Transcript formatted: {len(transcript_md):,} chars ({substantive} substantive segments)")
             else:
                 log.info(f"  Transcript below quality threshold ({substantive} < {MIN_TRANSCRIPT_SEGMENTS} substantive segments) — skipping append")
