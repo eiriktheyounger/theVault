@@ -249,6 +249,11 @@ def run_normalizer(
             except Exception as e:
                 logger.warning(f"Completions sync failed: {e}")
             try:
+                from System.Scripts.task_reminders_sync import sync_completions_to_reminders
+                report["completions_to_reminders"] = sync_completions_to_reminders(tasks)
+            except Exception as e:
+                logger.warning(f"Completion push to Reminders failed: {e}")
+            try:
                 from System.Scripts.task_reminders_sync import sync_new_tasks_from_reminders
                 report["new_tasks_from_reminders"] = sync_new_tasks_from_reminders(VAULT_PATH)
             except Exception as e:
