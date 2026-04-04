@@ -306,6 +306,18 @@ def run_normalizer(
             logger.warning(f"Completions sync failed: {e}")
             report["errors"].append(f"Completions sync: {e}")
 
+    # ── Step 7.6: Import new Reminders tasks → today's DLY ──
+    if sync_reminders:
+        try:
+            from System.Scripts.task_reminders_sync import sync_new_tasks_from_reminders
+            new_imported = sync_new_tasks_from_reminders(VAULT_PATH)
+            report["new_tasks_from_reminders"] = new_imported
+        except ImportError:
+            logger.info("New task import skipped (module not available)")
+        except Exception as e:
+            logger.warning(f"New task import failed: {e}")
+            report["errors"].append(f"New task import: {e}")
+
     # ── Step 8: Apple Reminders sync ──
     if sync_reminders:
         try:
