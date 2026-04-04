@@ -361,6 +361,7 @@ def format_report(report: dict) -> str:
     for task_text in report.get("completed_today_list", []):
         lines.append(f"  - {task_text}")
     lines.append(f"- **Completions from Reminders**: {report.get('completions_from_reminders', 0)}")
+    lines.append(f"- **New tasks from Reminders**: {report.get('new_tasks_from_reminders', 0)}")
     lines.append(f"- **Synced to Reminders**: {report.get('synced_to_reminders', 0)}")
 
     if report.get("errors"):
