@@ -164,6 +164,7 @@ def run_normalizer(
         "completed_today": 0,
         "completed_today_list": [],
         "completions_from_reminders": 0,
+        "completions_to_reminders": 0,
         "new_tasks_from_reminders": 0,
         "synced_to_reminders": 0,
         "errors": [],
