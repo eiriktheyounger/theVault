@@ -130,7 +130,7 @@ def sync_completions_from_reminders() -> int:
     # Fetch completed reminders from the Vault list
     try:
         completed_reminders = [
-            r for r in rk.get_reminders(list_id=vault_list_id, completed=True)
+            r for r in rk.get_reminders(calendar_id=vault_list_id, is_completed=True)
             if r.notes and "Key:" in r.notes
         ]
     except Exception as e:
