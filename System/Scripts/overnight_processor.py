@@ -198,7 +198,7 @@ def main(target_date=None):
 - Processed at: {timestamp}
 - Captures length: {len(captures)} chars
 - Tasks extracted: {len([l for l in tasks.splitlines() if l.strip().startswith('- [')])}
-"""
+{repair_text}"""
 
     # Write back
     new_content = write_section(
