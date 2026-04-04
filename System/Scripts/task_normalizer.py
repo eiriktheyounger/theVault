@@ -241,6 +241,23 @@ def run_normalizer(
             "last_run": datetime.now().isoformat(),
             "tasks_processed": len(tasks),
         })
+        # Still run Reminders sync even when no normalization needed
+        if sync_reminders:
+            try:
+                from System.Scripts.task_reminders_sync import sync_completions_from_reminders
+                report["completions_from_reminders"] = sync_completions_from_reminders()
+            except Exception as e:
+                logger.warning(f"Completions sync failed: {e}")
+            try:
+                from System.Scripts.task_reminders_sync import sync_new_tasks_from_reminders
+                report["new_tasks_from_reminders"] = sync_new_tasks_from_reminders(VAULT_PATH)
+            except Exception as e:
+                logger.warning(f"New task import failed: {e}")
+            try:
+                from System.Scripts.task_reminders_sync import sync_tasks_to_reminders
+                report["synced_to_reminders"] = sync_tasks_to_reminders(tasks, {}, {})
+            except Exception as e:
+                logger.warning(f"Reminders sync failed: {e}")
         return report
 
     # ── Step 4: Categorize ──
