@@ -244,7 +244,7 @@ def sync_new_tasks_from_reminders(vault_path: Optional[Path] = None) -> int:
     # Fetch incomplete reminders without a Key (native Reminders tasks)
     try:
         new_reminders = [
-            r for r in rk.get_reminders(list_id=vault_list_id, completed=False)
+            r for r in rk.get_reminders(calendar_id=vault_list_id, is_completed=False)
             if not r.notes or "Key:" not in r.notes
         ]
     except Exception as e:
