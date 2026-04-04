@@ -6,7 +6,7 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 
 | Session | Working On | Files Touched | Updated |
 |---------|-----------|---------------|---------|
-| CLI Opus (naughty-shaw) | **Active** — Plaud transcript enhancement: collapsible `<details>` with absolute datetime stamps. Pipeline finalization review. | clean_md_processor.py, memory files, SHARED_CONTEXT | 2026-04-04 |
+| CLI Opus (naughty-shaw) | **Active** — Plaud transcript enhancement done. Repair expanded to recursive Vault scan (80 files). classify_content.py manifest reviewed + verified by Sonnet, ready for --apply. ML learning loop confirmed. | clean_md_processor.py, classify_content.py (reviewed), memory files, SHARED_CONTEXT | 2026-04-04 |
 | CLI Sonnet (condescending-mccarthy) | **Idle** — Last: clean_md_processor.py --reprocess scoped to existing Vault/Notes/ output only (no subdirs). morning_workflow.py _load_dotenv() fix. Memory/SHARED_CONTEXT sync. | System/Scripts/clean_md_processor.py, memory/project_plaud_processor.md, SHARED_CONTEXT | 2026-04-03 |
 | CLI Haiku (silly-gauss) | **Active** — overnight_processor.py API key fix (logger init order). Overnight run for 2026-04-02 SUCCESS: Haiku summary generated, 9 tasks normalized, reminders synced. | System/Scripts/overnight_processor.py, SHARED_CONTEXT | 2026-04-03 08:14 |
 | Sonnet Desktop | **Idle/Unknown** — Last known: building classify_content.py (2026-03-30). | System/Scripts/Workflows/classify_content.py, rag_data/classification.db | 2026-03-30 |
