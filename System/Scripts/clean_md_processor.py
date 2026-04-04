@@ -110,11 +110,28 @@ def _fmt_ts(h: str, m: str, s: str) -> str:
     return f"{h}:{m}:{s}"
 
 
-def format_srt_as_markdown(content: str) -> str:
+def _extract_session_date(base_name: str) -> str:
+    """
+    Extract an ISO date (YYYY-MM-DD) from the session base name.
+
+    Filename convention is 'MM-DD Title...' — we combine with the current year.
+    Returns empty string if no date pattern found.
+    """
+    date_match = re.match(r"^(\d{2})-(\d{2})\s", base_name)
+    if date_match:
+        year = datetime.now().year
+        return f"{year}-{date_match.group(1)}-{date_match.group(2)}"
+    return ""
+
+
+def format_srt_as_markdown(content: str, session_date: str = "") -> str:
     """
     Convert raw SRT content into a readable markdown transcript.
 
-    Output format per segment:
+    If session_date is provided (e.g. '2026-03-24'), timestamps become absolute:
+        **[2026-03-24 01:23 → 01:45]** **Speaker Name:** Dialogue text here.
+
+    Otherwise falls back to relative timestamps:
         **[01:23 → 01:45]** **Speaker Name:** Dialogue text here.
 
     Segments are separated by blank lines for readability.
@@ -122,6 +139,7 @@ def format_srt_as_markdown(content: str) -> str:
     segments: list[str] = []
     current_ts = ""
     current_text_lines: list[str] = []
+    date_prefix = f"{session_date} " if session_date else ""
 
     def _flush():
         if current_text_lines:
@@ -147,7 +165,7 @@ def format_srt_as_markdown(content: str) -> str:
             current_text_lines = []
             start = _fmt_ts(ts_match.group(1), ts_match.group(2), ts_match.group(3))
             end = _fmt_ts(ts_match.group(4), ts_match.group(5), ts_match.group(6))
-            current_ts = f"**[{start} → {end}]**"
+            current_ts = f"**[{date_prefix}{start} → {end}]**"
             continue
 
         # Text line — bold the speaker label if present
