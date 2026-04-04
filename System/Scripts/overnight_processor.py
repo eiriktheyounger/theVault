@@ -167,6 +167,23 @@ def main(target_date=None):
     except Exception as e:
         logger.error(f"Vault activity tracking failed: {e}")
 
+    # ── Plaud Transcript Repair ─────────────────────────────────────────────────
+    # Auto-fix any -Full.md files missing collapsible transcript sections
+    # (e.g. processed on iOS or before the transcript feature was added)
+    repair_text = ""
+    try:
+        from clean_md_processor import repair_missing_transcripts
+        repair_stats = repair_missing_transcripts(dry_run=False)
+        repaired = repair_stats.get("repaired", 0)
+        if repaired > 0:
+            logger.info(f"Transcript repair: {repaired} files fixed")
+            repair_text = f"\n- Transcript repair: {repaired} file(s) updated"
+        else:
+            logger.info("Transcript repair: all files OK")
+    except Exception as e:
+        logger.error(f"Transcript repair failed: {e}")
+        repair_text = f"\n- Transcript repair error: {e}"
+
     # Build overnight section
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
     overnight_content = f"""
