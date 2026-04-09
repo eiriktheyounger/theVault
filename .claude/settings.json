@@ -27,7 +27,7 @@
           {
             "type": "command",
             "async": true,
-            "command": "INPUT=$(cat); FILE_PATH=$(echo \"$INPUT\" | grep -o '\"file_path\"[[:space:]]*:[[:space:]]*\"[^\"]*\"' | head -1 | sed 's/.*\"\\([^\"]*\\)\"$/\\1/'); case \"$FILE_PATH\" in *memory/*|*SHARED_CONTEXT*|*DesktopClaudeCode/*|*CLAUDE.md) bash ~/theVault/System/Scripts/sync_session_state.sh 'hook:PostToolUse' 2>/dev/null ;; esac"
+            "command": "INPUT=$(cat); FILE_PATH=$(echo \"$INPUT\" | grep -o '\"file_path\"[[:space:]]*:[[:space:]]*\"[^\"]*\"' | head -1 | sed 's/.*\"\\([^\"]*\\)\"$/\\1/'); case \"$FILE_PATH\" in *memory/*|*SHARED_CONTEXT*|*DesktopClaudeCode/*|*CLAUDE.md) bash ~/theVault/System/Scripts/sync_session_state.sh 'hook:PostToolUse' 2>/dev/null; bash ~/theVault/System/Scripts/sync_memory_to_repo.sh 2>/dev/null ;; esac"
           }
         ]
       }
