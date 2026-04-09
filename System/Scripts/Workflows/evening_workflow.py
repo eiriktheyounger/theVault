@@ -347,10 +347,13 @@ class EveningWorkflow:
             month = date_obj.strftime("%m")
             review_path = self.vault_path / "TimeTracking" / year / month / f"Evening_Review_{self.date}.md"
 
+            # Create review file if it doesn't exist
             if not review_path.exists():
-                step.error("Review file not found")
+                review_path.parent.mkdir(parents=True, exist_ok=True)
+                initial_content = f"# Evening Review — {self.date}\n\n## Day Summary\n\n## Completed Today\n\n## Pending Items\n\n"
+                review_path.write_text(initial_content, encoding="utf-8")
+                step.update_progress(45, ["Created review file"])
                 self._notify_callback(step)
-                return False
 
             step.update_progress(60, ["Generating tomorrow's focus..."])
             self._notify_callback(step)
