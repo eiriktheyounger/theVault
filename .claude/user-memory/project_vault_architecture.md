@@ -28,6 +28,15 @@ type: project
 
 **Chunk/vector counts (as of 2026-03-30):** 47,496 chunks in SQLite / 53,381 vectors in FAISS (95.8% coverage after full rebuild)
 
+**Multi-machine setup (2026-04-05):**
+- Mac Mini M4: production server, cron jobs, NAS-connected, FAISS index, Ollama
+- MacBook Air: development, Obsidian management, daily workflows, Claude Code Desktop
+- Sync: Git (code + memory) + Obsidian Sync (vault content). No overlap.
+- User memory: `~/.claude/projects/-Users-ericmanchester-theVault/memory/` (23 files) synced to git via `theVault/.claude/user-memory/` + `sync_memory_to_repo.sh`
+- `check_nas.sh` is hostname-aware: skips NAS check on non-Mac-Mini machines, validates Vault symlink instead
+- Laptop Vault symlink: same pattern (`~/theVault/Vault`) — points to Obsidian Sync local copy or NAS when on home network
+- Migration plan: `.agents/LAPTOP_MIGRATION_PLAN.md`
+
 **Why:** Local-first AI knowledge management; NAS-backed vault for persistence and Obsidian sync.
 
-**How to apply:** Always start server from `~/theVault` root with full package path. Never use hnswlib. Use absolute paths for NAS traversal.
+**How to apply:** Always start server from `~/theVault` root with full package path. Never use hnswlib. Use absolute paths for NAS traversal. On laptop, run `check_nas.sh` first — it auto-detects machine type.
