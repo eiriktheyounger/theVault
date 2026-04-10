@@ -19,7 +19,8 @@ type: reference
 | Plaud processor | `System/Scripts/clean_md_processor.py` | Built 2026-03-25. Inbox → Vault/Notes. Public API: `run_orchestration()` |
 | FAISS indexer | `System/Scripts/RAG/retrieval/indexer.py` | Builds/updates vector index |
 | Embedding repair | `System/Scripts/RAG/repair_embeddings.py` | Finds orphan chunks missing FAISS vectors, re-embeds them. --dry-run first. |
-| Content classifier | `System/Scripts/Workflows/classify_content.py` | Haiku-powered file classification with learning DB. EXISTS (689 lines). Path bug fixed 2026-04-02. Needs production test run. |
+| Content classifier | `System/Scripts/Workflows/classify_content.py` | Haiku-powered file classification with learning DB. EXISTS (689 lines). Path bug fixed 2026-04-02. Hostname-aware NAS check added 2026-04-10 (works on laptop). |
+| Laptop setup guide | `LAPTOP_SETUP_GUIDE.md` | MacBook Air setup: symlinks, memory sync, what works on laptop vs Mac Mini. Rewritten 2026-04-10. |
 | Services manager | `System/Scripts/Services/` | start_all.py, stop_all.py, emergency_kill.py — manages Ollama + RAG server (built 2026-04-02) |
 | Orchestration entry | `System/Scripts/orchestration_system_start.py` | Triggers Plaud + email ingest pipelines; wired into `/ingest/start` API (built 2026-04-02) |
 | Daily dashboard | `System/Scripts/generate_daily_dashboard.py` | Aggregates open tasks + vault activity into TimeTracking/ (built 2026-04-02) |
