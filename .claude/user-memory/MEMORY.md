@@ -11,7 +11,7 @@
 - [feedback_model_delegation.md](feedback_model_delegation.md) — Opus plans/orchestrates, Sonnet builds complex code, Haiku handles mechanical edits + verification. Minimize token cost.
 
 ## Project
-- [project_priorities_2026_03.md](project_priorities_2026_03.md) — **Locked priority map (P0-P3) + parking lot.** Most P0/P1 done. Open: bidirectional Reminders sync (Phase 1), rag_qa_agent.py. Updated 2026-04-04.
+- [project_priorities_2026_03.md](project_priorities_2026_03.md) — **Locked priority map (P0-P3) + parking lot.** Most P0-P2 done. Laptop migration COMPLETE 2026-04-10. Open: rag_qa_agent.py. Updated 2026-04-10.
 - [project_vault_architecture.md](project_vault_architecture.md) — theVault system architecture, key paths, ports, and services. Ollama models updated (llama3.1:8b removed 2026-04-02). Services/ dir added.
 - [project_cleanup_2026_03.md](project_cleanup_2026_03.md) — March 2026 cleanup: what's archived, what's canonical, gap status (updated as gaps close)
 - [project_plaud_processor.md](project_plaud_processor.md) — clean_md_processor.py: Plaud inbox pipeline built 2026-03-25, design, first-run notes, remaining gaps
