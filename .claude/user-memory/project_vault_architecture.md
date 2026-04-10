@@ -28,14 +28,19 @@ type: project
 
 **Chunk/vector counts (as of 2026-03-30):** 47,496 chunks in SQLite / 53,381 vectors in FAISS (95.8% coverage after full rebuild)
 
-**Multi-machine setup (2026-04-05):**
+**Multi-machine setup (COMPLETE 2026-04-10):**
 - Mac Mini M4: production server, cron jobs, NAS-connected, FAISS index, Ollama
-- MacBook Air: development, Obsidian management, daily workflows, Claude Code Desktop
+- MacBook Air (lap3071): development, Obsidian management, Claude Code Desktop (Opus)
 - Sync: Git (code + memory) + Obsidian Sync (vault content). No overlap.
-- User memory: `~/.claude/projects/-Users-ericmanchester-theVault/memory/` (23 files) synced to git via `theVault/.claude/user-memory/` + `sync_memory_to_repo.sh`
+- User memory: `~/.claude/projects/-Users-emanches-theVault/memory/` (23 files) synced to git via `theVault/.claude/user-memory/` + `sync_memory_to_repo.sh`
 - `check_nas.sh` is hostname-aware: skips NAS check on non-Mac-Mini machines, validates Vault symlink instead
-- Laptop Vault symlink: same pattern (`~/theVault/Vault`) — points to Obsidian Sync local copy or NAS when on home network
-- Migration plan: `.agents/LAPTOP_MIGRATION_PLAN.md`
+- `classify_content.py` also made hostname-aware (2026-04-10): same `scutil --get ComputerName` pattern
+- Laptop Vault symlink: `~/theVault/Vault → /Users/emanches/NeroSpicy/Vault` (Obsidian Sync delivers here)
+- Laptop Inbox/Processed: local stub directories (not NAS symlinks) — `mkdir -p Inbox/Plaud/MarkdownOnly Processed/Plaud`
+- API key: set in `~/.zshrc` + `~/theVault/.env`
+- E2E validation: 12/12 functional tests passing (2026-04-10)
+- Setup guide: `LAPTOP_SETUP_GUIDE.md` (rewritten 2026-04-10)
+- Migration plan (reference): `.agents/LAPTOP_MIGRATION_PLAN.md`
 
 **Why:** Local-first AI knowledge management; NAS-backed vault for persistence and Obsidian sync.
 
