@@ -59,7 +59,7 @@ def _embed_single(url: str, model: str, text: str, options: dict) -> List[float]
         headers={"Content-Type": "application/json"},
     )
     try:
-        with urllib.request.urlopen(req, timeout=60) as r:
+        with urllib.request.urlopen(req, timeout=180) as r:
             data = json.loads(r.read().decode("utf-8"))
         embs = data.get("embeddings", [])
         if embs and isinstance(embs[0], list) and embs[0]:
