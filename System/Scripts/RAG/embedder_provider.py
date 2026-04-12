@@ -88,7 +88,7 @@ def _encode_ollama(host: str, model: str, texts: List[str]) -> List[List[float]]
         headers={"Content-Type": "application/json"},
     )
     try:
-        with urllib.request.urlopen(req, timeout=120) as r:
+        with urllib.request.urlopen(req, timeout=180) as r:
             data = json.loads(r.read().decode("utf-8"))
         embeddings = data.get("embeddings", [])
         if isinstance(embeddings, list) and len(embeddings) == len(texts):
