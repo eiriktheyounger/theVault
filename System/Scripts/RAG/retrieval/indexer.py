@@ -20,7 +20,7 @@ except Exception:
     EXCLUDE_GLOBS: list[str] = []
 from .store import get_sqlite_rw, rebuild_chunks_from_vault
 
-PROGRESS_EVERY = 64  # Reverted: batch size doesn't help; trying context reduction instead
+PROGRESS_EVERY = 16  # Reduced: batch operations timeout at 64; smaller batches more reliable
 
 
 def _load_last_index_ts(path: Path) -> float:
