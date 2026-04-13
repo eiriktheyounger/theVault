@@ -28,7 +28,7 @@ def _pick_embed_model(cfg_model: Optional[str]) -> str:
 
 # --- Minimal Ollama embeddings client ---------------------------------------
 
-EMBED_CTX = int(os.getenv("EMBED_CTX", "1024"))  # Reduced from 2048 to improve embed speed
+EMBED_CTX = int(os.getenv("EMBED_CTX", "512"))  # Reduced from 1024 to improve embed reliability
 _CLAMP_LOGGED = False
 log = logging.getLogger("embedder")
 _backend: str | None = None  # 'ollama' | 'sentence-transformer'
