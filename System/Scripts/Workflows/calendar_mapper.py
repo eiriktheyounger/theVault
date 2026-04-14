@@ -221,17 +221,12 @@ class CalendarMapper:
             return []
 
         try:
-            # Get calendar by name
-            calendars = self.eventkit_store.calendarsForEntityType_(EKEntityTypeEvent)
-            target_calendar = None
+            # Get calendars by name — supports multiple
+            all_calendars = self.eventkit_store.calendarsForEntityType_(EKEntityTypeEvent)
+            target_calendars = [c for c in all_calendars if c.title() in self.calendar_names]
 
-            for calendar in calendars:
-                if calendar.title() == self.calendar_name:
-                    target_calendar = calendar
-                    break
-
-            if not target_calendar:
-                logger.error(f"Calendar '{self.calendar_name}' not found")
+            if not target_calendars:
+                logger.error(f"None of these calendars found: {self.calendar_names}")
                 return []
 
             # Convert to NSDate
@@ -240,7 +235,7 @@ class CalendarMapper:
 
             # Create predicate
             predicate = self.eventkit_store.predicateForEventsWithStartDate_endDate_calendars_(
-                ns_start, ns_end, [target_calendar]
+                ns_start, ns_end, target_calendars
             )
 
             # Fetch events
