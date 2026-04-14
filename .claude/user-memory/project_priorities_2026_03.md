@@ -43,7 +43,7 @@ type: project
 
 11. ✅ **RAG full rebuild** — DONE 2026-03-30. 53,381 vectors in FAISS (up from 42,293, +26%). Coverage 95.8%. batch_reindex.py, 10/10 batches clean. Q/A gate still missing (rag_qa_agent.py not found).
 
-12. **RAG Q/A gate** — `System/Scripts/rag_qa_agent.py` missing; quality gate always skipped post-rebuild.
+12. ✅ **RAG Q/A gate** — BUILT 2026-04-14. `System/Scripts/rag_qa_agent.py` with 18 test cases, Haiku grader, markdown report, exit codes (0/1/2). Quality gate ready for production.
 
 13. ✅ **RAG index rebuild (100%)** — DONE 2026-04-13. 61,903/61,903 chunks (100% coverage). Root cause: EMBED_CTX context window. Solution: EMBED_CTX=512. Previous 95.8% coverage superseded.
 
