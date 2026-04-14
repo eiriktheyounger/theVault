@@ -7,7 +7,7 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 | Session | Working On | Files Touched | Updated |
 |---------|-----------|---------------|---------|
 | CLI Opus | **Gemma 4 Session 6 COMPLETE** — Full validation passed. Post-build report written. CLAUDE.md updated. All 52 capabilities verified, 0 regressions. | CLAUDE.md, post-build-report.md, SHARED_CONTEXT.md | **2026-04-14** |
-| **Sonnet Desktop** | **Task 1 COMPLETE (rag_qa_agent.py), Task 2 IN PROGRESS (calendar integration)** | System/Scripts/rag_qa_agent.py | **2026-04-14** |
+| **Sonnet Desktop** | **Tasks 1+2 COMPLETE** — rag_qa_agent.py (18 tests, Haiku grader, markdown report, exit 0/1/2), calendar integration (calendar_daily_injector.py, generate_weekly_summary.py, calendar_mapper.py updated, morning_workflow.py Steps 2+6, evening_workflow.py Sunday WKY trigger, overnight_processor.py 1st-of-month MTH trigger). | System/Scripts/rag_qa_agent.py, System/Scripts/calendar_daily_injector.py, System/Scripts/generate_weekly_summary.py, System/Scripts/Workflows/calendar_mapper.py, System/Scripts/Workflows/morning_workflow.py, System/Scripts/Workflows/evening_workflow.py, System/Scripts/overnight_processor.py | **2026-04-14** |
 | **CLI Haiku** | **HAIKU_BRIEFING Tasks 1+2+3 COMPLETE** — Fixed RAG incremental indexing defaults, updated OPERATIONS-INDEX.md (models, chunks, versions), created QUICK-REFERENCE.md. All 3 tasks done. | System/Scripts/RAG/retrieval/indexer.py, System/Scripts/batch_reindex.py, Vault/System/OPERATIONS-INDEX.md, Vault/System/QUICK-REFERENCE.md, SHARED_CONTEXT.md | **2026-04-14** |
 
 ## Current System State (2026-04-14)
