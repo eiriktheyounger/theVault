@@ -6,6 +6,7 @@ from uuid import uuid4
 from fastapi import APIRouter, Request
 from pydantic import BaseModel, Field
 
+from ..config import OLLAMA_HOST
 from ..logs.service import write_llm_debug, write_log
 from ..storage.chats import (
     append_jsonl,
