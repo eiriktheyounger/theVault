@@ -33,7 +33,7 @@ Planning complete (Session 0, 9 docs at `Vault/Sessions/gemma4-integration/`). B
 | 2. Core Server | Sonnet | config.py, server.py, _strip_thinking() | **COMPLETE (2026-04-14)** |
 | 3. Route Whitelist | Haiku | query.py, fast.py, deep.py, models metadata | **COMPLETE (2026-04-14)** |
 | 4. Batch Scripts | Haiku | 5 scripts with hardcoded model names | **COMPLETE (2026-04-14)** |
-| 5. UI + Cosmetic | Haiku | Chat.tsx, Settings.tsx, health.py, chat_cli.py | In Progress |
+| 5. UI + Cosmetic | Haiku | Chat.tsx, Settings.tsx, health.py, chat_cli.py | **COMPLETE (2026-04-14)** |
 | 6. Validation | Opus | Full smoke test, quality comparison | Blocked on S3+S4+S5 |
 
 **Dependency graph:** S1 → S2 → S3 → S5 → S6, S1 → S4 → S6
