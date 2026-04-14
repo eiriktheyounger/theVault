@@ -51,7 +51,7 @@ Planning complete (Session 0, 9 docs at `Vault/Sessions/gemma4-integration/`). B
 - **⚠️ Known issue**: Ollama usage tokens always 0 — /api/chat uses eval_count/prompt_eval_count, not usage{}. Pre-existing, not Session 2 scope.
 - **Gemma 4 Session 3 DONE** — Haiku completed 2026-04-14. query.py default model (line 26) qwen2.5:7b→gemma4:e4b, VALID_MODELS added gemma4:e4b (line 220), /models endpoint updated gemma4:e4b (line 375). fast.py imported FAST_CTX, num_ctx hardcoded 2048→FAST_CTX (line 58). deep.py imported OLLAMA_HOST, URL hardcoded→OLLAMA_HOST (line 81). All files parse OK.
 - **Gemma 4 Session 4 DONE** — Haiku Desktop completed 2026-04-14. Updated 5 batch scripts (overnight_processor, clean_md_processor, daily_vault_activity, email_thread_ingester/summarizer, task_categorizer). All imports OK, FAISS canary verified.
-- **Gemma 4 Session 5 → Haiku**: Chat.tsx, Settings.tsx, health.py, chat_cli.py (stale model defaults and UI references). Prerequisite: S3 complete ✅.
+- **Gemma 4 Session 5 DONE** — Haiku completed 2026-04-14. Chat.tsx: DEFAULT_MODEL qwen2.5:7b→gemma4:e4b (line 94), MODEL_INFO replaced qwen2.5:7b with gemma4:e4b (line 68). Settings.tsx: deepModel default qwen2.5:7b→gemma4:e4b (line 13). health.py: Removed os.getenv with hardcoded defaults, imported FAST_MODEL/DEEP_MODEL from config (lines 7-8). chat_cli.py: CHAT_MODEL default phi3:mini→gemma4:e4b (line 37). All Python files parse OK.
 
 ## Prior Work (Archived — for reference only)
 
