@@ -511,7 +511,7 @@ class MorningWorkflow:
             step.update_progress(20, ["Reading Work calendar..."])
             self._notify_callback(step)
 
-            mapper = CalendarMapper(self.vault_path, calendar_name="Work")
+            mapper = CalendarMapper(self.vault_path, calendar_names=["ExchangeCalendar"])
 
             step.update_progress(50, ["Matching files to meetings..."])
             self._notify_callback(step)
