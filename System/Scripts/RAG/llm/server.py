@@ -724,7 +724,7 @@ async def fast_endpoint(request: Request) -> Dict[str, Any]:
         context_paths = result.get("citations", []) or []
         prompt = fast_phi3.prompt(context=context, question=q)
         log.info("LLM call: mode=%s model=%s", "fast", FAST_MODEL)
-        j = await ollama_generate(FAST_MODEL, prompt, system)
+        j = await ollama_generate(FAST_MODEL, prompt, system, num_ctx=4096)
         if j.get("ok") is False:
             envelope = _normalize_answer_field(
                 {
@@ -742,7 +742,7 @@ async def fast_endpoint(request: Request) -> Dict[str, Any]:
             envelope["contract_version"] = "v2"
             envelope["text"] = ""
             return envelope
-        raw = (j.get("response") or j.get("message", {}).get("content") or "").strip()
+        raw = _strip_thinking((j.get("response") or j.get("message", {}).get("content") or "").strip())
         try:
             ans = json.loads(raw)
         except Exception:
