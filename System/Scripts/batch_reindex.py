@@ -152,9 +152,9 @@ def main():
         total_chunks = con.execute("SELECT COUNT(*) FROM chunks").fetchone()[0]
         print(f"Total chunks in database: {total_chunks:,}")
 
-        # Trigger vector index rebuild
+        # Trigger vector index rebuild (full rebuild — batch_reindex.py is explicit full-rebuild tool)
         print("Encoding embeddings and building FAISS index...")
-        reindex(incremental=False)
+        reindex(full=True)
 
         print("\n✓ Vector index rebuilt successfully!")
 
