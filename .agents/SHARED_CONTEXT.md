@@ -7,7 +7,7 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 | Session | Working On | Files Touched | Updated |
 |---------|-----------|---------------|---------|
 | CLI Opus | **Gemma 4 Session 6 COMPLETE** — Full validation passed. Post-build report written. CLAUDE.md updated. All 52 capabilities verified, 0 regressions. | CLAUDE.md, post-build-report.md, SHARED_CONTEXT.md | **2026-04-14** |
-| **Sonnet Desktop** | **Gemma 4 Sessions 1+2 COMPLETE** — Ollama 0.20.7, E4B serving, config.py+server.py updated, _strip_thinking()+code-fence stripping, per-endpoint num_ctx+timeout, starlette pinned 0.37.2. /fast+/deep verified no think tags. | System/Scripts/RAG/config.py, llm/server.py | **2026-04-14** |
+| **Sonnet Desktop** | **Task 1 COMPLETE (rag_qa_agent.py), Task 2 IN PROGRESS (calendar integration)** | System/Scripts/rag_qa_agent.py | **2026-04-14** |
 | **CLI Haiku** | **HAIKU_BRIEFING Tasks 1+2+3 COMPLETE** — Fixed RAG incremental indexing defaults, updated OPERATIONS-INDEX.md (models, chunks, versions), created QUICK-REFERENCE.md. All 3 tasks done. | System/Scripts/RAG/retrieval/indexer.py, System/Scripts/batch_reindex.py, Vault/System/OPERATIONS-INDEX.md, Vault/System/QUICK-REFERENCE.md, SHARED_CONTEXT.md | **2026-04-14** |
 
 ## Current System State (2026-04-14)
