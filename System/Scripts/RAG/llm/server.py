@@ -887,7 +887,7 @@ async def deep_endpoint(payload: DeepRequest) -> Dict[str, Any]:
             return {"text": raw, "mode": "deep", "citations": []}
         prompt = deep_llama.prompt(context=context, question=q)
         log.info("LLM call: mode=%s model=%s", "deep", DEEP_MODEL)
-        j = await ollama_generate(DEEP_MODEL, prompt, system, num_ctx=16384)
+        j = await ollama_generate(DEEP_MODEL, prompt, system, num_ctx=16384, timeout=180.0)
         if j.get("ok") is False:
             raise HTTPException(
                 status_code=502,
