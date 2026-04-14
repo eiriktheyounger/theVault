@@ -13,6 +13,7 @@ from fastapi import APIRouter, Request
 from pydantic import BaseModel, Field
 
 from ..config import (
+    FAST_CTX,
     FAST_MODEL,
     FORCE_NO_ABSTAIN_FAST,
     OLLAMA_HOST,
