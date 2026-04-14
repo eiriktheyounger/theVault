@@ -65,6 +65,11 @@ _This is the "distraction catcher." Good ideas that would pull focus from active
 - LinkedIn article writing / Substack
 - Plaud/ directory buildout (empty, unclear need)
 - Morning workflow `_step_organize_files` (disabled)
+- **PDF/PowerPoint Slide Processor** — E4B vision, ~300 lines, makes presentations searchable (spec at `Post-Gemma4-Integration.md`)
+- **Speechify-like TTS reader** — macOS `say` / Whisper / Coqui TTS for reading documents + web pages. Word/sentence highlighting for follow-along. Simple, document-focused variant (not full Speechify clone). Explore: macOS AVSpeechSynthesizer (free, built-in), or whisper.cpp for higher quality.
+- Photo/screenshot/receipt inbox processing (vision API pattern)
+- Whiteboard capture → diagrams + action items
+- **Tailscale remote control page** — once Tailscale is running, build a simple authenticated web page to trigger major processes (morning, evening, ingest, reindex, sync) from phone/laptop remotely
 
 **Why this structure:** Eric tends to rabbit-hole on interesting ideas. Parking lot prevents losing them while keeping execution focused on what moves the needle.
 

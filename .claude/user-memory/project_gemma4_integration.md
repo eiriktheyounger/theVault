@@ -1,10 +1,10 @@
 ---
-name: Gemma 4 Integration Planning
-description: Gemma 4 E4B integration into theVault — Session 0 planning complete (9 docs), 6 build sessions planned. Memory optimizations (flash attention, dynamic num_ctx), PDF vision processing post-build.
+name: Gemma 4 Integration
+description: Gemma 4 E4B integration COMPLETE 2026-04-14 — all 6 sessions done, 0 regressions, quality >= qwen2.5:7b. Post-build report at Vault/Sessions/gemma4-integration/post-build-report.md.
 type: project
 ---
 
-## Gemma 4 Integration — Session 0 COMPLETE (2026-04-12)
+## Gemma 4 Integration — ALL 6 SESSIONS COMPLETE (2026-04-14)
 
 **Verdict: GO** — gemma4:e4b replaces both gemma3:4b (FAST) and qwen2.5:7b (DEEP/INGEST). Single model avoids swap thrashing on 16GB.
 
@@ -25,13 +25,17 @@ type: project
 - Dynamic num_ctx: /fast=4096, /deep=16384, /api/query=32768, batch=8192
 - `OLLAMA_NUM_PARALLEL=1`, `OLLAMA_MAX_LOADED_MODELS=2`
 
-**Build sessions:** 6 total, ~$1.16, ~3-4 hours wall-clock
-- Sessions 1-2: Sonnet (infrastructure + core server)
-- Sessions 3-5: Haiku (routes, batch scripts, UI)
-- Session 6: Opus (validation)
-- Sessions 2+4 can run in parallel
+**Build sessions:** 6/6 COMPLETE (2026-04-14)
+- S1 (Sonnet): Ollama 0.20.7, E4B pulled, memory opts, Tailscale installed
+- S2 (Sonnet): config.py, server.py, _strip_thinking(), per-endpoint num_ctx
+- S3 (Haiku): routes updated (query, fast, deep)
+- S4 (Haiku): 5 batch scripts model names swapped
+- S5 (Haiku): UI + health + chat_cli updated
+- S6 (Opus): Full validation PASS — 52/52 capabilities, 0 regressions, quality >= qwen
 
-**Post-build:** PDF/PowerPoint vision processing via E4B (Sonnet, 1-2 hrs, after Sessions 1-6)
+**Post-build report:** `Vault/Sessions/gemma4-integration/post-build-report.md`
+
+**Remaining:** PDF/PowerPoint vision processing via E4B (Sonnet, 1-2 hrs, deferred)
 
 **Why:** E4B benchmarks higher than both current models. 128K context (up from 4096 silent truncation). Native vision + audio. Apache 2.0.
 

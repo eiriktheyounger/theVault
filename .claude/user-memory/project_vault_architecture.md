@@ -9,7 +9,7 @@ type: project
 **Services:**
 - RAG server: FastAPI, port 5055, started via `bash System/Scripts/start_server.sh`
 - LLM server: FastAPI, port 5111 (Ollama proxy) — separate service per CLAUDE.md
-- Ollama: port 11434, models: `qwen2.5:7b` (fast/default), `gemma3:4b` (fastest), `nomic-embed-text` (embeddings). `llama3.1:8b` and several others **removed** 2026-04-02 (~57GB reclaimed).
+- Ollama: port 11434 (v0.20.7), models: `gemma4:e4b` (FAST+DEEP, 9.6GB), `nomic-embed-text` (embeddings, 274MB). Legacy still installed: `qwen2.5:7b`, `gemma3:4b` (can be removed). Upgraded 2026-04-14.
 - Services manager: `System/Scripts/Services/` — `start_all.py`, `stop_all.py`, `emergency_kill.py` (built 2026-04-02)
 
 **Database:**

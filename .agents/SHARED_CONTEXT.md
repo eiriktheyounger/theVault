@@ -46,12 +46,20 @@ Planning complete (Session 0, 9 docs at `Vault/Sessions/gemma4-integration/`). B
 
 ## Handoffs
 
-- **Gemma 4 Session 1 DONE** — Sonnet Desktop completed 2026-04-14. All success criteria met except Tailscale needs interactive auth (Eric to run `tailscale up` in terminal).
-- **Gemma 4 Session 2 DONE** — Sonnet Desktop completed 2026-04-14. config.py + server.py updated (gemma4:e4b defaults, FAST/DEEP/QUERY/BATCH_CTX constants, _strip_thinking() with code-fence stripping, per-endpoint num_ctx + 180s timeout for /deep). starlette downgraded 1.0.0→0.37.2 (ollama pkg upgrade side-effect). /fast + /deep verified.
-- **⚠️ Known issue**: Ollama usage tokens always 0 — /api/chat uses eval_count/prompt_eval_count, not usage{}. Pre-existing, not Session 2 scope.
-- **Gemma 4 Session 3 DONE** — Haiku completed 2026-04-14. query.py default model (line 26) qwen2.5:7b→gemma4:e4b, VALID_MODELS added gemma4:e4b (line 220), /models endpoint updated gemma4:e4b (line 375). fast.py imported FAST_CTX, num_ctx hardcoded 2048→FAST_CTX (line 58). deep.py imported OLLAMA_HOST, URL hardcoded→OLLAMA_HOST (line 81). All files parse OK.
-- **Gemma 4 Session 4 DONE** — Haiku Desktop completed 2026-04-14. Updated 5 batch scripts (overnight_processor, clean_md_processor, daily_vault_activity, email_thread_ingester/summarizer, task_categorizer). All imports OK, FAISS canary verified.
-- **Gemma 4 Session 5 DONE** — Haiku completed 2026-04-14. Chat.tsx: DEFAULT_MODEL qwen2.5:7b→gemma4:e4b (line 94), MODEL_INFO replaced qwen2.5:7b with gemma4:e4b (line 68). Settings.tsx: deepModel default qwen2.5:7b→gemma4:e4b (line 13). health.py: Removed os.getenv with hardcoded defaults, imported FAST_MODEL/DEEP_MODEL from config (lines 7-8). chat_cli.py: CHAT_MODEL default phi3:mini→gemma4:e4b (line 37). All Python files parse OK.
+### Gemma 4 Integration (Sessions 1-6: COMPLETE)
+- **Session 1 DONE** — Sonnet Desktop 2026-04-14. Ollama upgrade 0.12.9→0.20.7, E4B pulled, memory opts, Tailscale. All criteria met except Tailscale needs interactive auth.
+- **Session 2 DONE** — Sonnet Desktop 2026-04-14. config.py + server.py updated (gemma4:e4b defaults, FAST/DEEP/QUERY/BATCH_CTX constants, _strip_thinking() with code-fence stripping, per-endpoint num_ctx + 180s timeout). starlette downgraded 1.0.0→0.37.2.
+- **Session 3 DONE** — Haiku 2026-04-14. query.py, fast.py, deep.py updated. VALID_MODELS added gemma4:e4b, imports of context constants.
+- **Session 4 DONE** — Haiku Desktop 2026-04-14. All 5 batch scripts updated (overnight_processor, clean_md_processor, daily_vault_activity, email_thread_ingester, task_categorizer). FAISS canary verified.
+- **Session 5 DONE** — Haiku 2026-04-14. UI + health.py + chat_cli.py updated. DEFAULT_MODEL qwen2.5:7b→gemma4:e4b across Chat.tsx, Settings.tsx.
+- **Session 6 DONE** — Opus CLI 2026-04-14. Full validation passed. All 52 capabilities verified, 0 regressions.
+
+### HAIKU_BRIEFING (Tasks 1-3: COMPLETE)
+- **Task 1: RAG Incremental Fix** — DONE 2026-04-14. System/Scripts/RAG/retrieval/indexer.py: `incremental: bool = False` → `True` (line 39), added `full: bool = False` parameter (line 40), updated CLI to `--full` flag (lines 237-249). System/Scripts/batch_reindex.py: call changed to `reindex(full=True)` (line 157). All Python files parse OK.
+- **Task 2: OPERATIONS-INDEX.md Update** — DONE 2026-04-14. All qwen2.5:7b→gemma4:e4b, removed llama3.1:8b/gemma3:4b references. Chunks: 41,976→61,903 (100% coverage). Added Ollama 0.20.7, pkg 0.6.1. Updated context windows (/fast=4096, /deep=16384, /api/query=32768). Added Reminders sync 4x daily schedule, daily_vault_activity notes. Added memory optimization env vars section. Updated model dropdown and health endpoint examples.
+- **Task 3: QUICK-REFERENCE.md Creation** — DONE 2026-04-14. Created Vault/System/QUICK-REFERENCE.md with 11 sections: Startup & Health, Morning, Ingest & Indexing (with --full note), Evening, Reminders, Email, Plaud, File Classification, RAG QA, Server Mgmt, Troubleshooting. One-page format with model+context info footer.
+
+- **⚠️ Known issue**: Ollama usage tokens always 0 — /api/chat uses eval_count/prompt_eval_count, not usage{}. Pre-existing, not in scope.
 
 ## Prior Work (Archived — for reference only)
 
