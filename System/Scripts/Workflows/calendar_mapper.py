@@ -132,16 +132,24 @@ class CalendarMapper:
     Maps files to calendar events based on timestamps.
     """
 
-    def __init__(self, vault_path: str, calendar_name: str = "Work"):
+    def __init__(self, vault_path: str, calendar_name: str = None, calendar_names: "list[str] | str" = "ExchangeCalendar"):
         """
         Initialize calendar mapper.
 
         Args:
             vault_path: Path to Obsidian vault root
-            calendar_name: Name of calendar to read from (default: "Work")
+            calendar_name: Deprecated — use calendar_names instead (kept for backwards compat)
+            calendar_names: Calendar name(s) to read from. Accepts str or list[str].
         """
         self.vault_path = Path(vault_path)
-        self.calendar_name = calendar_name
+        # Backwards compatibility: if old calendar_name kwarg was passed, honour it
+        if calendar_name is not None:
+            calendar_names = calendar_name
+        if isinstance(calendar_names, str):
+            calendar_names = [calendar_names]
+        self.calendar_names: list[str] = calendar_names
+        # Keep legacy attribute for any code that reads it directly
+        self.calendar_name = self.calendar_names[0] if self.calendar_names else "ExchangeCalendar"
 
         # Initialize EventKit if available
         self.eventkit_store = None
