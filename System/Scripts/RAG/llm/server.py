@@ -56,15 +56,15 @@ load_dotenv()
 log = logging.getLogger("llm.server")
 logging.basicConfig(level=logging.INFO)
 
-FAST_MODEL_DEFAULT = "gemma3:4b"
-DEEP_MODEL_DEFAULT = "qwen2.5:7b"
+FAST_MODEL_DEFAULT = "gemma4:e4b"
+DEEP_MODEL_DEFAULT = "gemma4:e4b"
 
 # ---- Runtime configuration ----
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434").rstrip("/")
 OLLAMA_TIMEOUT_S = float(os.getenv("OLLAMA_TIMEOUT_S", "30"))
 FAST_MODEL = os.getenv("FAST_MODEL", FAST_MODEL_DEFAULT)
 DEEP_MODEL = os.getenv("DEEP_MODEL", DEEP_MODEL_DEFAULT)
-MODEL_CTX = int(os.getenv("MODEL_CTX", os.getenv("NEROSPICY_CTX_TOKENS", "4096")))
+MODEL_CTX = int(os.getenv("MODEL_CTX", "32768"))
 ZERO_USAGE = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
 
 log.info(
