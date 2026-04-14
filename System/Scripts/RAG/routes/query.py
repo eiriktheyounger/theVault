@@ -219,7 +219,7 @@ async def query_endpoint(body: QueryRequest, request: Request) -> QueryResponse:
     # Validate model
     VALID_MODELS = {
         "gemma3:4b",
-        "qwen2.5:7b",
+        "gemma4:e4b",
         "claude-haiku-4-5-20251001",
         "claude-sonnet-4-20250514",
         "claude-opus-4-20250514",
