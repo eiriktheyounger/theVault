@@ -314,7 +314,11 @@ def _strip_thinking(raw: str) -> str:
 
 
 async def generate(
-    model: str, prompt: str, system: Optional[str] = None, num_ctx: Optional[int] = None
+    model: str,
+    prompt: str,
+    system: Optional[str] = None,
+    num_ctx: Optional[int] = None,
+    timeout: Optional[float] = None,
 ) -> Dict[str, Any]:
     """Call Ollama /api/chat (migrated from deprecated /api/generate) and return JSON or structured error."""
     url = f"{OLLAMA_HOST.rstrip('/')}/api/chat"
@@ -327,7 +331,7 @@ async def generate(
         messages.insert(0, {"role": "system", "content": system})
         payload["messages"] = messages
     try:
-        resp = await CLIENT.post(url, json=payload)
+        resp = await CLIENT.post(url, json=payload, timeout=timeout)
     except httpx.TimeoutException:
         return {
             "ok": False,
