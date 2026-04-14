@@ -20,6 +20,8 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 - **Memory with E4B**: 15G used (12G wired), 74MB free — tight but inference runs cleanly. No thinking tags observed in simple queries.
 - **FAISS canary**: `8e49a6f4901335532a9f9e1cf58189cfdd546295e7a30c62695f94785dda6ac4` (updated: post-rebuild 2026-04-13)
 - **Tailscale**: Installed (1.96.4) — needs Eric to run `tailscale up` interactively (requires sudo + browser auth)
+- **starlette**: Pinned to 0.37.2 (downgraded from 1.0.0 — ollama 0.6.1 upgrade pulled in incompatible version)
+- **Server branch**: `gemma4/session-2-core-server` (auto-committed)
 
 ## Next Priority: Gemma 4 Integration
 
