@@ -30,7 +30,7 @@ Planning complete (Session 0, 9 docs at `Vault/Sessions/gemma4-integration/`). B
 | 1. Infrastructure | Sonnet | Ollama upgrade 0.12.9→0.20.4+, pull E4B, memory opts, Tailscale | **COMPLETE (2026-04-14)** |
 | 2. Core Server | Sonnet | config.py, server.py, _strip_thinking() | **NEXT (Sonnet Desktop)** |
 | 3. Route Whitelist | Haiku | query.py, fast.py, deep.py, models metadata | Blocked on S2 |
-| 4. Batch Scripts | Haiku | 5 scripts with hardcoded model names | Can parallel with S2 |
+| 4. Batch Scripts | Haiku | 5 scripts with hardcoded model names | **COMPLETE (2026-04-14)** |
 | 5. UI + Cosmetic | Haiku | Chat.tsx, Settings.tsx, health.py, chat_cli.py | Blocked on S3 |
 | 6. Validation | Opus | Full smoke test, quality comparison | Blocked on S3+S4+S5 |
 
