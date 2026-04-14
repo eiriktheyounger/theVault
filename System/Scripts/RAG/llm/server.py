@@ -612,9 +612,9 @@ async def fast_endpoint(request: Request) -> Dict[str, Any]:
             gtext = "Glossary\n" + "\n".join(f"- {t}: {d}" for t, d in selected)
             g_prompt = fast_phi3.prompt(context=gtext, question=q)
             log.info("LLM call (glossary-first): mode=%s model=%s", "fast", FAST_MODEL)
-            j = await ollama_generate(FAST_MODEL, g_prompt, system)
+            j = await ollama_generate(FAST_MODEL, g_prompt, system, num_ctx=4096)
             if j.get("ok") is True:
-                raw = (j.get("response") or j.get("message", {}).get("content") or "").strip()
+                raw = _strip_thinking((j.get("response") or j.get("message", {}).get("content") or "").strip())
                 try:
                     ans = json.loads(raw)
                 except Exception:
