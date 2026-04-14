@@ -20,7 +20,7 @@ import sys
 import time
 import json
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date as _date
 from typing import Dict, Optional, Callable, Any, List
 
 # Add parent to path for imports
