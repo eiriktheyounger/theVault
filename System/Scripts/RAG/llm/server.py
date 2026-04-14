@@ -677,7 +677,7 @@ async def fast_endpoint(request: Request) -> Dict[str, Any]:
             # Fall back to model call with question only (no context)
             prompt = fast_phi3.prompt(context="", question=q)
             log.info("LLM call: mode=%s model=%s (no-context)", "fast", FAST_MODEL)
-            j = await ollama_generate(FAST_MODEL, prompt, system)
+            j = await ollama_generate(FAST_MODEL, prompt, system, num_ctx=4096)
             if j.get("ok") is False:
                 envelope = _normalize_answer_field(
                     {
