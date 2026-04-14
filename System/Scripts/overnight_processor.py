@@ -77,7 +77,7 @@ def extract_tasks_local(text, note_date=None):
     try:
         import ollama
         response = ollama.chat(
-            model='qwen2.5:7b',
+            model='gemma4:e4b',
             messages=[
                 {'role': 'system', 'content': 'Extract actionable tasks from the text. Return each as a markdown task: - [ ] task description. Return ONLY the task list, nothing else. If no tasks found, return "No tasks found."'},
                 {'role': 'user', 'content': text}

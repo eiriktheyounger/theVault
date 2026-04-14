@@ -9,6 +9,7 @@
 - [feedback_focus.md](feedback_focus.md) — Eric rabbit-holes on interesting ideas; use parking lot pattern, keep execution on locked priorities
 - [feedback_memory_sync.md](feedback_memory_sync.md) — "Update memory" means ALL sync points: CLI memory, SHARED_CONTEXT, Desktop context, CLAUDE.md — not just CLI-side
 - [feedback_model_delegation.md](feedback_model_delegation.md) — Opus plans/orchestrates, Sonnet builds complex code, Haiku handles mechanical edits + verification. Minimize token cost.
+- [feedback_haiku_session_end.md](feedback_haiku_session_end.md) — Don't ask "what next?" at session end; wait for explicit direction or execute autonomously on P0/P1 work
 
 ## Project
 - [project_priorities_2026_03.md](project_priorities_2026_03.md) — **Locked priority map (P0-P3) + parking lot.** Most P0/P1 done. Open: bidirectional Reminders sync (Phase 1), rag_qa_agent.py. Updated 2026-04-04.
