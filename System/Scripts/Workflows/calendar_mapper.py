@@ -262,7 +262,7 @@ class CalendarMapper:
                     uid=event.eventIdentifier() or ""
                 ))
 
-            logger.info(f"Found {len(calendar_events)} events in '{self.calendar_name}' calendar")
+            logger.info(f"Found {len(calendar_events)} events across {len(target_calendars)} calendar(s)")
             return calendar_events
 
         except Exception as e:
