@@ -877,7 +877,7 @@ async def deep_endpoint(payload: DeepRequest) -> Dict[str, Any]:
         citations = result.get("citations", []) or []
         # If no context from Vault, fall back to a model call with the question only
         if not context.strip():
-            j = await ollama_generate(DEEP_MODEL, deep_llama.prompt(context="", question=q), system, num_ctx=16384)
+            j = await ollama_generate(DEEP_MODEL, deep_llama.prompt(context="", question=q), system, num_ctx=16384, timeout=180.0)
             if j.get("ok") is False:
                 wrapped = json.dumps(
                     {"cid": cid, "message": {"content": " I do not know "}, "sources": []}
