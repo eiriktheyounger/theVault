@@ -56,7 +56,7 @@ def _call_ollama_markdown(*, model: str, prompt: str, keep_alive: str) -> Dict[s
         "messages": [{"role": "user", "content": prompt}],
         "stream": False,
         "keep_alive": keep_alive,
-        "options": {"temperature": 0.2, "num_ctx": 2048},
+        "options": {"temperature": 0.2, "num_ctx": FAST_CTX},
     }
     try:
         r = requests.post(url, json=payload, timeout=60)
