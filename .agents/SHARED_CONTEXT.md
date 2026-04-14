@@ -6,18 +6,20 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 
 | Session | Working On | Files Touched | Updated |
 |---------|-----------|---------------|---------|
-| CLI Opus | **Orchestrator** — Cleaned all 7 stale worktrees + branches. Reset SHARED_CONTEXT. Prepping Sonnet + Haiku session briefings. | .agents/SHARED_CONTEXT.md, memory files | 2026-04-13 |
-| CLI Sonnet | **Available** — No active session. Ready for Gemma 4 Session 1 (infrastructure). | — | — |
-| CLI Haiku | **Available** — No active session. Ready for mechanical tasks. | — | — |
+| CLI Opus | **Orchestrator** — Cleaned all 7 stale worktrees + branches. Reset SHARED_CONTEXT. Prepped Sonnet + Haiku session briefings. | .agents/SHARED_CONTEXT.md, memory files | 2026-04-13 |
+| **Sonnet Desktop** | **Gemma 4 Session 1 COMPLETE** — Ollama 0.20.7, E4B pulled, memory opts, ollama pkg 0.6.1. Tailscale installed but needs interactive auth. | .agents/SHARED_CONTEXT.md, build-plan.md, SONNET_BRIEFING.md | **2026-04-14** |
+| CLI Haiku | **Available** — Ready for Gemma 4 Session 4 (batch scripts). | — | — |
 
-## Current System State (2026-04-13)
+## Current System State (2026-04-14)
 
 - **All P0/P1/P2 priorities COMPLETE** — overnight processor, email ingester, vault activity tracker, Reminders sync, file classification, RAG rebuild (100% coverage)
 - **RAG index**: 61,903 chunks, 100% coverage, EMBED_CTX=512 (production config locked)
-- **Ollama models**: qwen2.5:7b, gemma3:4b, nomic-embed-text (pre-Gemma 4 upgrade)
-- **Ollama version**: 0.12.9 (pre-upgrade)
-- **All worktrees pruned** — clean slate, 0 active branches besides main
-- **FAISS canary**: `3275127b89e8987863324d6467035b7aca6097d4759bafa587dc130ff7ecc527`
+- **Ollama models**: gemma4:e4b (9.6GB), gemma3:4b (3.3GB), qwen2.5:7b (4.7GB), nomic-embed-text (274MB)
+- **Ollama version**: **0.20.7** (upgraded from 0.12.9 on 2026-04-14)
+- **ollama Python pkg**: **0.6.1** (upgraded from 0.3.3 on 2026-04-14)
+- **Memory with E4B**: 15G used (12G wired), 74MB free — tight but inference runs cleanly. No thinking tags observed in simple queries.
+- **FAISS canary**: `8e49a6f4901335532a9f9e1cf58189cfdd546295e7a30c62695f94785dda6ac4` (updated: post-rebuild 2026-04-13)
+- **Tailscale**: Installed (1.96.4) — needs Eric to run `tailscale up` interactively (requires sudo + browser auth)
 
 ## Next Priority: Gemma 4 Integration
 
