@@ -301,13 +301,15 @@ async def ollama_tags() -> Dict[str, Any]:
 
 
 def _strip_thinking(raw: str) -> str:
-    """Remove Gemma 4 thinking/reasoning tags from LLM output before parsing."""
+    """Remove Gemma 4 thinking tags and markdown code fences from LLM output before parsing."""
     if not raw:
         return raw
     # Standard <think>...</think> tags
     cleaned = re.sub(r'<think>.*?</think>', '', raw, flags=re.DOTALL)
     # Gemma 4 channel tags: <|channel>thought\n...<channel|>
     cleaned = re.sub(r'<\|channel>thought\n.*?<channel\|>', '', cleaned, flags=re.DOTALL)
+    # Markdown code fences (```json...``` or ```...```)
+    cleaned = re.sub(r'^```(?:json)?\s*\n?(.*?)\n?```\s*$', r'\1', cleaned.strip(), flags=re.DOTALL)
     return cleaned.strip()
 
 
