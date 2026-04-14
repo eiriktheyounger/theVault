@@ -44,7 +44,8 @@ Planning complete (Session 0, 9 docs at `Vault/Sessions/gemma4-integration/`). B
 
 ## Handoffs
 
-- **Gemma 4 Session 1 → Sonnet CLI**: Read `Vault/Sessions/gemma4-integration/build-plan.md` Section "Session 1: Infrastructure". Upgrade Ollama, pull E4B, check memory, install Tailscale. Do NOT modify Python source files.
+- **Gemma 4 Session 1 DONE** — Sonnet Desktop completed 2026-04-14. All success criteria met except Tailscale needs interactive auth (Eric to run `tailscale up` in terminal).
+- **Gemma 4 Session 2 → Sonnet Desktop**: Read `Vault/Sessions/gemma4-integration/build-plan.md` Section "Session 2: Core Server". Update config.py + server.py, add _strip_thinking(), wire dynamic num_ctx. Prerequisite: Session 1 complete ✅.
 - **Gemma 4 Session 4 → Haiku CLI**: Can start after Session 1. Mechanical find-replace of hardcoded model names in 5 batch scripts.
 
 ## Prior Work (Archived — for reference only)
