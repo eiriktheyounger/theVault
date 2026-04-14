@@ -309,21 +309,27 @@ class MorningWorkflow:
             return False
 
     def _step_sync_calendar(self) -> bool:
-        """Step 2: Sync calendar (Harmonic → Work)."""
+        """Step 2: Inject calendar events into today's DLY note."""
         step = self.steps[self._get_step_index(2)]
         step.start()
         self._notify_callback(step)
 
         try:
-            # Calendar sync deferred — sync_calendar.py not yet built
-            calendar_script = scripts_dir / "Calendar" / "sync_calendar.py"
-            if not calendar_script.exists():
-                step.complete(["Calendar sync skipped — sync_calendar.py not yet available"])
-                self._notify_callback(step)
-                return True
-
-            step.update_progress(30, ["Syncing Harmonic calendar to Work calendar..."])
+            from datetime import date as _date
+            step.update_progress(30, ["Fetching calendar events (8 calendars)..."])
             self._notify_callback(step)
+
+            target_date = _date.fromisoformat(self.date) if hasattr(self, "date") and self.date else _date.today()
+            result = inject_calendar_for_date(target_date)
+
+            cal_status = result.get("calendar", {})
+            n_events = cal_status.get("events", 0)
+            step.complete([
+                f"Calendar injected: {n_events} event(s) → DLY",
+                f"Week at a glance: {result.get('week_glance', {}).get('status', 'skipped')}",
+            ])
+            self._notify_callback(step)
+            return True
 
             result = subprocess.run(
                 [sys.executable, str(calendar_script), "--date", self.date, "--allow-delete"],
