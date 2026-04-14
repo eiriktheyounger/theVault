@@ -91,7 +91,7 @@ const MODEL_INFO: Record<string, { name: string; useCase: string; cost: string; 
   },
 };
 
-const DEFAULT_MODEL = 'qwen2.5:7b';
+const DEFAULT_MODEL = 'gemma4:e4b';
 
 const CONTEXT_MODES = [
   { value: 'off' as const, label: 'Off', description: 'Raw LLM, no vault context' },
