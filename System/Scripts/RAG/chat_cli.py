@@ -34,7 +34,7 @@ INFO = json.load(open(INFO_PATH, "r", encoding="utf-8"))
 
 INDEX_MODE = INFO.get("mode", "live")
 DIM = int(INFO.get("dim", 0))
-CHAT_MODEL = os.getenv("FAST_MODEL", "phi3:mini")
+CHAT_MODEL = os.getenv("FAST_MODEL", "gemma4:e4b")
 NS_EMBED_MODEL = os.getenv("NS_EMBED_MODEL", NOMIC_EMBED_MODEL)
 
 TOPK = int(os.getenv("NS_CHAT_TOPK", "6"))
