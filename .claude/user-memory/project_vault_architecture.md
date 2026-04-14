@@ -26,7 +26,7 @@ type: project
 - Workflows: `System/Scripts/Workflows/`
 - Daily notes: `Vault/Daily/YYYY/MM/YYYY-MM-DD-DLY.md`
 
-**Chunk/vector counts (as of 2026-03-30):** 47,496 chunks in SQLite / 53,381 vectors in FAISS (95.8% coverage after full rebuild)
+**Chunk/vector counts (as of 2026-04-13):** 61,903 chunks in SQLite / 61,903 vectors in FAISS (100% coverage). EMBED_CTX=512, PROGRESS_EVERY=16, timeout=180s.
 
 **Multi-machine setup (2026-04-05):**
 - Mac Mini M4: production server, cron jobs, NAS-connected, FAISS index, Ollama
