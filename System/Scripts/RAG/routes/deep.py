@@ -79,7 +79,7 @@ def _call_ollama_markdown(*, model: str, prompt: str, keep_alive: str):
     make a best‑effort call and tolerate failures by returning an empty answer.
     """
     try:  # pragma: no cover - exercised via monkeypatch in tests
-        url = "http://127.0.0.1:11434/api/chat"
+        url = f"{OLLAMA_HOST.rstrip('/')}/api/chat"
         payload = {
             "model": model,
             "messages": [{"role": "user", "content": prompt}],
