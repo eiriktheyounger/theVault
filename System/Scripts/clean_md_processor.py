@@ -319,7 +319,7 @@ def _summarize_ollama(transcript: str) -> Optional[str]:
     try:
         import ollama
         resp = ollama.chat(
-            model="qwen2.5:7b",
+            model="gemma4:e4b",
             messages=[{"role": "user", "content": _SUMMARY_PROMPT.format(transcript=transcript)}],
             options={"temperature": 0.3},
         )
