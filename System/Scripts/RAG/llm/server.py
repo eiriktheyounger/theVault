@@ -871,17 +871,17 @@ async def deep_endpoint(payload: DeepRequest) -> Dict[str, Any]:
         citations = result.get("citations", []) or []
         # If no context from Vault, fall back to a model call with the question only
         if not context.strip():
-            j = await ollama_generate(DEEP_MODEL, deep_llama.prompt(context="", question=q), system)
+            j = await ollama_generate(DEEP_MODEL, deep_llama.prompt(context="", question=q), system, num_ctx=16384)
             if j.get("ok") is False:
                 wrapped = json.dumps(
                     {"cid": cid, "message": {"content": " I do not know "}, "sources": []}
                 )
                 return {"text": wrapped, "mode": "deep", "citations": []}
-            raw = (j.get("response") or j.get("message", {}).get("content") or "").strip()
+            raw = _strip_thinking((j.get("response") or j.get("message", {}).get("content") or "").strip())
             return {"text": raw, "mode": "deep", "citations": []}
         prompt = deep_llama.prompt(context=context, question=q)
         log.info("LLM call: mode=%s model=%s", "deep", DEEP_MODEL)
-        j = await ollama_generate(DEEP_MODEL, prompt, system)
+        j = await ollama_generate(DEEP_MODEL, prompt, system, num_ctx=16384)
         if j.get("ok") is False:
             raise HTTPException(
                 status_code=502,
