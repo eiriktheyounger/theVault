@@ -5,7 +5,7 @@
 ## Architecture
 - API server: FastAPI on port 5055 (RAG search, chat, ingest)
 - LLM server: FastAPI on port 5111 (Ollama proxy)
-- Ollama: port 11434 (qwen2.5:7b, llama3.1:8b, nomic-embed-text)
+- Ollama: port 11434 (gemma4:e4b, nomic-embed-text) — Ollama 0.20.7
 - Database: SQLite (chunks.sqlite3) + FAISS (chunks_hnsw.bin), 768-dim embeddings
 - Vector index: FAISS (IndexIDMap2/IndexFlatIP), saved as chunks_hnsw.bin — do NOT import hnswlib
 - Vault: ~/theVault/Vault → NAS symlink (/Volumes/home/MacMiniStorage/Vault)

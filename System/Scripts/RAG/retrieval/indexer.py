@@ -36,7 +36,8 @@ def _write_last_index_ts(path: Path) -> None:
 
 def reindex(
     progress_cb: Optional[Callable[[str, Any], None]] = None,
-    incremental: bool = False,
+    incremental: bool = True,
+    full: bool = False,
     build_id: str | None = None,
 ):
     def _notify(phase: str, **metrics: Any) -> None:
@@ -50,7 +51,7 @@ def reindex(
         _notify("start", build_id=build_id)
 
     ts_path = Path(".rag_last_index.json")
-    if incremental:
+    if incremental and not full:
         last_ts = _load_last_index_ts(ts_path)
         vault_dir = Path(os.getenv("VAULT_DIR", "Vault"))
         changed: List[Path] = []
