@@ -887,7 +887,7 @@ async def deep_endpoint(payload: DeepRequest) -> Dict[str, Any]:
                 status_code=502,
                 detail={"error": j.get("error"), "usage": j.get("usage")},
             )
-        raw = (j.get("response") or j.get("message", {}).get("content") or "").strip()
+        raw = _strip_thinking((j.get("response") or j.get("message", {}).get("content") or "").strip())
         try:
             ans = json.loads(raw)
         except Exception:
