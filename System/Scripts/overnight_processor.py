@@ -215,8 +215,8 @@ def main(target_date=None):
     # ── Monthly Summary (1st of month only) ───────────────────────────────────
     run_date = note_date if isinstance(note_date, datetime) else datetime.combine(note_date, datetime.min.time())
     if run_date.day == 1:
-        prev_year = (run_date.replace(day=1) - __import__('datetime').timedelta(days=1)).year
-        prev_month = (run_date.replace(day=1) - __import__('datetime').timedelta(days=1)).month
+        prev = run_date.replace(day=1) - timedelta(days=1)
+        prev_year, prev_month = prev.year, prev.month
         try:
             sys.path.insert(0, str(Path(__file__).parent))
             from generate_weekly_summary import generate_monthly_summary
