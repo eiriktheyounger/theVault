@@ -89,14 +89,21 @@ META_CSV_PATH: Path = Path(os.getenv("META_CSV_PATH", RAG_DATA_DIR / "meta.csv")
 # --- Models / backends -------------------------------------------------------
 OLLAMA_HOST: str = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434")
 
-FAST_MODEL: str = os.getenv("FAST_MODEL", "gemma3:4b")
-DEEP_MODEL: str = os.getenv("DEEP_MODEL", "qwen2.5:7b")
+FAST_MODEL: str = os.getenv("FAST_MODEL", "gemma4:e4b")
+DEEP_MODEL: str = os.getenv("DEEP_MODEL", "gemma4:e4b")
 INGEST_MODEL: str = os.getenv(
-    "INGEST_MODEL", "qwen2.5:7b"
+    "INGEST_MODEL", "gemma4:e4b"
 )  # Prioritize accuracy over speed for ingest
 
 # Some code expects a single 'LLM_MODEL_NAME'
 LLM_MODEL_NAME: str = os.getenv("LLM_MODEL_NAME", DEEP_MODEL)
+
+# Dynamic context windows — per-endpoint to minimize KV cache memory on 16GB
+# Flash attention (OLLAMA_FLASH_ATTENTION=1) halves these cache sizes
+FAST_CTX: int = 4096     # /fast: short synthesis, glossary lookups (~100-200MB KV)
+DEEP_CTX: int = 16384    # /deep: multi-turn chat (~400-800MB KV)
+QUERY_CTX: int = 32768   # /api/query: full context, user-initiated (~800MB-1.6GB KV)
+BATCH_CTX: int = 8192    # Batch scripts: summarization, task extraction (~200-400MB KV)
 
 EMBED_MODEL: str = os.getenv("EMBED_MODEL", "nomic-embed-text:latest")
 NOMIC_EMBED_MODEL: str = os.getenv("NOMIC_EMBED_MODEL", EMBED_MODEL)
