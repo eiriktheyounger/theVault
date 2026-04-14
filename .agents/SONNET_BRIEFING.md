@@ -27,7 +27,7 @@ Read the complete Session 1 spec here:
 
 ## Critical Constraints
 
-- **FAISS canary** — verify hash hasn't changed: `3275127b89e8987863324d6467035b7aca6097d4759bafa587dc130ff7ecc527` at `System/Scripts/RAG/rag_data/chunks_hnsw.bin`
+- **FAISS canary** — verify hash hasn't changed: `8e49a6f4901335532a9f9e1cf58189cfdd546295e7a30c62695f94785dda6ac4` at `System/Scripts/RAG/rag_data/chunks_hnsw.bin`
 - **No Python source changes** — Session 2 handles config.py/server.py
 - **If existing models break after upgrade** — STOP. Do not proceed. Report to SHARED_CONTEXT.md
 - **Rollback plan**: `brew install ollama@0.12.9` (or reinstall from backup)
