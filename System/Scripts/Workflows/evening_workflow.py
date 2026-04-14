@@ -95,13 +95,22 @@ class EveningWorkflow:
         self.callback = callback
         self.vault_path = Path.home() / "theVault" / "Vault"
 
+        # Determine if today is Sunday for weekly summary step
+        _date_obj = _date.fromisoformat(self.date)
+        self._is_sunday = _date_obj.weekday() == 6
+        self._run_date = _date_obj
+
+        total_steps = 5 if self._is_sunday else 4
+
         # Define workflow steps
         self.steps = [
-            WorkflowStep(1, "Generate Day Review", 4),
-            WorkflowStep(2, "Email Summary → Daily Note", 4),
-            WorkflowStep(3, "Highlight Tomorrow's Focus", 4),
-            WorkflowStep(4, "Queue Overnight Jobs", 4),
+            WorkflowStep(1, "Generate Day Review", total_steps),
+            WorkflowStep(2, "Email Summary → Daily Note", total_steps),
+            WorkflowStep(3, "Highlight Tomorrow's Focus", total_steps),
+            WorkflowStep(4, "Queue Overnight Jobs", total_steps),
         ]
+        if self._is_sunday:
+            self.steps.append(WorkflowStep(5, "Generate Weekly Summary", total_steps))
 
         self.errors = []
         self.started_at = None
