@@ -23,7 +23,7 @@ router = APIRouter(prefix="/api/query", tags=["query"])
 
 class QueryRequest(BaseModel):
     question: str
-    model: str = "qwen2.5:7b"
+    model: str = "gemma4:e4b"
     context_mode: str = "auto"  # 'off', 'auto', 'full'
     conversation_id: Optional[str] = None
 
