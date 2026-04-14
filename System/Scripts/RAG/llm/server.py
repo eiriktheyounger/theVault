@@ -694,7 +694,7 @@ async def fast_endpoint(request: Request) -> Dict[str, Any]:
                 )
                 envelope["contract_version"] = "v2"
                 return envelope
-            raw = (j.get("response") or j.get("message", {}).get("content") or "").strip()
+            raw = _strip_thinking((j.get("response") or j.get("message", {}).get("content") or "").strip())
             try:
                 ans = json.loads(raw)
             except Exception:
