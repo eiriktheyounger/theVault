@@ -572,6 +572,8 @@ class EveningWorkflow:
             self._step_highlight_tomorrow,
             self._step_queue_overnight_jobs,
         ]
+        if self._is_sunday:
+            step_methods.append(self._step_generate_weekly_summary)
 
         for step_method in step_methods:
             success = step_method()
