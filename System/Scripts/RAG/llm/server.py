@@ -300,12 +300,26 @@ async def ollama_tags() -> Dict[str, Any]:
     return {"models": data.get("models", []), "error": None}
 
 
-async def generate(model: str, prompt: str, system: Optional[str] = None) -> Dict[str, Any]:
+def _strip_thinking(raw: str) -> str:
+    """Remove Gemma 4 thinking/reasoning tags from LLM output before parsing."""
+    if not raw:
+        return raw
+    # Standard <think>...</think> tags
+    cleaned = re.sub(r'<think>.*?</think>', '', raw, flags=re.DOTALL)
+    # Gemma 4 channel tags: <|channel>thought\n...<channel|>
+    cleaned = re.sub(r'<\|channel>thought\n.*?<channel\|>', '', cleaned, flags=re.DOTALL)
+    return cleaned.strip()
+
+
+async def generate(
+    model: str, prompt: str, system: Optional[str] = None, num_ctx: Optional[int] = None
+) -> Dict[str, Any]:
     """Call Ollama /api/chat (migrated from deprecated /api/generate) and return JSON or structured error."""
     url = f"{OLLAMA_HOST.rstrip('/')}/api/chat"
+    ctx = num_ctx or MODEL_CTX
     # Convert prompt to messages format for new API
-    messages = [{"role": "user", "content": _clip(prompt, MODEL_CTX)}]
-    payload: Dict[str, Any] = {"model": model, "messages": messages, "stream": False}
+    messages = [{"role": "user", "content": _clip(prompt, ctx)}]
+    payload: Dict[str, Any] = {"model": model, "messages": messages, "stream": False, "options": {"num_ctx": ctx}}
     if system:
         # System message goes at the beginning in chat format
         messages.insert(0, {"role": "system", "content": system})
