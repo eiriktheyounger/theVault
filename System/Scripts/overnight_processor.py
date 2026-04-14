@@ -211,6 +211,21 @@ def main(target_date=None):
 
     note_path.write_text(new_content)
     logger.info(f"Daily note updated: {note_path}")
+
+    # ── Monthly Summary (1st of month only) ───────────────────────────────────
+    run_date = note_date if isinstance(note_date, datetime) else datetime.combine(note_date, datetime.min.time())
+    if run_date.day == 1:
+        prev_year = (run_date.replace(day=1) - __import__('datetime').timedelta(days=1)).year
+        prev_month = (run_date.replace(day=1) - __import__('datetime').timedelta(days=1)).month
+        try:
+            sys.path.insert(0, str(Path(__file__).parent))
+            from generate_weekly_summary import generate_monthly_summary
+            logger.info(f"Generating monthly summary for {prev_year}-{prev_month:02d}...")
+            result = generate_monthly_summary(prev_year, prev_month)
+            logger.info(f"Monthly summary: {result.get('status')} → {result.get('path', '')}")
+        except Exception as e:
+            logger.error(f"Monthly summary generation failed: {e}")
+
     logger.info("=== Overnight processing complete ===")
 
 if __name__ == "__main__":
