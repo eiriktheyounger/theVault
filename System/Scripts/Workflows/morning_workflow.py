@@ -331,34 +331,6 @@ class MorningWorkflow:
             self._notify_callback(step)
             return True
 
-            result = subprocess.run(
-                [sys.executable, str(calendar_script), "--date", self.date, "--allow-delete"],
-                capture_output=True,
-                text=True,
-                timeout=60,
-                close_fds=True
-            )
-
-            if result.returncode == 0:
-                lines = result.stdout.split("\n")
-                event_count = "calendar synced"
-                for line in lines:
-                    if "event" in line.lower() or "sync" in line.lower():
-                        event_count = line.strip()
-                        break
-
-                step.complete([
-                    f"Calendar synced for {self.date}",
-                    event_count,
-                    "Harmonic → Work calendar sync complete"
-                ])
-                self._notify_callback(step)
-                return True
-            else:
-                step.error(f"Calendar sync failed: {result.stderr}")
-                self._notify_callback(step)
-                return False
-
         except Exception as e:
             step.error(str(e))
             self._notify_callback(step)
