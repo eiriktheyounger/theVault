@@ -23,7 +23,7 @@ from .thread_grouper import EmailThread
 log = logging.getLogger("email_thread_ingester.summarizer")
 
 _HAIKU_MODEL = "claude-haiku-4-5-20251001"
-_OLLAMA_MODEL = "qwen2.5:7b"
+_OLLAMA_MODEL = "gemma4:e4b"
 _OLLAMA_URL   = "http://localhost:11434/api/chat"
 
 
