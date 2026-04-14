@@ -236,7 +236,8 @@ def reindex(
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="RAG indexer — rebuild or incrementally update the FAISS vector index")
-    parser.add_argument("--incremental", action="store_true", help="Only re-index files changed since last run (uses .rag_last_index.json)")
+    parser.add_argument("--incremental", action="store_true", help="Only re-index files changed since last run (default behavior)")
+    parser.add_argument("--full", action="store_true", help="Force full rebuild of entire index")
     parser.add_argument("--verbose", action="store_true", help="Print detailed progress")
     args = parser.parse_args()
 
@@ -244,4 +245,4 @@ if __name__ == "__main__":
         import logging
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)s  %(levelname)s  %(message)s")
 
-    reindex(incremental=args.incremental)
+    reindex(incremental=not args.full, full=args.full)
