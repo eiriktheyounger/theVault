@@ -7,7 +7,7 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 | Session | Working On | Files Touched | Updated |
 |---------|-----------|---------------|---------|
 | CLI Opus | **Orchestrator** — Cleaned all 7 stale worktrees + branches. Reset SHARED_CONTEXT. Prepped Sonnet + Haiku session briefings. | .agents/SHARED_CONTEXT.md, memory files | 2026-04-13 |
-| **Sonnet Desktop** | **Gemma 4 Session 1 COMPLETE** — Ollama 0.20.7, E4B pulled, memory opts, ollama pkg 0.6.1. Tailscale installed but needs interactive auth. | .agents/SHARED_CONTEXT.md, build-plan.md, SONNET_BRIEFING.md | **2026-04-14** |
+| **Sonnet Desktop** | **Gemma 4 Sessions 1+2 COMPLETE** — Ollama 0.20.7, E4B serving, config.py+server.py updated, _strip_thinking()+code-fence stripping, per-endpoint num_ctx+timeout, starlette pinned 0.37.2. /fast+/deep verified no think tags. | System/Scripts/RAG/config.py, llm/server.py | **2026-04-14** |
 | CLI Haiku | **Available** — Ready for Gemma 4 Session 4 (batch scripts). | — | — |
 
 ## Current System State (2026-04-14)
