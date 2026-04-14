@@ -518,6 +518,40 @@ class EveningWorkflow:
             self._notify_callback(step)
             return False
 
+    def _step_generate_weekly_summary(self) -> bool:
+        """Step 5 (Sunday only): Generate WKY weekly summary for the ending week."""
+        step = self.steps[4]
+        step.start()
+        self._notify_callback(step)
+
+        try:
+            step.update_progress(20, ["Importing weekly summary generator..."])
+            self._notify_callback(step)
+
+            sys.path.insert(0, str(Path(__file__).parent.parent))
+            from generate_weekly_summary import generate_weekly_summary
+
+            step.update_progress(50, [f"Generating weekly summary for week of {self._run_date}..."])
+            self._notify_callback(step)
+
+            result = generate_weekly_summary(self._run_date)
+
+            status = result.get("status", "unknown")
+            wky_file = result.get("path", "")
+
+            step.complete([
+                f"Weekly summary: {status}",
+                f"File: {Path(wky_file).name if wky_file else '—'}",
+            ])
+            self._notify_callback(step)
+            return True
+
+        except Exception as e:
+            step.error(str(e))
+            self._notify_callback(step)
+            logger.error(f"Weekly summary generation failed: {e}")
+            return False
+
     def run(self) -> Dict:
         """
         Execute the complete evening workflow.
