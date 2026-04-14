@@ -6,52 +6,51 @@ _All Claude sessions (Desktop Opus/Sonnet/Haiku + CLI) should read this at start
 
 | Session | Working On | Files Touched | Updated |
 |---------|-----------|---------------|---------|
-| CLI Opus (naughty-shaw) | **Active** — Laptop migration prep: user-memory to git, hostname-aware check_nas.sh, sync_memory_to_repo.sh, migration plan at .agents/LAPTOP_MIGRATION_PLAN.md. Ready for Desktop CC on laptop. | check_nas.sh, sync_memory_to_repo.sh, settings.json, .agents/LAPTOP_MIGRATION_PLAN.md, memory files | 2026-04-05 |
-| CLI Sonnet (condescending-mccarthy) | **Active** — Built Phase 1 bidirectional Reminders sync. Stale task cleanup (576 tasks/76 files, MM-DD filename logic). Memory/SHARED_CONTEXT sync. | System/Scripts/task_reminders_sync.py, System/Scripts/task_normalizer.py, memory files, SHARED_CONTEXT | 2026-04-04 |
-| CLI Haiku (silly-gauss) | **Complete (2026-04-11 13:34)** — overnight_processor + evening_workflow resolved. Plaud ingestion: 7 sessions → 7 Full.md files (12-62 KB). Email ingestion: 49 emails → 27 threads, 31 contacts indexed, job tracker created, daily notes updated. All services verified running (Ollama, FastAPI RAG, Claude API). System stable. | Plaud: System/Scripts/clean_md_processor.py, Vault/Notes/*-Full.md. Email: System/Scripts/email_thread_ingester/, Vault/Notes/Email/*, Vault/Daily/2026/04/2026-04-11-DLY.md. | 2026-04-11 |
-| Sonnet Desktop | **Idle/Unknown** — Last known: building classify_content.py (2026-03-30). | System/Scripts/Workflows/classify_content.py, rag_data/classification.db | 2026-03-30 |
-| Opus Desktop (lap3071) | **Active** — Laptop migration EXECUTED: git pull (326 commits), Vault symlink fixed (→ NeroSpicy/Vault via Obsidian Sync), 23 user memory files installed, API key set, Inbox/Processed local stubs created, LAPTOP_SETUP_GUIDE.md rewritten. All validation passing. | LAPTOP_SETUP_GUIDE.md, Vault symlink, .env, ~/.zshrc, ~/.claude/projects/ memory, Inbox/, Processed/, SHARED_CONTEXT | 2026-04-10 |
+| CLI Opus | **Orchestrator** — Cleaned all 7 stale worktrees + branches. Reset SHARED_CONTEXT. Prepping Sonnet + Haiku session briefings. | .agents/SHARED_CONTEXT.md, memory files | 2026-04-13 |
+| CLI Sonnet | **Available** — No active session. Ready for Gemma 4 Session 1 (infrastructure). | — | — |
+| CLI Haiku | **Available** — No active session. Ready for mechanical tasks. | — | — |
 
-## Decisions Made
+## Current System State (2026-04-13)
 
-- **2026-03-26**: Gmail pipeline remaining build work → Sonnet Desktop (Pro plan, not CLI API). Full context at `Vault/System/DesktopClaudeCode/gmail_pipeline_context.md`
-- **2026-03-30**: Post-ingest file organization DONE — 47 files organized from Notes/ into HarmonicInternal/, Personal/, Knowledge/, Reference/
-- **2026-03-30**: Content classifier (classify_content.py) design locked — Haiku API, SQLite DB, markdown manifest review, learning feedback loop
-- **2026-03-30**: repair_embeddings.py built — fixes ~5,200 orphan chunks missing FAISS vectors. Run from ~/theVault: `python3 -m System.Scripts.RAG.repair_embeddings --dry-run`
-- **2026-03-30**: Vault file organization pattern established: `Space/FocusedSpace/[data-driven breakdown]/file`. HarmonicInternal uses `HarmonicInternal/{Client}/{Project}/`
-- **2026-03-30**: RAG full rebuild DONE — 53,381 vectors in FAISS (up from 42,293, +26%). Coverage 95.8% (passes threshold). batch_reindex.py 10/10 batches. Q/A gate still missing (rag_qa_agent.py not found).
-- **2026-03-30**: OPERATIONS-INDEX.md updated — added Ingest section, RAG Indexing section, File Classification section; marked classify_content.py live, toc_generator.py EOL'd.
+- **All P0/P1/P2 priorities COMPLETE** — overnight processor, email ingester, vault activity tracker, Reminders sync, file classification, RAG rebuild (100% coverage)
+- **RAG index**: 61,903 chunks, 100% coverage, EMBED_CTX=512 (production config locked)
+- **Ollama models**: qwen2.5:7b, gemma3:4b, nomic-embed-text (pre-Gemma 4 upgrade)
+- **Ollama version**: 0.12.9 (pre-upgrade)
+- **All worktrees pruned** — clean slate, 0 active branches besides main
+- **FAISS canary**: `3275127b89e8987863324d6467035b7aca6097d4759bafa587dc130ff7ecc527`
 
-- **2026-03-30**: Auto-sync system built — `sync_session_state.sh` + PostToolUse/Stop hooks auto-generate `.agents/SESSION_STATE.md` from CLI memory. Desktop sessions read SESSION_STATE.md for consolidated view.
-- **2026-03-30**: Email Thread Ingester architecture complete (Opus CLI). Plan at `ResumeEngine/.claude/worktrees/naughty-shaw/.claude/plans/delegated-questing-lagoon.md`. Build prompt at `.agents/email_ingester_build_prompt.md`. Covers: Exchange+Gmail via AppleScript, thread grouping with fork detection, job-specific bulk import (`--job`), daily note backlinks, Haiku API summarizer. Assigned to Sonnet for build, Haiku for extraction testing.
-- **2026-03-31**: Email Thread Ingester BUILT by Sonnet CLI (condescending-mccarthy). All 12 modules at `System/Scripts/email_thread_ingester/`. Gmail verified OK. Exchange AppleScript times out on large inboxes (known, workaround: tag fewer at a time). Needs `ANTHROPIC_API_KEY` for Haiku; Ollama qwen2.5:7b fallback works.
-- **2026-03-31**: Email batch tagging decision — Start with Gmail-only extraction (avoids Exchange timeout). Tag Exchange emails in smaller batches (~100 at a time) once Gmail pipeline validated. First production run: Gmail-only, no Exchange extraction.
-- **2026-03-31**: Exchange AppleScript timeout RESOLVED — `--start-date`/`--end-date`/`--limit` added to all three extraction functions. Exchange uses AppleScript early-exit (`if msgDate < startDate then exit repeat`) since Mail.app returns newest-first. Both accounts tested clean: 188 msgs → 61 threads, 0 errors. Ready for production run (drop `--dry-run`). Goal: set `ANTHROPIC_API_KEY` so Haiku summarizer runs instead of Ollama fallback.
-- **2026-04-01**: Email Thread Ingester FIRST PRODUCTION RUN — 156 extracted, 53 threads written, 0 errors. Summarizer: Ollama qwen2.5:7b (ANTHROPIC_API_KEY not set). Output: Vault/Notes/Email/Job Search/{TCGplayer,DraftKings,Nebius,General}, Finance, Work, General. All _Index.md files created. Daily note 2026-04-01-DLY.md updated with ## Email Activity. Flags: --start-date 2026-03-01 --limit 200.
-- **2026-04-01**: Email ingester output moved to `Vault/Notes/Email/` (was `Vault/Email/`). Config change: `config.EMAIL_DIR = VAULT_ROOT / "Notes" / "Email"`. All downstream paths auto-update. Added existing-thread vault_path check in `_process_thread()` — threads land in same directory on updates.
-- **2026-04-01**: Daily Vault Activity Tracker BUILT (`System/Scripts/daily_vault_activity.py`). Three phases: SCAN (mtime-based, Plaud date backdating) → POST-PROCESS (glossary extraction + central merge, LLM tag enrichment, action item extraction) → INJECT (`## Vault Activity` section in DLY files). Dual-LLM: Haiku API → Ollama qwen2.5:7b. Wired into overnight_processor.py and morning_workflow.py. CLI: `--dry-run --days N --no-tags --no-tasks`. Bug found+fixed: `TypeError` from LLM returning ints in tasks list.
-- **2026-04-01**: ANTHROPIC_API_KEY added to crontab (top-level var), .bash_profile (already existed), ~/theVault/.env (new), ~/theVault/ResumeEngine/.env (new). All cron jobs and scripts now have access. Tonight's 11 PM overnight run should use Haiku instead of Ollama fallback.
-- **2026-04-03**: morning_workflow.py ANTHROPIC_API_KEY fix — added `_load_dotenv()` at module top; loads ~/theVault/.env into os.environ before any subprocess spawns. Uses `if not os.environ.get(key)` (not setdefault) to handle cron empty-string env vars. Fixes "No LLM service responded" errors in clean_md_processor + daily_vault_activity.
-- **2026-04-03**: clean_md_processor.py `--reprocess` flag added — reads from Processed/Plaud/ instead of Inbox, sets force=True to overwrite -Full.md output, skips moving source files. Filtered to sessions with existing -Full.md directly in Vault/Notes/ (no subdirs). Allows re-summarization without manually moving originals back to inbox.
-- **2026-04-04**: Plaud transcript enhancement — `format_srt_as_markdown()` now accepts `session_date` param, produces absolute datetime stamps (e.g., `2026-04-01 00:23 → 01:04`). `_extract_session_date()` derives YYYY-MM-DD from filename. Transcript appended as collapsible `<details>` section (starts collapsed). Quality gate: MIN_TRANSCRIPT_SEGMENTS=5 filters noise. RAG analysis: transcripts already indexed by current chunker (no `<details>` filtering); ~2% chunk growth, good ROI for temporal/speaker queries.
-- **2026-04-04**: Plaud `--repair` mode added — `repair_missing_transcripts()` scans `Vault/Notes/*-Full.md`, finds missing transcript sections, matches SRT from `Processed/Plaud/`, appends with absolute timestamps. Idempotent. Wired into `overnight_processor.py` as nightly auto-repair. 4 existing files repaired immediately; all 5 Full.md now have transcripts. `overnight_processor.py` also got `sys.path` fix for `System/Scripts/` imports.
-- **2026-04-04**: Repair expanded to recursive `Vault/**/*-Full.md` scan (excludes System/, Templates/, Daily/). Dry run: 458 files scanned, 80 would get transcripts appended (up from 5 with flat scan). Covers all files relocated to subdirectories during post-ingest organization.
-- **2026-04-04**: classify_content.py `--apply` readiness verified by Sonnet. 98 rows, 94 will move, 4 REVIEW with empty Final skipped. All source files exist, special chars (commas, &, #) safe. ML learning loop confirmed: corrections → classification.db overrides → future Haiku prompt injection.
-- **2026-04-04**: Stale task cleanup APPLIED (2 passes) — 576 tasks across 76 files converted from `- [ ] text` → `-- text`. Rule: DLY files use filename date; non-DLY use MM-DD filename prefix as date (e.g., `03-10 Meeting-Full.md` → 2026-03-10); fall back to mtime. Do NOT use inline 📅 date (system assigns +3wk default, misleading). Cutoff: >10 days old (before 2026-03-25). Excluded: _archive/, System/, Templates/, .trash/, Generic_Notes/.
-- **2026-04-04**: Bidirectional Reminders sync — Phase 1 PROPOSED (not built). `sync_completions_from_reminders()` in task_reminders_sync.py is a stub. Plan: query completed Vault reminders → parse Source/Key from notes → match `- [ ]` line in source file by recomputing key → flip to `- [x] ✅ date`. Phase 2 (new Reminders → Obsidian) deferred. PyRemindKit confirmed available in venv.
-- **2026-04-04**: Full bidirectional Reminders↔Obsidian sync COMPLETE + PRODUCTION TESTED (condescending-mccarthy). Step 7.5: Reminders done → Obsidian `- [x] ✅ date`. Step 7.6: new Reminders tasks (no Key) → today's DLY `## From Reminders`. Step 7.7: Obsidian `- [x]` → DELETE reminder (Obsidian is source of truth). All run even on early-return path. Tested: 14 completions pulled, 3 new tasks imported, 14 reminders deleted. Runs 4x daily via cron.
-- **2026-04-09**: evening_workflow.py Step 3 fix APPLIED — _step_highlight_tomorrow() now creates Evening_Review_{date}.md with template if missing (instead of failing). Fixed + verified Apr 4-8 workflow runs: all 4 steps complete, 0 total errors per date. Daily dashboards generated for backfill (missing prerequisite for Step 1).
-- **2026-04-09**: Overnight processor April 8 discrepancy RESOLVED — concurrent runs at 07:53:25 caused race condition on file write (duplicate log entries, duplicate file loads). April 8 initially showed task extraction success in logs but file retained old error. Clean re-run at 07:57 successfully extracted 5 tasks + summary. Root cause: backgrounded processes from earlier manual runs + duplicate cron execution (both 11 PM daily and 11 AM daily cron jobs were active). April 4, 6, 8 now all have correct task extractions. Prevent future issue: avoid concurrent runs, monitor for duplicate log entries.
-- **2026-04-09**: Evening workflow April 4-8 PRODUCTION RUN COMPLETE — All 5 dates processed successfully: 0 total errors. 4 steps executed per date (dashboard generation, task summaries, Evening_Review creation, job queue config). Evening_Review files created for Apr 4-8 at 07:59. Daily dashboards linked. Overnight jobs disabled by default (3 available per date). System ready for next scheduled 11 PM overnight processor run. All memory files updated.
-- **2026-04-11**: All services verified + Plaud & Email ingestion completed. Ollama (3 models), FastAPI RAG (port 5055), Claude API all running. Plaud: 7 sessions processed from Inbox → 7 Full.md files (clean_md_processor.py). Email: 49 emails → 27 threads grouped (General/Work/Personal/Job Search), 31 contact profiles created, job index at Job Search/General/_Index.md, daily note 2026-04-11 updated. Email summarizer has JSON parsing bug (non-blocking, continues on failure). All vault writes verified successful. System stable for production use.
-- **2026-04-11**: File classification COMPLETE (classify_content.py --apply). 67 files reviewed (55 ACCEPT, 12 REVIEW). Final decisions: 11 REVIEW items finalized, 1 generic "update.md" skipped. All 66 files moved to correct vault locations. 2 new classification rules learned (ResidenceInn, Xfinity → Context_Companies). Vault organization complete.
-- **2026-04-11**: OPERATIONS-INDEX.md created — comprehensive reference for web UI (port 5111), API endpoints (/api/query, /api/chat, /health/ollama), service management, daily operations, troubleshooting, and logs. Vault/System/OPERATIONS-INDEX.md is now canonical operations reference.
-- **2026-04-13**: RAG Index Rebuild — COMPLETE WITH 100% COVERAGE ✅. Root cause: embedding context window. Progression: 94.8% (batch=64, ctx=2048) → 94.3% (batch=32, ctx=2048, worse) → 94.8% (batch=16, ctx=1024, stable) → **100% (batch=16, ctx=512, PERFECT)**. Solution: reduce EMBED_CTX from 1024→512 tokens in embedder_provider.py line 31. Skip rate progression: ~15% → ~5% → **0%**. Final index: 61,903 chunks, 182M, zero failures. Critical finding: context window is PRIMARY bottleneck, not batch size/timeout. Chunk complexity at higher context triggers Ollama failure cascades; 512 tokens = fast+reliable. New config: EMBED_CTX=512, PROGRESS_EVERY=16, timeout=180s. Memory at project_rag_index_rebuild_2026_04_13.md.
-- **2026-04-13**: Memory update — RAG rebuild findings archived. Previous attempt (Apr 11, 94.8% coverage) moved to project_rag_index_rebuild_2026_04_11_ARCHIVE.md. Current production config locked in project_rag_index_rebuild_2026_04_13.md (✅ CURRENT). MEMORY.md updated with RAG rebuild entry.
-- **2026-04-05**: Laptop migration prep COMPLETE (Opus CLI). User memory (23 files) synced to git-tracked `.claude/user-memory/`. `check_nas.sh` made hostname-aware (skips NAS on laptop, validates Vault symlink). `sync_memory_to_repo.sh` created + wired into PostToolUse hook. Migration plan at `.agents/LAPTOP_MIGRATION_PLAN.md` — 11 steps for Desktop Claude Code on laptop to execute.
+## Next Priority: Gemma 4 Integration
+
+Planning complete (Session 0, 9 docs at `Vault/Sessions/gemma4-integration/`). Build plan: 6 sessions.
+
+| Session | Model | Scope | Status |
+|---------|-------|-------|--------|
+| 1. Infrastructure | Sonnet | Ollama upgrade 0.12.9→0.20.4+, pull E4B, memory opts, Tailscale | **NEXT** |
+| 2. Core Server | Sonnet | config.py, server.py, _strip_thinking() | Blocked on S1 |
+| 3. Route Whitelist | Haiku | query.py, fast.py, deep.py, models metadata | Blocked on S2 |
+| 4. Batch Scripts | Haiku | 5 scripts with hardcoded model names | Can parallel with S2 |
+| 5. UI + Cosmetic | Haiku | Chat.tsx, Settings.tsx, health.py, chat_cli.py | Blocked on S3 |
+| 6. Validation | Opus | Full smoke test, quality comparison | Blocked on S3+S4+S5 |
+
+**Dependency graph:** S1 → S2 → S3 → S5 → S6, S1 → S4 → S6
+
+## Decisions Made (Recent)
+
+- **2026-04-13**: All 7 worktrees pruned (beautiful-maxwell, condescending-mccarthy, keen-kapitsa, naughty-shaw, silly-gauss, silly-varahamihira, trusting-moore). All `claude/*` branches deleted. Clean slate.
+- **2026-04-13**: RAG index rebuild COMPLETE — 61,903 chunks, 100% coverage. EMBED_CTX=512 is the key config. See `project_rag_index_rebuild_2026_04_13.md`.
+- **2026-04-12**: Gemma 4 Session 0 planning COMPLETE — GO verdict. E4B for all 3 generation roles. Build plan at `Vault/Sessions/gemma4-integration/build-plan.md`.
 
 ## Handoffs
 
-- ~~**Email Thread Ingester → Sonnet CLI or Desktop**~~: **COMPLETE** (2026-03-31). First production run 2026-04-01: 156→53 threads, 0 errors. ANTHROPIC_API_KEY now set for Haiku.
-- ~~**Gmail pipeline → Sonnet Desktop**~~: **SUPERSEDED** by Email Thread Ingester. Old context at `gmail_pipeline_context.md` is reference only.
-- **classify_content.py → Sonnet Desktop**: Full build spec provided in chat. DB at rag_data/classification.db, manifest at Vault/System/ClassificationReview.md. Status unknown since 2026-03-30.
+- **Gemma 4 Session 1 → Sonnet CLI**: Read `Vault/Sessions/gemma4-integration/build-plan.md` Section "Session 1: Infrastructure". Upgrade Ollama, pull E4B, check memory, install Tailscale. Do NOT modify Python source files.
+- **Gemma 4 Session 4 → Haiku CLI**: Can start after Session 1. Mechanical find-replace of hardcoded model names in 5 batch scripts.
+
+## Prior Work (Archived — for reference only)
+
+All prior decisions from March-April 2026 are preserved in memory files. Key completions:
+- Email Thread Ingester: BUILT + production (156→53 threads)
+- Daily Vault Activity Tracker: BUILT (glossary, tags, daily injection)
+- Bidirectional Reminders sync: COMPLETE
+- File classification: COMPLETE (67 files moved)
+- Evening/overnight workflows: STABLE
+- RAG rebuild: 100% coverage
