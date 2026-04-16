@@ -65,11 +65,11 @@ const MODEL_INFO: Record<string, { name: string; useCase: string; cost: string; 
     cost: '$0.00',
     speed: '< 0.25s',
   },
-  'qwen2.5:7b': {
-    name: 'Qwen 7B',
-    useCase: 'Balanced reasoning with vault knowledge',
+  'gemma4:e4b': {
+    name: 'Gemma 4 E4B',
+    useCase: 'Advanced reasoning with vault knowledge',
     cost: '$0.00',
-    speed: '1-3s',
+    speed: '2-4s',
   },
   'claude-haiku-4-5-20251001': {
     name: 'Claude Haiku',
@@ -91,7 +91,7 @@ const MODEL_INFO: Record<string, { name: string; useCase: string; cost: string; 
   },
 };
 
-const DEFAULT_MODEL = 'qwen2.5:7b';
+const DEFAULT_MODEL = 'gemma4:e4b';
 
 const CONTEXT_MODES = [
   { value: 'off' as const, label: 'Off', description: 'Raw LLM, no vault context' },

@@ -132,16 +132,24 @@ class CalendarMapper:
     Maps files to calendar events based on timestamps.
     """
 
-    def __init__(self, vault_path: str, calendar_name: str = "Work"):
+    def __init__(self, vault_path: str, calendar_name: str = None, calendar_names: "list[str] | str" = "ExchangeCalendar"):
         """
         Initialize calendar mapper.
 
         Args:
             vault_path: Path to Obsidian vault root
-            calendar_name: Name of calendar to read from (default: "Work")
+            calendar_name: Deprecated — use calendar_names instead (kept for backwards compat)
+            calendar_names: Calendar name(s) to read from. Accepts str or list[str].
         """
         self.vault_path = Path(vault_path)
-        self.calendar_name = calendar_name
+        # Backwards compatibility: if old calendar_name kwarg was passed, honour it
+        if calendar_name is not None:
+            calendar_names = calendar_name
+        if isinstance(calendar_names, str):
+            calendar_names = [calendar_names]
+        self.calendar_names: list[str] = calendar_names
+        # Keep legacy attribute for any code that reads it directly
+        self.calendar_name = self.calendar_names[0] if self.calendar_names else "ExchangeCalendar"
 
         # Initialize EventKit if available
         self.eventkit_store = None
@@ -213,17 +221,12 @@ class CalendarMapper:
             return []
 
         try:
-            # Get calendar by name
-            calendars = self.eventkit_store.calendarsForEntityType_(EKEntityTypeEvent)
-            target_calendar = None
+            # Get calendars by name — supports multiple
+            all_calendars = self.eventkit_store.calendarsForEntityType_(EKEntityTypeEvent)
+            target_calendars = [c for c in all_calendars if c.title() in self.calendar_names]
 
-            for calendar in calendars:
-                if calendar.title() == self.calendar_name:
-                    target_calendar = calendar
-                    break
-
-            if not target_calendar:
-                logger.error(f"Calendar '{self.calendar_name}' not found")
+            if not target_calendars:
+                logger.error(f"None of these calendars found: {self.calendar_names}")
                 return []
 
             # Convert to NSDate
@@ -232,7 +235,7 @@ class CalendarMapper:
 
             # Create predicate
             predicate = self.eventkit_store.predicateForEventsWithStartDate_endDate_calendars_(
-                ns_start, ns_end, [target_calendar]
+                ns_start, ns_end, target_calendars
             )
 
             # Fetch events
@@ -259,7 +262,7 @@ class CalendarMapper:
                     uid=event.eventIdentifier() or ""
                 ))
 
-            logger.info(f"Found {len(calendar_events)} events in '{self.calendar_name}' calendar")
+            logger.info(f"Found {len(calendar_events)} events across {len(target_calendars)} calendar(s)")
             return calendar_events
 
         except Exception as e:

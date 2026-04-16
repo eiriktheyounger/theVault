@@ -9,6 +9,7 @@
 - [feedback_focus.md](feedback_focus.md) — Eric rabbit-holes on interesting ideas; use parking lot pattern, keep execution on locked priorities
 - [feedback_memory_sync.md](feedback_memory_sync.md) — "Update memory" means ALL sync points: CLI memory, SHARED_CONTEXT, Desktop context, CLAUDE.md — not just CLI-side
 - [feedback_model_delegation.md](feedback_model_delegation.md) — Opus plans/orchestrates, Sonnet builds complex code, Haiku handles mechanical edits + verification. Minimize token cost.
+- [feedback_haiku_session_end.md](feedback_haiku_session_end.md) — Don't ask "what next?" at session end; wait for explicit direction or execute autonomously on P0/P1 work
 
 ## Project
 - [project_priorities_2026_03.md](project_priorities_2026_03.md) — **Locked priority map (P0-P3) + parking lot.** Most P0-P2 done. Laptop migration COMPLETE 2026-04-10. Open: rag_qa_agent.py. Updated 2026-04-10.
@@ -23,6 +24,7 @@
 
 - [project_task_management.md](project_task_management.md) — Stale task cleanup rule (>10 days → `-- text`, applied 2026-04-04: 112 tasks/20 files) + bidirectional Reminders sync Phase 1 proposal
 - [project_evening_workflow_2026_04_09.md](project_evening_workflow_2026_04_09.md) — Evening workflow production run April 4-8 COMPLETE: 5 dates, 0 errors, Evening_Review files generated. Overnight processor task extraction issues resolved (Ollama timing, April 8 race condition).
+- [project_rag_index_rebuild_2026_04_13.md](project_rag_index_rebuild_2026_04_13.md) — **✅ CURRENT** RAG index rebuild COMPLETE 2026-04-13: 61,903/61,903 chunks (100% coverage). Root cause: EMBED_CTX context window was primary bottleneck. Solution: EMBED_CTX=512 (down from 1024) → 0% skip rate. Previous attempt (94.8%) archived as reference.
 
 ## Project (Desktop Claude Code)
 - [project_desktop_claude_dirs.md](project_desktop_claude_dirs.md) — Scripts dir and Vault data dir for Desktop Claude Code sessions
@@ -32,6 +34,7 @@
 - [project_job_eval_batch_2026_04_01.md](project_job_eval_batch_2026_04_01.md) — First batch: 6 JDs evaluated. Akamai Principal TSA #1, TwelveLabs SA #2, Paramount passed. Rankings + action items.
 
 - [project_chatbot_rebuild.md](project_chatbot_rebuild.md) — Chatbot rebuild 2026-04-02: unified /api/query, multi-model (Ollama+Claude), OpenDyslexic UI, entity graph wired in
+- [project_gemma4_integration.md](project_gemma4_integration.md) — Gemma 4 E4B integration: Session 0 planning COMPLETE (9 docs), 6 build sessions planned, memory optimizations, PDF vision post-build
 
 ## Reference
 - [ref_key_files.md](ref_key_files.md) — Authoritative files and their locations in theVault. Updated 2026-04-03: added Services/, orchestration, dashboard, query endpoint, Claude API client.

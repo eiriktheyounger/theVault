@@ -1,0 +1,151 @@
+contact:
+  name: "ERIC MANCHESTER"
+  phone: "(240) 481-6737"
+  email: "eric.manchester@gmail.com"
+  linkedin: "linkedin.com/in/eric-manchester"
+  location: "Rockville, MD"
+
+roles:
+  harmonic:
+    title: "Solutions Architect"
+    company: "Harmonic"
+    dates: "2025 – Present"
+    location: "Remote"
+  re_kreations:
+    title: "Founder and Principal R&D Architect"
+    company: "RE Kreations LLC"
+    dates: "2017 – Present"
+    location: "Rockville, MD"
+  nbcu:
+    title: "Principal End-to-End Architect"
+    company: "NBCUniversal"
+    dates: "2021 – 2025"
+    location: "Remote"
+  leidos:
+    title: "Innovation and Emerging Technology Lead"
+    company: "Leidos"
+    dates: "2019 – 2020"
+    location: "Washington, DC"
+  ooyala:
+    title: "Sr. Solutions Architect"
+    company: "Ooyala"
+    dates: "2017 – 2018"
+    location: "Remote"
+  twc_2012:
+    title: "Principal Engineer, Video-On-Demand"
+    company: "Time Warner Cable"
+    dates: "2012 – 2017"
+    location: "Remote"
+  twc_2006:
+    title: "Manager, Digital Media Delivery"
+    company: "Time Warner Cable"
+    dates: "2006 – 2012"
+    location: "Sterling, VA"
+  aol:
+    title: "Sr. Live Events Producer"
+    company: "AOL"
+    dates: "2001 – 2006"
+    location: "Sterling, VA"
+
+patents_granted:
+  - number: "US 8,028,092"
+    title: "Inserting Advertising Content"
+    company: "AOL"
+    year: 2011
+  - number: "US 8,762,575"
+    title: "Inserting Advertising Content"
+    company: "Time Warner Cable"
+    year: 2014
+  - number: "US 8,769,151"
+    title: "Adding Advertising Content to Media Content"
+    company: "Time Warner Cable"
+    year: 2014
+  - number: "US 10,375,452"
+    title: "Apparatus and Methods for Thumbnail Generation"
+    company: "NBCUniversal"
+    year: 2019
+  - number: "US 10,667,018"
+    title: "Asynchronous Workflows"
+    company: "NBCUniversal"
+    year: 2020
+  - number: "US 11,310,567"
+    title: "Apparatus and Methods for Thumbnail Generation"
+    company: "Time Warner Cable"
+    year: 2022
+  - number: "US 12,382,148"
+    title: "Apparatus and Methods for Thumbnail Generation"
+    company: "AOL"
+    year: 2025
+
+patents_pending:
+  - number: "US 20,250,203,152"
+    title: "Timed Metadata for Overlays"
+    company: "NBCUniversal"
+    year: 2025
+  - number: "US 20,240,430,496"
+    title: "Dynamic In-Scene Secondary Content Insertion"
+    company: "NBCUniversal"
+    year: 2024
+  - number: "US 20,140,351,852"
+    title: "Inserting Advertising Content"
+    company: "Facebook"
+    year: 2014
+  - number: "US 20,140,351,853"
+    title: "Inserting Advertising Content"
+    company: "Facebook"
+    year: 2014
+
+awards:
+  - year: 2025
+    title: "Outstanding Interactive Experience Emmy Award"
+    subtitle: "NBCUniversal, Paris 2024 Olympics; individually named Software Developer"
+  - year: 2023
+    title: "Technology & Engineering Emmy Award"
+    subtitle: "NBCUniversal, Key Plays AI/ML sports highlights platform"
+  - year: 2014
+    title: "Emmy Award"
+    subtitle: "Time Warner Cable, TWCTV Application (OTT innovation)"
+  - year: 2005
+    title: "Emmy Award"
+    subtitle: "AOL, Live 8 Concert (world-record concurrent live streaming)"
+
+affiliations:
+  - "Television Academy — Science and Technology Peer Group Member"
+
+education:
+  school: "University of Maryland, College Park"
+  dates: "1990 – 1994"
+  degree: null
+  note: "Attended as theater major; did not complete degree."
+
+certifications: []
+
+# Tokens that MUST NOT appear in generated resumes
+banned_claims:
+  # Fabricated technical skills (JD-text leakage)
+  - "Kubernetes"
+  - "LKE"
+  - "EdgeWorkers"
+  - "EdgeKV"
+  - "mPulse"
+  - "origin shield"
+  # Fabricated credentials
+  - "AWS Certified Solutions Architect"
+  - "AWS Certified Media"
+  # Placeholder credentials
+  - "BS,"
+  - "Bachelor"
+  - "[University]"
+  - "[Year]"
+  # Placeholder contact
+  - "eric@example.com"
+  - "555-555-5555"
+  - "example.com"
+  # Wrong framing (match variations with words in between)
+  - "independent architect"
+  - "independent principal"
+  - "independently architected"
+  # Additional fabrications found
+  - "Software Architect"
+  - "VP of Engineering"
+  - "Chief Technology Officer"

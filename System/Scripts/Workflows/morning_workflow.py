@@ -64,6 +64,7 @@ sys.path.insert(0, str(scripts_dir))
 # Import our new workflow components
 from file_organizer import FileOrganizer
 from calendar_mapper import CalendarMapper
+from calendar_daily_injector import run_for_date as inject_calendar_for_date
 # EOL 2026-03-25 — TOC generation permanently disabled per Eric
 # from toc_generator import TOCGenerator
 
@@ -308,49 +309,27 @@ class MorningWorkflow:
             return False
 
     def _step_sync_calendar(self) -> bool:
-        """Step 2: Sync calendar (Harmonic → Work)."""
+        """Step 2: Inject calendar events into today's DLY note."""
         step = self.steps[self._get_step_index(2)]
         step.start()
         self._notify_callback(step)
 
         try:
-            # Calendar sync deferred — sync_calendar.py not yet built
-            calendar_script = scripts_dir / "Calendar" / "sync_calendar.py"
-            if not calendar_script.exists():
-                step.complete(["Calendar sync skipped — sync_calendar.py not yet available"])
-                self._notify_callback(step)
-                return True
-
-            step.update_progress(30, ["Syncing Harmonic calendar to Work calendar..."])
+            from datetime import date as _date
+            step.update_progress(30, ["Fetching calendar events (8 calendars)..."])
             self._notify_callback(step)
 
-            result = subprocess.run(
-                [sys.executable, str(calendar_script), "--date", self.date, "--allow-delete"],
-                capture_output=True,
-                text=True,
-                timeout=60,
-                close_fds=True
-            )
+            target_date = _date.fromisoformat(self.date) if hasattr(self, "date") and self.date else _date.today()
+            result = inject_calendar_for_date(target_date)
 
-            if result.returncode == 0:
-                lines = result.stdout.split("\n")
-                event_count = "calendar synced"
-                for line in lines:
-                    if "event" in line.lower() or "sync" in line.lower():
-                        event_count = line.strip()
-                        break
-
-                step.complete([
-                    f"Calendar synced for {self.date}",
-                    event_count,
-                    "Harmonic → Work calendar sync complete"
-                ])
-                self._notify_callback(step)
-                return True
-            else:
-                step.error(f"Calendar sync failed: {result.stderr}")
-                self._notify_callback(step)
-                return False
+            cal_status = result.get("calendar", {})
+            n_events = cal_status.get("events", 0)
+            step.complete([
+                f"Calendar injected: {n_events} event(s) → DLY",
+                f"Week at a glance: {result.get('week_glance', {}).get('status', 'skipped')}",
+            ])
+            self._notify_callback(step)
+            return True
 
         except Exception as e:
             step.error(str(e))
@@ -532,7 +511,7 @@ class MorningWorkflow:
             step.update_progress(20, ["Reading Work calendar..."])
             self._notify_callback(step)
 
-            mapper = CalendarMapper(self.vault_path, calendar_name="Work")
+            mapper = CalendarMapper(self.vault_path, calendar_names=["ExchangeCalendar"])
 
             step.update_progress(50, ["Matching files to meetings..."])
             self._notify_callback(step)

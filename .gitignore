@@ -51,3 +51,4 @@ System/Scripts/.task_normalizer_state.json
 # Large binary backups
 *.corrupted_backup_*
 System/Scripts/RAG/rag_data/*.bin.corrupted*
+calendar_token.json

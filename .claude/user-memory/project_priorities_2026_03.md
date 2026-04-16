@@ -1,10 +1,10 @@
 ---
 name: Project priorities 2026 Q1/Q2
-description: Locked priority map (P0-P3) for all active theVault projects plus parking lot. Updated 2026-04-03. Most P0/P1 complete; P2 (classify_content.py, RAG Q/A gate) still open.
+description: Locked priority map (P0-P3) for all active theVault projects. Updated 2026-04-13. P0-P2 complete. Active: Gemma 4 integration (6 build sessions). Open: RAG Q/A gate.
 type: project
 ---
 
-## Project Priority Map — Updated 2026-04-04
+## Project Priority Map — Updated 2026-04-13
 
 ### P0 — Must proceed ASAP
 
@@ -43,7 +43,15 @@ type: project
 
 11. ✅ **RAG full rebuild** — DONE 2026-03-30. 53,381 vectors in FAISS (up from 42,293, +26%). Coverage 95.8%. batch_reindex.py, 10/10 batches clean. Q/A gate still missing (rag_qa_agent.py not found).
 
-12. **RAG Q/A gate** — `System/Scripts/rag_qa_agent.py` missing; quality gate always skipped post-rebuild.
+12. ✅ **RAG Q/A gate** — BUILT 2026-04-14. `System/Scripts/rag_qa_agent.py` with 18 test cases, Haiku grader, markdown report, exit codes (0/1/2). Quality gate ready for production.
+
+13. ✅ **RAG index rebuild (100%)** — DONE 2026-04-13. 61,903/61,903 chunks (100% coverage). Root cause: EMBED_CTX context window. Solution: EMBED_CTX=512. Previous 95.8% coverage superseded.
+
+### ACTIVE — Gemma 4 Integration (6 build sessions)
+
+**Status:** Session 0 planning COMPLETE (2026-04-12). Build sessions ready to execute.
+**Details:** `project_gemma4_integration.md` + `Vault/Sessions/gemma4-integration/build-plan.md`
+**Delegation:** S1-S2 → Sonnet, S3-S5 → Haiku, S6 → Opus
 
 ### P1b — Infrastructure
 
@@ -51,15 +59,21 @@ type: project
 
 ### P3 — Valuable, not blocking
 
-10. **LinkedIn Content Strategy** — 7 pillars mapped, Pillar 7 (neurodivergence) research done. Files: `Vault/Knowledge/Plans for writing/LinkedIn/`. Needs brain dump session when ready. Sonnet Desktop for writing.
+14. **LinkedIn Content Strategy** — 7 pillars mapped, Pillar 7 (neurodivergence) research done. Files: `Vault/Knowledge/Plans for writing/LinkedIn/`. Needs brain dump session when ready. Sonnet Desktop for writing.
+15. **RAG Q/A gate** — Still missing. Defer until after Gemma 4.
 
 ### Parking Lot — Ideas to keep, not act on yet
 
-_This is the "distraction catcher." Good ideas that would pull focus from P0-P2. Review monthly._
+_This is the "distraction catcher." Good ideas that would pull focus from active work. Review monthly._
 
 - LinkedIn article writing / Substack
 - Plaud/ directory buildout (empty, unclear need)
 - Morning workflow `_step_organize_files` (disabled)
+- **PDF/PowerPoint Slide Processor** — E4B vision, ~300 lines, makes presentations searchable (spec at `Post-Gemma4-Integration.md`)
+- **Speechify-like TTS reader** — macOS `say` / Whisper / Coqui TTS for reading documents + web pages. Word/sentence highlighting for follow-along. Simple, document-focused variant (not full Speechify clone). Explore: macOS AVSpeechSynthesizer (free, built-in), or whisper.cpp for higher quality.
+- Photo/screenshot/receipt inbox processing (vision API pattern)
+- Whiteboard capture → diagrams + action items
+- **Tailscale remote control page** — once Tailscale is running, build a simple authenticated web page to trigger major processes (morning, evening, ingest, reindex, sync) from phone/laptop remotely
 
 **Why this structure:** Eric tends to rabbit-hole on interesting ideas. Parking lot prevents losing them while keeping execution focused on what moves the needle.
 

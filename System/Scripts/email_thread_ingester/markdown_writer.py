@@ -144,7 +144,15 @@ def write_thread(
 
     filename = safe_filename(thread.normalized_subject, maxlen=50)
     dest_path = dest_dir / f"{date_prefix}{filename}.md"
-    vault_path = str(dest_path)
+    # Build vault-relative path for Obsidian wikilinks (strip everything up to and including "Vault/")
+    abs_str = str(dest_path)
+    if "/Vault/" in abs_str:
+        vault_path = abs_str.split("/Vault/", 1)[1]
+        # Drop .md extension for cleaner wikilinks
+        if vault_path.endswith(".md"):
+            vault_path = vault_path[:-3]
+    else:
+        vault_path = abs_str  # fallback
 
     content = render_thread(thread, summary_data, topic, vault_path)
 

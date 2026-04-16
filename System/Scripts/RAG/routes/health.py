@@ -1,16 +1,11 @@
 from __future__ import annotations
 
-import os
 from typing import Any, Dict
 
 from fastapi import APIRouter, Request
 
 from ...build_info import BUILD_ID
-
-FAST_MODEL_DEFAULT = "phi3:latest"
-DEEP_MODEL_DEFAULT = "llama3.1:8b"
-FAST_MODEL = os.getenv("FAST_MODEL", FAST_MODEL_DEFAULT)
-DEEP_MODEL = os.getenv("DEEP_MODEL", DEEP_MODEL_DEFAULT)
+from ..config import FAST_MODEL, DEEP_MODEL
 
 router = APIRouter(prefix="/api", tags=["health"])
 

@@ -23,7 +23,7 @@ router = APIRouter(prefix="/api/query", tags=["query"])
 
 class QueryRequest(BaseModel):
     question: str
-    model: str = "qwen2.5:7b"
+    model: str = "gemma4:e4b"
     context_mode: str = "auto"  # 'off', 'auto', 'full'
     conversation_id: Optional[str] = None
 
@@ -219,7 +219,7 @@ async def query_endpoint(body: QueryRequest, request: Request) -> QueryResponse:
     # Validate model
     VALID_MODELS = {
         "gemma3:4b",
-        "qwen2.5:7b",
+        "gemma4:e4b",
         "claude-haiku-4-5-20251001",
         "claude-sonnet-4-20250514",
         "claude-opus-4-20250514",
@@ -373,11 +373,11 @@ async def get_models() -> Dict[str, List[ModelInfo]]:
             supports_context=True,
         ),
         ModelInfo(
-            id="qwen2.5:7b",
-            name="Qwen 7B",
+            id="gemma4:e4b",
+            name="Gemma 4 E4B",
             provider="ollama",
-            use_case="Balanced reasoning with vault knowledge",
-            speed="1-3s",
+            use_case="Advanced reasoning with vault knowledge",
+            speed="2-4s",
             cost_per_query="$0.00",
             supports_context=True,
         ),

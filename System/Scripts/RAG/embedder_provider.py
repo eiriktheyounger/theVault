@@ -28,7 +28,7 @@ def _pick_embed_model(cfg_model: Optional[str]) -> str:
 
 # --- Minimal Ollama embeddings client ---------------------------------------
 
-EMBED_CTX = int(os.getenv("EMBED_CTX", "2048"))
+EMBED_CTX = int(os.getenv("EMBED_CTX", "512"))  # Reduced from 1024 to improve embed reliability
 _CLAMP_LOGGED = False
 log = logging.getLogger("embedder")
 _backend: str | None = None  # 'ollama' | 'sentence-transformer'
@@ -59,7 +59,7 @@ def _embed_single(url: str, model: str, text: str, options: dict) -> List[float]
         headers={"Content-Type": "application/json"},
     )
     try:
-        with urllib.request.urlopen(req, timeout=60) as r:
+        with urllib.request.urlopen(req, timeout=180) as r:
             data = json.loads(r.read().decode("utf-8"))
         embs = data.get("embeddings", [])
         if embs and isinstance(embs[0], list) and embs[0]:
@@ -88,7 +88,7 @@ def _encode_ollama(host: str, model: str, texts: List[str]) -> List[List[float]]
         headers={"Content-Type": "application/json"},
     )
     try:
-        with urllib.request.urlopen(req, timeout=120) as r:
+        with urllib.request.urlopen(req, timeout=180) as r:
             data = json.loads(r.read().decode("utf-8"))
         embeddings = data.get("embeddings", [])
         if isinstance(embeddings, list) and len(embeddings) == len(texts):

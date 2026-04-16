@@ -56,15 +56,15 @@ load_dotenv()
 log = logging.getLogger("llm.server")
 logging.basicConfig(level=logging.INFO)
 
-FAST_MODEL_DEFAULT = "gemma3:4b"
-DEEP_MODEL_DEFAULT = "qwen2.5:7b"
+FAST_MODEL_DEFAULT = "gemma4:e4b"
+DEEP_MODEL_DEFAULT = "gemma4:e4b"
 
 # ---- Runtime configuration ----
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434").rstrip("/")
 OLLAMA_TIMEOUT_S = float(os.getenv("OLLAMA_TIMEOUT_S", "30"))
 FAST_MODEL = os.getenv("FAST_MODEL", FAST_MODEL_DEFAULT)
 DEEP_MODEL = os.getenv("DEEP_MODEL", DEEP_MODEL_DEFAULT)
-MODEL_CTX = int(os.getenv("MODEL_CTX", os.getenv("NEROSPICY_CTX_TOKENS", "4096")))
+MODEL_CTX = int(os.getenv("MODEL_CTX", "32768"))
 ZERO_USAGE = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
 
 log.info(
@@ -300,18 +300,38 @@ async def ollama_tags() -> Dict[str, Any]:
     return {"models": data.get("models", []), "error": None}
 
 
-async def generate(model: str, prompt: str, system: Optional[str] = None) -> Dict[str, Any]:
+def _strip_thinking(raw: str) -> str:
+    """Remove Gemma 4 thinking tags and markdown code fences from LLM output before parsing."""
+    if not raw:
+        return raw
+    # Standard <think>...</think> tags
+    cleaned = re.sub(r'<think>.*?</think>', '', raw, flags=re.DOTALL)
+    # Gemma 4 channel tags: <|channel>thought\n...<channel|>
+    cleaned = re.sub(r'<\|channel>thought\n.*?<channel\|>', '', cleaned, flags=re.DOTALL)
+    # Markdown code fences (```json...``` or ```...```)
+    cleaned = re.sub(r'^```(?:json)?\s*\n?(.*?)\n?```\s*$', r'\1', cleaned.strip(), flags=re.DOTALL)
+    return cleaned.strip()
+
+
+async def generate(
+    model: str,
+    prompt: str,
+    system: Optional[str] = None,
+    num_ctx: Optional[int] = None,
+    timeout: Optional[float] = None,
+) -> Dict[str, Any]:
     """Call Ollama /api/chat (migrated from deprecated /api/generate) and return JSON or structured error."""
     url = f"{OLLAMA_HOST.rstrip('/')}/api/chat"
+    ctx = num_ctx or MODEL_CTX
     # Convert prompt to messages format for new API
-    messages = [{"role": "user", "content": _clip(prompt, MODEL_CTX)}]
-    payload: Dict[str, Any] = {"model": model, "messages": messages, "stream": False}
+    messages = [{"role": "user", "content": _clip(prompt, ctx)}]
+    payload: Dict[str, Any] = {"model": model, "messages": messages, "stream": False, "options": {"num_ctx": ctx}}
     if system:
         # System message goes at the beginning in chat format
         messages.insert(0, {"role": "system", "content": system})
         payload["messages"] = messages
     try:
-        resp = await CLIENT.post(url, json=payload)
+        resp = await CLIENT.post(url, json=payload, timeout=timeout)
     except httpx.TimeoutException:
         return {
             "ok": False,
@@ -598,9 +618,9 @@ async def fast_endpoint(request: Request) -> Dict[str, Any]:
             gtext = "Glossary\n" + "\n".join(f"- {t}: {d}" for t, d in selected)
             g_prompt = fast_phi3.prompt(context=gtext, question=q)
             log.info("LLM call (glossary-first): mode=%s model=%s", "fast", FAST_MODEL)
-            j = await ollama_generate(FAST_MODEL, g_prompt, system)
+            j = await ollama_generate(FAST_MODEL, g_prompt, system, num_ctx=4096)
             if j.get("ok") is True:
-                raw = (j.get("response") or j.get("message", {}).get("content") or "").strip()
+                raw = _strip_thinking((j.get("response") or j.get("message", {}).get("content") or "").strip())
                 try:
                     ans = json.loads(raw)
                 except Exception:
@@ -663,7 +683,7 @@ async def fast_endpoint(request: Request) -> Dict[str, Any]:
             # Fall back to model call with question only (no context)
             prompt = fast_phi3.prompt(context="", question=q)
             log.info("LLM call: mode=%s model=%s (no-context)", "fast", FAST_MODEL)
-            j = await ollama_generate(FAST_MODEL, prompt, system)
+            j = await ollama_generate(FAST_MODEL, prompt, system, num_ctx=4096)
             if j.get("ok") is False:
                 envelope = _normalize_answer_field(
                     {
@@ -680,7 +700,7 @@ async def fast_endpoint(request: Request) -> Dict[str, Any]:
                 )
                 envelope["contract_version"] = "v2"
                 return envelope
-            raw = (j.get("response") or j.get("message", {}).get("content") or "").strip()
+            raw = _strip_thinking((j.get("response") or j.get("message", {}).get("content") or "").strip())
             try:
                 ans = json.loads(raw)
             except Exception:
@@ -710,7 +730,7 @@ async def fast_endpoint(request: Request) -> Dict[str, Any]:
         context_paths = result.get("citations", []) or []
         prompt = fast_phi3.prompt(context=context, question=q)
         log.info("LLM call: mode=%s model=%s", "fast", FAST_MODEL)
-        j = await ollama_generate(FAST_MODEL, prompt, system)
+        j = await ollama_generate(FAST_MODEL, prompt, system, num_ctx=4096)
         if j.get("ok") is False:
             envelope = _normalize_answer_field(
                 {
@@ -728,7 +748,7 @@ async def fast_endpoint(request: Request) -> Dict[str, Any]:
             envelope["contract_version"] = "v2"
             envelope["text"] = ""
             return envelope
-        raw = (j.get("response") or j.get("message", {}).get("content") or "").strip()
+        raw = _strip_thinking((j.get("response") or j.get("message", {}).get("content") or "").strip())
         try:
             ans = json.loads(raw)
         except Exception:
@@ -857,23 +877,23 @@ async def deep_endpoint(payload: DeepRequest) -> Dict[str, Any]:
         citations = result.get("citations", []) or []
         # If no context from Vault, fall back to a model call with the question only
         if not context.strip():
-            j = await ollama_generate(DEEP_MODEL, deep_llama.prompt(context="", question=q), system)
+            j = await ollama_generate(DEEP_MODEL, deep_llama.prompt(context="", question=q), system, num_ctx=16384, timeout=180.0)
             if j.get("ok") is False:
                 wrapped = json.dumps(
                     {"cid": cid, "message": {"content": " I do not know "}, "sources": []}
                 )
                 return {"text": wrapped, "mode": "deep", "citations": []}
-            raw = (j.get("response") or j.get("message", {}).get("content") or "").strip()
+            raw = _strip_thinking((j.get("response") or j.get("message", {}).get("content") or "").strip())
             return {"text": raw, "mode": "deep", "citations": []}
         prompt = deep_llama.prompt(context=context, question=q)
         log.info("LLM call: mode=%s model=%s", "deep", DEEP_MODEL)
-        j = await ollama_generate(DEEP_MODEL, prompt, system)
+        j = await ollama_generate(DEEP_MODEL, prompt, system, num_ctx=16384, timeout=180.0)
         if j.get("ok") is False:
             raise HTTPException(
                 status_code=502,
                 detail={"error": j.get("error"), "usage": j.get("usage")},
             )
-        raw = (j.get("response") or j.get("message", {}).get("content") or "").strip()
+        raw = _strip_thinking((j.get("response") or j.get("message", {}).get("content") or "").strip())
         try:
             ans = json.loads(raw)
         except Exception:
