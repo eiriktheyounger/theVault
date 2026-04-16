@@ -10,7 +10,7 @@ Principal architect leading VOD content acquisition, processing, and distributio
 - Lead TWCTV application architecture for VOD and advertising
 - Implement DRM and encryption security solutions
 - Evaluate and manage hardware, software, and SaaS providers
-- Operate as independent architect determining technical direction and securing executive buy-in
+- Operate as lead architect and individual contributor determining technical direction and securing executive buy-in
 
 ### Major Achievements
 - **Centralized VOD Platform:** Designed and drove centralization of all VOD content acquisition and distribution across set-top box environment, improving scalability and operational efficiency
@@ -46,7 +46,7 @@ Principal architect leading VOD content acquisition, processing, and distributio
 ### Resume Bullets (Product/Strategic Focus)
 - Recognized accelerating OTT adoption; built prototypes that informed the TWCTV Application, shaping its architecture for DRM and dynamic ad insertion to meet emerging security and monetization needs
 - Directed creation of a centralized headend for all VOD/ad content, unifying workflows across regions to improve scalability and reduce operational costs
-- Operated as an independent architect, determining technical direction and securing executive buy-in for major platform changes
+- Operated as a lead architect and individual contributor, determining technical direction and securing executive buy-in for major platform changes
 
 ### What NOT to Say
 - Avoid minimizing technical depth of VOD architecture work

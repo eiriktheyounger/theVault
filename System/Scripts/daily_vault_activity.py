@@ -448,7 +448,7 @@ def _enrich_tags_via_llm(
 
     prompt = f"""Given this content summary and existing tags, suggest up to 10 tags for this document.
 Rules:
-- Use existing tags from the approved list when they match (prefer exact matches)
+- STRONGLY prefer reusing tags from the approved list. Only create a new tag if nothing in the approved list is close enough (apply fuzzy matching — "jobsearch" and "job-search" should reuse "job-search").
 - Tags should be lowercase, hyphenated (e.g., "job-search", "home-projects")
 - Priority order: most specific/useful tag first
 - Include the existing tags if still relevant
@@ -773,17 +773,31 @@ def run_vault_activity(
                 glossary_added += _merge_glossary_into_file(glossary, dry_run=dry_run)
 
             # Phase 2b: Enrich tags
-            if enrich_tags and approved_tags:
+            # Bootstrap-friendly: enrich even if approved_tags list is empty (LLM can suggest first tags)
+            if enrich_tags:
                 existing_tags = file_info["frontmatter"].get("tags", [])
                 if isinstance(existing_tags, str):
                     existing_tags = [t.strip() for t in existing_tags.split(",")]
 
-                summary = file_info.get("title", "")[:200]
-                new_tags = _enrich_tags_via_llm(summary, existing_tags, approved_tags)
+                # Use actual content (up to 1500 chars) instead of just title
+                tag_content = (content or file_info.get("title", ""))[:1500]
+                new_tags = _enrich_tags_via_llm(tag_content, existing_tags, approved_tags)
                 if new_tags:
-                    _update_tags_in_file(file_info, new_tags, dry_run=dry_run)
+                    # Preserve protected source-type tags (plaud/meeting/transcript/email/etc)
+                    # These are immutable identity tags that LLM enrichment must never strip.
+                    PROTECTED_TAGS = {
+                        "plaud", "meeting", "transcript", "email", "email-thread",
+                        "daily", "weekly", "monthly", "summary",
+                    }
+                    protected_present = [t for t in existing_tags if t in PROTECTED_TAGS]
+                    merged: list[str] = []
+                    for t in protected_present + new_tags:
+                        if t and t not in merged:
+                            merged.append(t)
+                    merged = merged[:10]  # cap at 10
+                    _update_tags_in_file(file_info, merged, dry_run=dry_run)
                     tags_enriched += 1
-                    _add_new_tags_to_registry(new_tags, dry_run=dry_run)
+                    _add_new_tags_to_registry(merged, dry_run=dry_run)
 
             # Phase 2c: Extract action items
             if extract_tasks:

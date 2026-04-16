@@ -3,6 +3,14 @@
 JD Analyzer — ResumeEngine
 Parses a job description and generates a tailored resume from Eric's context files.
 
+Two-stage generation (default):
+  Stage A — Sonnet generates ONLY: professional summary + tailored experience bullets
+  Stage B — Pure Python assembles the complete resume by merging Stage A output
+             with canonical data from context/_canonical.yaml
+
+Legacy single-stage (--legacy flag):
+  Sonnet generates the complete resume from scratch (deprecated, kept for comparison).
+
 Usage:
     python3 ResumeEngine/jd_analyzer.py --jd path/to/jd.txt --output output/resume.md
     python3 ResumeEngine/jd_analyzer.py --jd-text "pasted JD text" --output output/resume.md
@@ -11,7 +19,9 @@ Flags:
     --jd          Path to a .txt file containing the job description
     --jd-text     Raw JD text (for quick runs)
     --output      Output path for the generated resume (default: output/resume-<timestamp>.md)
+    --batch       Process all .txt files in ResumeEngine/jds/
     --verbose     Print scoring details and step logs
+    --legacy      Use old single-stage generation (Sonnet writes full resume)
 """
 
 from __future__ import annotations
@@ -19,17 +29,26 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import random
 import re
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 import anthropic
+import yaml
+from docx import Document
+from docx.shared import Pt, Inches, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml.ns import qn
 from dotenv import load_dotenv
 
-# Load .env from ResumeEngine/ first, then project root as fallback
-load_dotenv(Path(__file__).parent / ".env")
-load_dotenv(Path(__file__).parent.parent / ".env")
+# Load .env from ResumeEngine/ first, then project root as fallback.
+# override=True: an empty ANTHROPIC_API_KEY='' inherited from the shell must not block us.
+load_dotenv(Path(__file__).parent / ".env", override=True)
+load_dotenv(Path(__file__).parent.parent / ".env", override=False)
 
 # ---------------------------------------------------------------------------
 # Paths (all relative to this file's parent — ResumeEngine/)
@@ -54,6 +73,7 @@ PROJECTS_DIR = CONTEXT_DIR / "projects"
 SKILLS_DIR = CONTEXT_DIR / "skills"
 AWARDS_DIR = CONTEXT_DIR / "awards"
 PATENTS_DIR = CONTEXT_DIR / "patents"
+CANONICAL_PATH = CONTEXT_DIR / "_canonical.yaml"
 
 # ---------------------------------------------------------------------------
 # Models
@@ -92,6 +112,89 @@ logger = logging.getLogger("jd_analyzer")
 def set_verbose(flag: bool) -> None:
     if flag:
         logger.setLevel(logging.INFO)
+
+
+# ---------------------------------------------------------------------------
+# API call resilience — retry on 429/529/500/transient errors
+# ---------------------------------------------------------------------------
+
+# Debug-log directory for raw JSON responses on parse failure
+DEBUG_LOG_DIR = ENGINE_ROOT / "output" / "_debug"
+
+# Exceptions where a retry makes sense (transient server errors, rate limits)
+_RETRIABLE_EXCEPTIONS: tuple[type[BaseException], ...] = (
+    anthropic.APIStatusError,
+    anthropic.RateLimitError,
+    anthropic.APIConnectionError,
+    anthropic.APITimeoutError,
+)
+
+
+def _call_with_retry(
+    client: anthropic.Anthropic,
+    *,
+    model: str,
+    max_tokens: int,
+    messages: list[dict],
+    label: str = "api_call",
+    max_attempts: int = 3,
+) -> Any:
+    """
+    Call client.messages.create with exponential backoff on transient errors.
+    Backoff: 5s, 10s, 20s (with jitter). Raises on non-retriable or after max_attempts.
+    """
+    last_exc: BaseException | None = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            return client.messages.create(
+                model=model,
+                max_tokens=max_tokens,
+                messages=messages,
+            )
+        except _RETRIABLE_EXCEPTIONS as exc:  # type: ignore[misc]
+            last_exc = exc
+            status = getattr(exc, "status_code", None)
+            # Only retry on 429 / 5xx — other APIStatusErrors (400, 401, 403) fail fast
+            if isinstance(exc, anthropic.APIStatusError) and status is not None and status < 500 and status != 429:
+                raise
+            if attempt == max_attempts:
+                logger.error(f"{label}: exhausted {max_attempts} attempts — raising ({exc})")
+                raise
+            wait = (2 ** (attempt - 1)) * 5 + random.uniform(0, 2)
+            logger.warning(f"{label}: attempt {attempt}/{max_attempts} failed ({exc}); retrying in {wait:.1f}s")
+            time.sleep(wait)
+    # Should be unreachable
+    if last_exc:
+        raise last_exc
+    raise RuntimeError(f"{label}: unreachable retry path")
+
+
+def _extract_text(response: Any) -> str:
+    """Safely extract text from an Anthropic response, guarding empty content."""
+    content = getattr(response, "content", None) or []
+    if not content:
+        return ""
+    first = content[0]
+    return (getattr(first, "text", "") or "").strip()
+
+
+def _log_raw_failure(category: str, raw: str, exc: Exception) -> None:
+    """Persist a raw response + error to _debug/ for offline inspection."""
+    try:
+        DEBUG_LOG_DIR.mkdir(parents=True, exist_ok=True)
+        ts = datetime.now().strftime("%Y%m%d-%H%M%S")
+        dbg = DEBUG_LOG_DIR / f"{category}_{ts}.txt"
+        dbg.write_text(
+            f"# {category} — {ts}\n"
+            f"# error: {exc}\n"
+            f"# raw_len: {len(raw)} chars\n"
+            f"# raw_tail (last 400 chars):\n{raw[-400:]!r}\n"
+            f"---\n{raw}\n",
+            encoding="utf-8",
+        )
+        logger.error(f"{category}: raw response saved → {dbg}")
+    except Exception as dbg_exc:
+        logger.error(f"{category}: failed to save raw debug log: {dbg_exc}")
 
 
 # ---------------------------------------------------------------------------
@@ -142,6 +245,19 @@ def load_config() -> dict[str, str]:
         "template_ic": _read(TEMPLATE_IC),
         "template_sa": _read(TEMPLATE_SA),
     }
+
+
+def load_canonical() -> dict:
+    """Load the canonical ground-truth manifest. Dies hard if missing."""
+    if not CANONICAL_PATH.exists():
+        raise FileNotFoundError(f"Canonical manifest missing: {CANONICAL_PATH}")
+    with open(CANONICAL_PATH, encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+    # Validate essential keys are present
+    for key in ("contact", "roles", "patents_granted", "awards", "education"):
+        if key not in data:
+            raise ValueError(f"Canonical manifest missing required key: {key}")
+    return data
 
 
 def parse_banned_words(banned_words_content: str) -> list[str]:
@@ -197,22 +313,26 @@ Rules:
 JOB DESCRIPTION:
 {jd_text}"""
 
-    response = client.messages.create(
+    response = _call_with_retry(
+        client,
         model=HAIKU_MODEL,
-        max_tokens=1024,
+        max_tokens=2048,  # Phase 1: doubled from 1024 — long JDs can have many skills/keywords
         messages=[{"role": "user", "content": prompt}],
+        label="parse_jd",
     )
 
-    raw = response.content[0].text.strip()
+    raw = _extract_text(response)
     # Strip markdown code fences if present
     raw = re.sub(r"^```(?:json)?\s*", "", raw)
     raw = re.sub(r"\s*```$", "", raw)
 
     try:
         parsed = json.loads(raw)
+        parsed["_degraded"] = False
     except json.JSONDecodeError as e:
-        logger.error(f"JD parse JSON error: {e}\nRaw: {raw[:200]}")
-        # Return minimal fallback
+        _log_raw_failure("parse_jd", raw, e)
+        logger.error(f"JD parse JSON error: {e} — DEGRADED fallback in use (resume will be generic)")
+        # Return minimal fallback with _degraded flag so callers can warn or abort
         parsed = {
             "role_title": "Unknown Role",
             "role_type": "ic",
@@ -225,6 +345,7 @@ JOB DESCRIPTION:
             "ad_tech_emphasis": False,
             "seniority": "senior",
             "summary": jd_text[:200],
+            "_degraded": True,
         }
 
     logger.info(f"JD parsed: role_type={parsed.get('role_type')}, sa_signals={parsed.get('sa_signals')}")
@@ -273,20 +394,36 @@ Score 0-49: low relevance
 
 Return ONLY valid JSON array, no explanation."""
 
-    response = client.messages.create(
+    # Phase 1: dynamic budget — each entry takes ~50-80 output tokens.
+    # 80 tokens/item + 150 overhead, capped at 8192.
+    budget = max(1024, len(items) * 80 + 150)
+    response = _call_with_retry(
+        client,
         model=HAIKU_MODEL,
-        max_tokens=1024,
+        max_tokens=min(budget, 8192),
         messages=[{"role": "user", "content": prompt}],
+        label=f"score_{category}",
     )
 
-    raw = response.content[0].text.strip()
+    raw = _extract_text(response)
     raw = re.sub(r"^```(?:json)?\s*", "", raw)
     raw = re.sub(r"\s*```$", "", raw)
 
     try:
         scores = json.loads(raw)
-    except json.JSONDecodeError as e:
-        logger.error(f"Scoring JSON error for {category}: {e}")
+        # Phase 2c: Haiku sometimes wraps the array in {"scores": [...]}. Unwrap if needed.
+        if isinstance(scores, dict):
+            for wrap_key in ("scores", "items", "results", "data"):
+                if wrap_key in scores and isinstance(scores[wrap_key], list):
+                    scores = scores[wrap_key]
+                    break
+            else:
+                raise ValueError(f"Scoring response was a dict but has no known list key: {list(scores.keys())}")
+        if not isinstance(scores, list):
+            raise ValueError(f"Scoring response was not a list: {type(scores).__name__}")
+    except (json.JSONDecodeError, ValueError) as e:
+        _log_raw_failure(f"score_{category}", raw, e)
+        logger.error(f"Scoring JSON error for {category}: {e} — using neutral fallback")
         scores = [{"key": k, "score": 50, "reason": "scoring unavailable"} for k in items]
 
     # Attach full content and sort by score desc
@@ -347,7 +484,335 @@ def select_template(jd_analysis: dict, config: dict[str, str]) -> tuple[str, str
 
 
 # ---------------------------------------------------------------------------
-# Step 4: Build generation prompt
+# Step 4a: Two-stage generation — Stage A prompt builder + executor
+# ---------------------------------------------------------------------------
+
+def build_bullet_prompt(
+    jd_text: str,
+    jd_analysis: dict,
+    scored_context: dict[str, list[dict]],
+    template_name: str,
+    config: dict[str, str],
+    canonical: dict,
+) -> str:
+    """Build prompt for Stage A: Sonnet tailors ONLY summary + experience bullets."""
+
+    top_roles = scored_context.get("roles", [])[:6]
+    top_projects = scored_context.get("projects", [])[:5]
+    top_skills = scored_context.get("skills", [])[:4]
+
+    def fmt_items(items: list[dict], max_chars: int = 12000) -> str:
+        out, total = [], 0
+        for item in items:
+            block = f"### {item['key']} (score: {item.get('score', 0)})\n{item.get('content', '')}\n"
+            if total + len(block) > max_chars:
+                out.append(f"### {item['key']} (score: {item.get('score', 0)}) [truncated]\n")
+                break
+            out.append(block)
+            total += len(block)
+        return "\n".join(out)
+
+    # Build the role stubs the LLM must populate with bullets
+    role_stubs = []
+    for role_key, role_info in canonical["roles"].items():
+        role_stubs.append(
+            f"- role_key: {role_key}\n"
+            f"  company: {role_info['company']}\n"
+            f"  title: {role_info['title']}\n"
+            f"  dates: {role_info['dates']}"
+        )
+
+    is_sa = "sa" in template_name
+
+    prompt = f"""You are tailoring resume content for Eric Manchester for a specific job.
+
+## YOUR TASK
+Generate ONLY two things:
+1. A professional_summary (3-4 sentences tailored to this JD)
+2. Tailored experience bullets for each role listed below
+
+## CRITICAL CONSTRAINTS — READ CAREFULLY
+- You are writing ONLY bullets and a summary. The full resume will be assembled by a separate system.
+- DO NOT output job titles, dates, company names, patents, awards, education, or contact info.
+- DO NOT fabricate skills, certifications, or technologies Eric doesn't have.
+- DO NOT include technologies that appear in the JD but NOT in Eric's context (no JD-text leakage).
+- If a skill from the JD matches something in Eric's context, include it. If it doesn't match, OMIT IT.
+- For NBCU: include EXACTLY this departure note: "During organizational restructuring in early 2025, I transitioned from NBCUniversal."
+
+## JOB DESCRIPTION
+{jd_text}
+
+## JD ANALYSIS
+- Role: {jd_analysis.get('role_title')} ({jd_analysis.get('role_type')})
+- Required: {', '.join(jd_analysis.get('required_skills', []))}
+- Keywords: {', '.join(jd_analysis.get('keywords', [])[:15])}
+
+## VOICE GUIDE
+{config.get('voice_guide', '')}
+
+## FRAMING RULES
+{config.get('framing_rules', '')}
+
+## BANNED WORDS (NEVER use)
+{', '.join(HARD_BANNED)}
+
+## ERIC'S ROLES (generate bullets for EACH — {4 if is_sa else 5}-6 bullets per role)
+{chr(10).join(role_stubs)}
+
+## ERIC'S CONTEXT (source material for bullets — ONLY use facts from here)
+### Roles
+{fmt_items(top_roles, 12000)}
+
+### Projects
+{fmt_items(top_projects, 6000)}
+
+### Skills
+{fmt_items(top_skills, 4000)}
+
+## OUTPUT FORMAT — Return ONLY valid JSON:
+{{
+  "professional_summary": "3-4 sentence summary tailored to this JD",
+  "core_skills": {{
+    "Group Name 1": "skill1, skill2, skill3",
+    "Group Name 2": "skill1, skill2, skill3"
+  }},
+  "roles": {{
+    "harmonic": {{
+      "nbcu_departure_note": null,
+      "bullets": ["bullet 1", "bullet 2", ...]
+    }},
+    "nbcu": {{
+      "nbcu_departure_note": "During organizational restructuring in early 2025, I transitioned from NBCUniversal.",
+      "bullets": ["bullet 1", "bullet 2", ...]
+    }},
+    "leidos": {{
+      "nbcu_departure_note": null,
+      "bullets": ["bullet 1", "bullet 2", ...]
+    }},
+    "ooyala": {{
+      "nbcu_departure_note": null,
+      "bullets": ["bullet 1", "bullet 2", ...]
+    }},
+    "re_kreations": {{
+      "nbcu_departure_note": null,
+      "bullets": ["bullet 1", "bullet 2", ...]
+    }},
+    "twc_2012": {{
+      "nbcu_departure_note": null,
+      "bullets": ["bullet 1", "bullet 2", ...]
+    }},
+    "twc_2006": {{
+      "nbcu_departure_note": null,
+      "bullets": ["bullet 1", "bullet 2", ...]
+    }},
+    "aol": {{
+      "nbcu_departure_note": null,
+      "bullets": ["bullet 1", "bullet 2", ...]
+    }}
+  }}
+}}
+
+{"Lead each bullet with customer/business outcome." if is_sa else "Lead each bullet with technical approach then impact."}
+Every bullet: action verb + technical detail + measurable outcome where available.
+Generate the JSON now:"""
+
+    return prompt
+
+
+def tailor_content(client: anthropic.Anthropic, prompt: str) -> dict:
+    """Stage A: Sonnet generates tailored summary + bullets. Returns parsed JSON."""
+    logger.info("Stage A: Generating tailored bullets with Sonnet...")
+
+    response = _call_with_retry(
+        client,
+        model=SONNET_MODEL,
+        max_tokens=8192,
+        messages=[{"role": "user", "content": prompt}],
+        label="tailor_content",
+    )
+
+    raw = _extract_text(response)
+    if not raw:
+        _log_raw_failure("tailor_content", repr(response), RuntimeError("empty content"))
+        raise RuntimeError("Stage A returned empty content")
+
+    # Strip markdown fences
+    raw = re.sub(r"^```(?:json)?\s*", "", raw)
+    raw = re.sub(r"\s*```$", "", raw)
+
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError as e:
+        _log_raw_failure("tailor_content", raw, e)
+        raise RuntimeError(f"Stage A JSON parse error: {e}")
+
+
+# ---------------------------------------------------------------------------
+# Step 4a-post: Sanitize tailored content — strip banned claims the LLM leaked
+# ---------------------------------------------------------------------------
+
+def sanitize_tailored_content(tailored: dict, canonical: dict) -> dict:
+    """Strip banned claims from LLM-generated bullets and skills before assembly.
+
+    The LLM sometimes injects JD-specific product names (EdgeWorkers, LKE, etc.)
+    or wrong framing ("independent architect") into bullets despite prompt constraints.
+    This function catches those at the data level before they reach the resume.
+    """
+    banned = [b.lower() for b in canonical.get("banned_claims", [])]
+    if not banned:
+        return tailored
+
+    def _clean_text(text: str) -> str:
+        """Remove banned terms from a string. For skills: remove the term. For bullets: flag."""
+        lower = text.lower()
+        for b in banned:
+            if b in lower:
+                # For short banned terms (single words), remove them from comma-separated lists
+                # For phrases, remove the whole phrase
+                text = re.sub(re.escape(b), "", text, flags=re.IGNORECASE).strip()
+                # Clean up double commas, leading/trailing commas from removal
+                text = re.sub(r",\s*,", ",", text)
+                text = re.sub(r"^\s*,\s*", "", text)
+                text = re.sub(r"\s*,\s*$", "", text)
+                text = re.sub(r"\s{2,}", " ", text)
+        return text.strip()
+
+    # Sanitize core_skills groups
+    if "core_skills" in tailored:
+        cleaned_skills: dict[str, str] = {}
+        for group, skills_str in tailored["core_skills"].items():
+            cleaned = _clean_text(skills_str)
+            if cleaned:  # only keep non-empty groups
+                cleaned_skills[group] = cleaned
+        tailored["core_skills"] = cleaned_skills
+
+    # Sanitize role bullets
+    if "roles" in tailored:
+        for role_key, role_data in tailored["roles"].items():
+            if "bullets" in role_data:
+                cleaned_bullets = []
+                for bullet in role_data["bullets"]:
+                    cleaned = _clean_text(bullet)
+                    if cleaned and len(cleaned) > 20:  # skip gutted bullets
+                        cleaned_bullets.append(cleaned)
+                role_data["bullets"] = cleaned_bullets
+
+    # Sanitize summary
+    if "professional_summary" in tailored:
+        tailored["professional_summary"] = _clean_text(tailored["professional_summary"])
+
+    return tailored
+
+
+# ---------------------------------------------------------------------------
+# Step 4b: Stage B — Pure Python assembly of canonical + tailored into markdown
+# ---------------------------------------------------------------------------
+
+def assemble_resume_md(
+    canonical: dict,
+    tailored: dict,
+    jd_analysis: dict,
+    template_name: str,
+) -> str:
+    """Stage B: Pure Python assembly of canonical data + tailored bullets into markdown.
+
+    The LLM never touches: contact info, job titles, dates, patents, awards,
+    affiliations, education, certifications.
+    """
+    c = canonical["contact"]
+    lines: list[str] = []
+
+    # Header
+    lines.append(f"# {c['name']}\n")
+    lines.append(f"{c['email']} | {c['phone']} | {c['linkedin']} | {c['location']}\n")
+    lines.append("---\n")
+
+    # Professional Summary
+    lines.append("## Professional Summary\n")
+    lines.append(tailored.get("professional_summary", "") + "\n")
+    lines.append("---\n")
+
+    # Core Skills / Competencies
+    is_sa = "sa" in template_name
+    header = "Core Competencies" if is_sa else "Core Technical Skills"
+    lines.append(f"## {header}\n")
+    for group_name, skills_str in tailored.get("core_skills", {}).items():
+        lines.append(f"**{group_name}:** {skills_str}\n")
+    lines.append("\n---\n")
+
+    # Professional Experience
+    lines.append("## Professional Experience\n")
+    for role_key, role_info in canonical["roles"].items():
+        lines.append(
+            f"### {role_info['company']} | {role_info['title']} | "
+            f"{role_info['dates']} | {role_info.get('location', '')}\n"
+        )
+
+        role_tailored = tailored.get("roles", {}).get(role_key, {})
+
+        # NBCU departure note
+        departure = role_tailored.get("nbcu_departure_note")
+        if departure and role_key == "nbcu":
+            lines.append(f"{departure}\n")
+
+        for bullet in role_tailored.get("bullets", []):
+            b = bullet.strip()
+            if not b.startswith("- "):
+                b = f"- {b}"
+            lines.append(f"{b}\n")
+        lines.append("\n---\n")
+
+    # Patents (always from canonical — ALL of them)
+    granted = canonical.get("patents_granted", [])
+    pending = canonical.get("patents_pending", [])
+    lines.append(f"## Patents ({len(granted)} Granted | {len(pending)} Pending)\n")
+    lines.append("### Granted\n")
+    for p in granted:
+        lines.append(
+            f"- **{p['title']}** ({p['number']}, {p.get('year', '')}) — {p.get('company', '')}\n"
+        )
+    if pending:
+        lines.append("\n### Pending\n")
+        for p in pending:
+            lines.append(
+                f"- **{p.get('title', 'Pending')}** ({p.get('number', 'N/A')}) — {p.get('company', '')}\n"
+            )
+    lines.append("\n---\n")
+
+    # Awards (always from canonical — ALL of them)
+    lines.append("## Awards & Recognition\n")
+    for a in canonical.get("awards", []):
+        lines.append(f"- **{a['title']}** ({a['year']}) — {a['subtitle']}\n")
+    lines.append("\n---\n")
+
+    # Affiliations
+    affiliations = canonical.get("affiliations", [])
+    if affiliations:
+        lines.append("## Professional Affiliations\n")
+        for aff in affiliations:
+            lines.append(f"- {aff}\n")
+        lines.append("\n---\n")
+
+    # Education
+    edu = canonical.get("education", {})
+    lines.append("## Education\n")
+    if edu.get("degree"):
+        lines.append(f"{edu['degree']} | {edu['school']} | {edu['dates']}\n")
+    else:
+        lines.append(f"{edu.get('school', '')} | {edu.get('dates', '')}\n")
+
+    # Certifications (only if any exist)
+    certs = canonical.get("certifications", [])
+    if certs:
+        lines.append("\n## Certifications\n")
+        for cert in certs:
+            lines.append(f"- {cert}\n")
+
+    return "".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Step 4 (LEGACY): Build generation prompt — DEPRECATED, kept for rollback
 # ---------------------------------------------------------------------------
 
 STRUCTURE_IC = """
@@ -389,7 +854,11 @@ def build_generation_prompt(
     template_content: str,
     config: dict[str, str],
 ) -> str:
-    """Build the full prompt for Sonnet resume generation."""
+    """Build the full prompt for Sonnet resume generation.
+
+    DEPRECATED — kept for rollback. Use build_bullet_prompt() + tailor_content()
+    + assemble_resume_md() instead. Activate via --legacy flag.
+    """
 
     # Select top items from each category
     top_roles = scored_context.get("roles", [])[:6]
@@ -446,19 +915,19 @@ Follow Eric's voice guide, framing rules, and NEVER use any banned words.
 NBCUniversal departure rule: "Organizational restructuring" ONLY — two sentences maximum, then redirect immediately to accomplishments.
 
 ## TOP-SCORED ROLES (use these, ranked by relevance)
-{fmt_items(top_roles, 2000)}
+{fmt_items(top_roles, 12000)}
 
 ## TOP-SCORED PROJECTS (highlight these)
-{fmt_items(top_projects, 1500)}
+{fmt_items(top_projects, 6000)}
 
 ## TOP-SCORED SKILLS (map to JD requirements)
-{fmt_items(top_skills, 1200)}
+{fmt_items(top_skills, 4000)}
 
 ## AWARDS (include all Emmys)
-{fmt_items(top_awards, 800)}
+{fmt_items(top_awards, 2000)}
 
 ## TOP-SCORED PATENTS (include if technically relevant)
-{fmt_items(top_patents, 800)}
+{fmt_items(top_patents, 3000)}
 
 ## GENERATION RULES
 1. Use action verbs: Architected, Designed, Built, Delivered, Engineered, Developed — never "Helped" or "Assisted"
@@ -478,20 +947,29 @@ Generate the complete resume now:"""
 
 
 # ---------------------------------------------------------------------------
-# Step 5: Generate resume with Sonnet
+# Step 5 (LEGACY): Generate resume with Sonnet — DEPRECATED, kept for rollback
 # ---------------------------------------------------------------------------
 
 def generate_resume(client: anthropic.Anthropic, prompt: str) -> str:
-    """Generate the tailored resume using Sonnet."""
+    """Generate the tailored resume using Sonnet.
+
+    DEPRECATED — kept for rollback. Use tailor_content() + assemble_resume_md() instead.
+    Activate via --legacy flag.
+    """
     logger.info("Generating resume with Sonnet...")
 
-    response = client.messages.create(
+    response = _call_with_retry(
+        client,
         model=SONNET_MODEL,
-        max_tokens=4096,
+        max_tokens=8192,  # Phase 1: doubled — full resumes hit ~5-6k tokens
         messages=[{"role": "user", "content": prompt}],
+        label="generate_resume",
     )
 
-    return response.content[0].text.strip()
+    text = _extract_text(response)
+    if not text:
+        _log_raw_failure("generate_resume", repr(response), RuntimeError("empty content"))
+    return text
 
 
 # ---------------------------------------------------------------------------
@@ -539,13 +1017,20 @@ Do not add any explanation — output only the corrected resume.
 RESUME:
 {resume_text}"""
 
-    response = client.messages.create(
+    response = _call_with_retry(
+        client,
         model=HAIKU_MODEL,
-        max_tokens=4096,
+        max_tokens=8192,  # Phase 1: doubled — mechanical substitution on a full resume
         messages=[{"role": "user", "content": prompt}],
+        label="fix_banned_words",
     )
 
-    return response.content[0].text.strip()
+    text = _extract_text(response)
+    if not text:
+        _log_raw_failure("fix_banned_words", repr(response), RuntimeError("empty content"))
+        # If rewrite returned empty, keep the original rather than nuking the resume
+        return resume_text
+    return text
 
 
 # ---------------------------------------------------------------------------
@@ -560,31 +1045,68 @@ def process_single_jd(
     config: dict[str, str],
     banned: list[str],
     verbose: bool = False,
+    legacy: bool = False,
 ) -> None:
-    """Process a single JD and write the resume to output_path."""
-    # Parse JD
+    """Process a single JD and write the resume to output_path.
+
+    Default (two-stage):
+      Stage A — Sonnet generates tailored summary + bullets (JSON)
+      Stage B — Pure Python assembles markdown from canonical + tailored data
+
+    Legacy (--legacy flag):
+      Sonnet generates the complete resume in a single pass (old behaviour).
+    """
+    # 1. Parse JD (unchanged)
     jd_analysis = parse_jd(client, jd_text)
 
-    # Score context
+    # Phase 3b: if JD parsing degraded to fallback, abort instead of generating a generic resume
+    if jd_analysis.get("_degraded"):
+        raise RuntimeError(
+            "JD parse degraded — Haiku returned invalid JSON. See output/_debug/parse_jd_*.txt. "
+            "Refusing to generate a generic resume."
+        )
+
+    # 2. Score context (unchanged)
     scored_context = score_all_context(client, context, jd_analysis, verbose=verbose)
 
-    # Select template
+    # 3. Select template (unchanged)
     template_name, template_content = select_template(jd_analysis, config)
 
-    # Build prompt
-    prompt = build_generation_prompt(
-        jd_text=jd_text,
-        jd_analysis=jd_analysis,
-        scored_context=scored_context,
-        template_name=template_name,
-        template_content=template_content,
-        config=config,
-    )
+    if legacy:
+        # --- LEGACY single-stage path ---
+        prompt = build_generation_prompt(
+            jd_text=jd_text,
+            jd_analysis=jd_analysis,
+            scored_context=scored_context,
+            template_name=template_name,
+            template_content=template_content,
+            config=config,
+        )
+        resume_text = generate_resume(client, prompt)
+    else:
+        # --- TWO-STAGE path ---
 
-    # Generate
-    resume_text = generate_resume(client, prompt)
+        # 4. Load canonical data
+        canonical = load_canonical()
 
-    # Validate banned words
+        # 5. Stage A: Sonnet tailors summary + bullets
+        prompt = build_bullet_prompt(
+            jd_text=jd_text,
+            jd_analysis=jd_analysis,
+            scored_context=scored_context,
+            template_name=template_name,
+            config=config,
+            canonical=canonical,
+        )
+        tailored = tailor_content(client, prompt)
+
+        # 5b. Sanitize: strip any banned claims the LLM leaked through
+        tailored = sanitize_tailored_content(tailored, canonical)
+
+        # 6. Stage B: Pure Python assembly into markdown
+        resume_text = assemble_resume_md(canonical, tailored, jd_analysis, template_name)
+
+    # 7. Banned words check (both paths)
     found_banned = check_banned_words(resume_text, banned)
     if found_banned:
         resume_text = fix_banned_words(client, resume_text, found_banned)
@@ -592,11 +1114,43 @@ def process_single_jd(
         if remaining:
             logger.warning(f"Banned words remaining after fix: {remaining}")
 
-    # Write output
+    # 8. Fabrication scan (two-stage path only; skipped gracefully if module not ready)
+    if not legacy:
+        try:
+            from scan_fabrications import scan_resume
+            violations = scan_resume(resume_text, canonical)  # type: ignore[possibly-undefined]
+            if violations:
+                logger.warning(f"Fabrication scan found {len(violations)} issues:")
+                for v in violations:
+                    logger.warning(f"  - {v}")
+                viol_path = output_path.with_suffix(".violations.txt")
+                viol_path.write_text("\n".join(violations), encoding="utf-8")
+        except (ImportError, ModuleNotFoundError):
+            logger.info("scan_fabrications not available — skipping fabrication scan")
+
+    # 9. Write .md
     output_path.write_text(resume_text, encoding="utf-8")
 
+    # 10. Write .docx (two-stage path only)
+    if not legacy:
+        try:
+            from render_docx import render_resume_docx
+            docx_path = output_path.with_suffix(".docx")
+            render_resume_docx(
+                output_path=docx_path,
+                canonical=canonical,  # type: ignore[possibly-undefined]
+                tailored=tailored,    # type: ignore[possibly-undefined]
+                jd_analysis=jd_analysis,
+                template_name=template_name,
+            )
+            logger.info(f"DOCX written: {docx_path}")
+        except (ImportError, ModuleNotFoundError):
+            logger.info("render_docx not available — .docx output skipped")
+        except Exception as e:
+            logger.error(f"DOCX render failed: {e}")
 
-def run_batch(verbose: bool = False) -> None:
+
+def run_batch(verbose: bool = False, legacy: bool = False) -> None:
     """Process all .txt files in jds/ directory, FIFO by modification time."""
     JDS_DIR.mkdir(parents=True, exist_ok=True)
     JDS_PROCESSED.mkdir(parents=True, exist_ok=True)
@@ -645,6 +1199,7 @@ def run_batch(verbose: bool = False) -> None:
                 config=config,
                 banned=banned,
                 verbose=verbose,
+                legacy=legacy,
             )
 
             # Move to processed
@@ -654,8 +1209,20 @@ def run_batch(verbose: bool = False) -> None:
             print(f"  ✓ Done → moved to processed/\n")
 
         except Exception as e:
+            import traceback
             dest = JDS_FAILED / jd_file.name
             jd_file.rename(dest)
+            # Phase 2d: write a companion error log next to the failed JD for post-mortem
+            try:
+                err_log = JDS_FAILED / f"{jd_file.stem}_error.log"
+                err_log.write_text(
+                    f"# {jd_file.name} failed at {datetime.now().isoformat()}\n"
+                    f"# error: {e}\n\n"
+                    f"{traceback.format_exc()}\n",
+                    encoding="utf-8",
+                )
+            except Exception as log_exc:
+                logger.error(f"Could not write error log for {jd_file.name}: {log_exc}")
             results.append((jd_file.name, "FAILED", str(e)))
             print(f"  ✗ Failed: {e} → moved to failed/\n")
             logger.error(f"Batch failed for {jd_file.name}: {e}")
@@ -690,6 +1257,11 @@ def main() -> None:
         help="Output path for the resume (default: output/resume-<timestamp>.md)",
     )
     parser.add_argument("--verbose", action="store_true", help="Print scoring details")
+    parser.add_argument(
+        "--legacy",
+        action="store_true",
+        help="Use old single-stage generation (Sonnet writes full resume). Kept for comparison only.",
+    )
     args = parser.parse_args()
 
     # Validation: ensure one of --batch, --jd, or --jd-text is provided
@@ -700,7 +1272,7 @@ def main() -> None:
 
     # --- Handle batch mode ---
     if args.batch:
-        run_batch(verbose=args.verbose)
+        run_batch(verbose=args.verbose, legacy=args.legacy)
         return
 
     # --- Load JD ---
@@ -746,6 +1318,14 @@ def main() -> None:
     print(f"  Company: {jd_analysis.get('company_name') or 'not specified'}")
     print(f"  Required skills: {', '.join(jd_analysis.get('required_skills', [])[:6])}")
 
+    # Phase 3b: warn loudly if JD parsing degraded — resume will be generic
+    if jd_analysis.get("_degraded"):
+        print(
+            "\n  ⚠️  JD PARSE DEGRADED — Haiku returned invalid JSON. "
+            "Resume will be generic. See output/_debug/parse_jd_*.txt for the raw response.\n",
+            file=sys.stderr,
+        )
+
     # --- Score context ---
     print("Scoring context for relevance...")
     scored_context = score_all_context(client, context, jd_analysis, verbose=args.verbose)
@@ -761,19 +1341,44 @@ def main() -> None:
     template_name, template_content = select_template(jd_analysis, config)
     print(f"Template: {template_name}")
 
-    # --- Build prompt ---
-    prompt = build_generation_prompt(
-        jd_text=jd_text,
-        jd_analysis=jd_analysis,
-        scored_context=scored_context,
-        template_name=template_name,
-        template_content=template_content,
-        config=config,
-    )
+    if args.legacy:
+        # --- LEGACY single-stage path ---
+        print("Generating resume (legacy single-stage)...")
+        prompt = build_generation_prompt(
+            jd_text=jd_text,
+            jd_analysis=jd_analysis,
+            scored_context=scored_context,
+            template_name=template_name,
+            template_content=template_content,
+            config=config,
+        )
+        resume_text = generate_resume(client, prompt)
+        tailored = None
+        canonical = None
+    else:
+        # --- TWO-STAGE path ---
+        print("Loading canonical manifest...")
+        canonical = load_canonical()
+        print(f"  {len(canonical.get('roles', {}))} roles, "
+              f"{len(canonical.get('patents_granted', []))} patents granted, "
+              f"{len(canonical.get('awards', []))} awards")
 
-    # --- Generate ---
-    print("Generating resume...")
-    resume_text = generate_resume(client, prompt)
+        print("Stage A: Generating tailored summary + bullets with Sonnet...")
+        bullet_prompt = build_bullet_prompt(
+            jd_text=jd_text,
+            jd_analysis=jd_analysis,
+            scored_context=scored_context,
+            template_name=template_name,
+            config=config,
+            canonical=canonical,
+        )
+        tailored = tailor_content(client, bullet_prompt)
+        tailored = sanitize_tailored_content(tailored, canonical)
+        print("  Stage A complete.")
+
+        print("Stage B: Assembling resume from canonical data...")
+        resume_text = assemble_resume_md(canonical, tailored, jd_analysis, template_name)
+        print("  Stage B complete.")
 
     # --- Validate banned words ---
     found_banned = check_banned_words(resume_text, banned)
@@ -784,9 +1389,45 @@ def main() -> None:
         if remaining:
             print(f"  Warning: {remaining} could not be removed automatically", file=sys.stderr)
 
-    # --- Write output ---
+    # --- Fabrication scan (two-stage path only) ---
+    if not args.legacy:
+        try:
+            from scan_fabrications import scan_resume
+            violations = scan_resume(resume_text, canonical)  # type: ignore[arg-type]
+            if violations:
+                print(f"  Fabrication scan: {len(violations)} issues found — see .violations.txt")
+                logger.warning(f"Fabrication scan found {len(violations)} issues")
+                for v in violations:
+                    logger.warning(f"  - {v}")
+                viol_path = output_path.with_suffix(".violations.txt")
+                viol_path.write_text("\n".join(violations), encoding="utf-8")
+            else:
+                print("  Fabrication scan: clean.")
+        except ImportError:
+            logger.info("scan_fabrications not available — skipping fabrication scan")
+
+    # --- Write .md ---
     output_path.write_text(resume_text, encoding="utf-8")
     print(f"\nResume written to: {output_path}")
+
+    # --- Write .docx (two-stage path only) ---
+    if not args.legacy:
+        try:
+            from render_docx import render_resume_docx
+            docx_path = output_path.with_suffix(".docx")
+            render_resume_docx(
+                output_path=docx_path,
+                canonical=canonical,    # type: ignore[arg-type]
+                tailored=tailored,      # type: ignore[arg-type]
+                jd_analysis=jd_analysis,
+                template_name=template_name,
+            )
+            print(f"DOCX written to:   {docx_path}")
+        except (ImportError, ModuleNotFoundError):
+            logger.info("render_docx not available — .docx output skipped")
+        except Exception as e:
+            logger.error(f"DOCX render failed: {e}")
+            print(f"  Warning: DOCX render failed: {e}", file=sys.stderr)
 
     # --- Print analysis summary ---
     print(f"\n--- Analysis Summary ---")

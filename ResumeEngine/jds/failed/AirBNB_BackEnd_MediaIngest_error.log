@@ -1,0 +1,36 @@
+# AirBNB_BackEnd_MediaIngest.txt failed at 2026-04-15T12:09:29.226131
+# error: "Could not resolve authentication method. Expected either api_key or auth_token to be set. Or for one of the `X-Api-Key` or `Authorization` headers to be explicitly omitted"
+
+Traceback (most recent call last):
+  File "/Users/ericmanchester/theVault/ResumeEngine/jd_analyzer.py", line 766, in run_batch
+    process_single_jd(
+  File "/Users/ericmanchester/theVault/ResumeEngine/jd_analyzer.py", line 685, in process_single_jd
+    jd_analysis = parse_jd(client, jd_text)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ericmanchester/theVault/ResumeEngine/jd_analyzer.py", line 286, in parse_jd
+    response = _call_with_retry(
+               ^^^^^^^^^^^^^^^^^
+  File "/Users/ericmanchester/theVault/ResumeEngine/jd_analyzer.py", line 132, in _call_with_retry
+    return client.messages.create(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ericmanchester/theVault/.venv/lib/python3.12/site-packages/anthropic/_utils/_utils.py", line 282, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ericmanchester/theVault/.venv/lib/python3.12/site-packages/anthropic/resources/messages/messages.py", line 996, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/Users/ericmanchester/theVault/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1364, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ericmanchester/theVault/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1058, in request
+    request = self._build_request(options, retries_taken=retries_taken)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ericmanchester/theVault/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 521, in _build_request
+    headers = self._build_headers(options, retries_taken=retries_taken)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ericmanchester/theVault/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 451, in _build_headers
+    self._validate_headers(headers_dict, custom_headers)
+  File "/Users/ericmanchester/theVault/.venv/lib/python3.12/site-packages/anthropic/_client.py", line 196, in _validate_headers
+    raise TypeError(
+TypeError: "Could not resolve authentication method. Expected either api_key or auth_token to be set. Or for one of the `X-Api-Key` or `Authorization` headers to be explicitly omitted"
+
