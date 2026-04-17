@@ -57,18 +57,32 @@ log "Step 1: Closed $freed_count heavy app(s)"
 sleep 2
 
 # ── Step 2: Mount NAS if not mounted ─────────────────────────────────────────
+NAS_USER="ericmanchester"
+NAS_HOST="DS1621plus._smb._tcp.local"
+NAS_SHARE="home"
+
 if [ ! -d "$NAS_PATH" ]; then
-    log "Step 2: NAS not mounted — attempting remount via Finder/SMB..."
-    open "smb://ericmanchester@DS1621plus._smb._tcp.local/home" 2>/dev/null
-    for i in $(seq 1 30); do
-        [ -d "$NAS_PATH" ] && break
-        sleep 1
-    done
-    if [ ! -d "$NAS_PATH" ]; then
-        log "ERROR: NAS remount failed after 30s — aborting"
+    log "Step 2: NAS not mounted — attempting unattended remount via mount_smbfs..."
+
+    # Pull credentials from macOS Keychain (stored when you last manually mounted)
+    NAS_PASS=$(security find-internet-password -s "$NAS_HOST" -a "$NAS_USER" -w 2>/dev/null)
+
+    if [ -z "$NAS_PASS" ]; then
+        log "ERROR: No keychain entry for $NAS_USER@$NAS_HOST — cannot remount unattended"
+        log "  Fix: security add-internet-password -s '$NAS_HOST' -a '$NAS_USER' -w 'YOUR_PASSWORD'"
         exit 1
     fi
-    log "  NAS remounted successfully"
+
+    mkdir -p "$NAS_PATH"
+    # URL-encode the password in case it contains special characters
+    NAS_PASS_ENC=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))" "$NAS_PASS")
+    mount_smbfs "//${NAS_USER}:${NAS_PASS_ENC}@${NAS_HOST}/${NAS_SHARE}" "$NAS_PATH" 2>/dev/null
+
+    if [ ! -d "$NAS_PATH" ] || ! ls "$NAS_PATH" > /dev/null 2>&1; then
+        log "ERROR: NAS remount failed — aborting"
+        exit 1
+    fi
+    log "  NAS remounted successfully (unattended)"
 else
     log "Step 2: NAS already mounted at $NAS_PATH"
 fi
