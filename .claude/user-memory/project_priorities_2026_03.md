@@ -2,8 +2,8 @@
 name: Project priorities 2026 Q1/Q2
 description: Locked priority map (P0-P3) for all active theVault projects. Updated 2026-04-13. P0-P2 complete. Active: Gemma 4 integration (6 build sessions). Open: RAG Q/A gate.
 type: project
+originSessionId: d779d3e3-81e8-4d10-bd15-33a7d93732e7
 ---
-
 ## Project Priority Map — Updated 2026-04-13
 
 ### P0 — Must proceed ASAP
@@ -57,6 +57,16 @@ type: project
 
 14. **LinkedIn Content Strategy** — 7 pillars mapped, Pillar 7 (neurodivergence) research done. Files: `Vault/Knowledge/Plans for writing/LinkedIn/`. Needs brain dump session when ready. Sonnet Desktop for writing.
 15. **RAG Q/A gate** — Still missing. Defer until after Gemma 4.
+
+### P2 FAST-FOLLOW — ResumeEngine scoring migration to Gemma 4 (added 2026-04-15)
+
+16. **Migrate `jd_analyzer.py` `score_category()` from Haiku → Gemma 4 E4B (local Ollama)** — Part of theVault project. Scoring is numerical relevance (0-100 + one-line reason), doesn't need Haiku-level intelligence. Benefits: (a) eliminates API dependency for highest-volume step (~30 calls per JD batch), (b) free inference, (c) unattended batches survive API outages, (d) keeps Haiku budget for JD parse + banned-word rewrites and Sonnet for resume generation.
+    - **Scope**: Replace `score_category()` API call with Ollama `/api/chat` call to `gemma4:e4b` at `http://localhost:11434`. Keep same JSON output contract. Add `_strip_thinking()` for Gemma 4 thinking-tag removal (already exists in `System/Scripts/RAG/llm/server.py`).
+    - **Prerequisites**: Phase 1-3 fixes complete (done 2026-04-15 — token budget, retry, logging, fmt_items, batch-failure log). Those give resilience; migration builds on that baseline.
+    - **Who**: Sonnet Desktop or Sonnet CLI (code change ~40 lines plus structured output parsing guard)
+    - **Test plan**: Run all 3 JDs in `ResumeEngine/jds/` after migration, compare top-5 scored roles/projects/skills vs Haiku baseline. Acceptance: ≥80% overlap in top-5 items per category, no JSON parse failures across all 5 categories × 3 JDs = 15 scoring calls.
+    - **Keep Haiku for**: `parse_jd()` (structured JD extraction), `fix_banned_words()` (mechanical substitution — Haiku correctness matters for voice compliance).
+    - **Keep Sonnet for**: `generate_resume()` (creative writing, voice matching).
 
 ### Parking Lot — Ideas to keep, not act on yet
 
