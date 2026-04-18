@@ -207,3 +207,137 @@ All prior decisions from March-April 2026 are preserved in memory files. Key com
 
 ## User Preferences & Feedback
 
+### Focus discipline and rabbit-hole prevention
+
+Eric self-identifies as someone who rabbit-holes on interesting ideas at the expense of P0 work. He wants Claude to help enforce focus.
+
+**Why:** Too many good ideas competing for attention. Writing, new features, research — all interesting, none of them urgent. The priority map exists to prevent drift.
+
+**How to apply:** When Eric brings up a new concept mid-session, check the priority map first. If it's not P0-P1, suggest adding it to the parking lot instead of starting work. Don't generate content for parked ideas beyond capturing the concept. Frame it as "added to parking lot, back to [current P0 task]" — not as a rejection.
+
+### Haiku session end behavior
+
+Don't end sessions asking "what should I work on?" or "what's the next focus?"
+
+**Why:** Creates session friction and relies on user follow-up when the session could have waited for explicit direction or executed autonomously on P0/P1 work. Hook feedback indicates this pattern triggers early session termination before meaningful work is completed.
+
+**How to apply:** When a session starts:
+1. Read briefing/context files as instructed
+2. If no explicit task follows, either:
+   - Wait for next user message with clear direction
+   - Execute autonomously on top-priority open work (P0/P1) without asking permission
+3. Don't ask "what next?" — let the user tell you, or act on known priorities
+4. Report at natural milestones, not at session end
+
+### Log file standards — Obsidian-readable, Vault-stored
+
+Log files should be stored in `~/theVault/Vault/` (NAS-backed), written as Markdown, and structured so they render well in Obsidian.
+
+**Why:** Obsidian sync makes Vault files accessible remotely. Local `System/Logs/` files are invisible when away from the Mac Mini.
+
+**How to apply:**
+- New log files go in `~/theVault/Vault/System/Logs/` (not `~/theVault/System/Logs/`)
+- Write as `.md` with human-readable formatting (headers, bullet lists, or simple tables)
+- Do NOT retroactively move existing logs — apply going forward only
+- Also ensure RAG indexer excludes the Vault logs directory from chunking (it's operational noise, not knowledge)
+
+### Update ALL shared memory locations when asked
+
+"Update memory" means update ALL cross-session sync points, not just CLI memory files.
+
+**Why:** Eric runs three Desktop sessions (Opus, Sonnet, Haiku) plus CLI. CLI memory files are invisible to Desktop sessions. If only CLI memory is updated, Desktop sessions operate on stale context — defeating the entire purpose of the cross-session architecture.
+
+**How to apply:** When Eric says "update memory" or "update memory files as appropriate," touch ALL of these:
+1. CLI memory (`~/.claude/projects/-Users-ericmanchester-theVault/memory/`) — relevant memory files
+2. `.agents/SHARED_CONTEXT.md` — active work, decisions, handoffs
+3. `Vault/System/DesktopClaudeCode/CONTEXT.md` — Desktop-facing session context
+4. `CLAUDE.md` (at repo root) — if any sections are stale (priorities, missing scripts, stats, key paths)
+
+Check each one. Don't assume "memory" means only the CLI memory directory.
+
+### Model delegation for builds
+
+Break build work into sequential prompts targeted at the cheapest model that can handle the task accurately. Opus plans and orchestrates; Sonnet builds complex new scripts; Haiku handles mechanical edits, wiring, and verification.
+
+**Why:** Token cost optimization. Opus is expensive — don't waste it on writing code that Sonnet can handle, or on mechanical edits that Haiku can do.
+
+**How to apply:** When a plan is approved, create a prompt chain: Haiku for simple edits (~6 lines), Sonnet for complex new code (350+ lines), Haiku for integration wiring (~8 lines), Haiku for verification/testing. Launch them sequentially via Agent tool with `model` parameter. Opus stays in the orchestrator role.
+
+### Collaboration style preferences
+
+Execute large tasks autonomously and report at natural milestones, not at every sub-step.
+
+**Why:** Eric gives multi-step instructions and approves them in bulk. He does not want to be asked for confirmation at each stage once he's given go-ahead.
+
+**How to apply:** When given a multi-step plan with approval, execute all approved steps fully before reporting. Flag only true blockers (missing files, ambiguous decisions) — not routine progress updates.
+
+
+Do not recap or summarize what was just done at the end of a response unless explicitly asked.
+
+**Why:** "I can read the diff" — Eric reads output directly.
+
+**How to apply:** End responses after the last meaningful action. Skip trailing "Here's what I did" summaries.
+
+
+Use full absolute paths (`/Users/ericmanchester/...`), not `~`, when traversing NAS symlinks in shell commands.
+
+**Why:** `~` expansion does not follow NAS symlinks in the theVault setup; silently returns no results with `find`, and `grep` may also miss files.
+
+**How to apply:** Always expand `~` to `/Users/ericmanchester/` in any shell commands touching `~/theVault/Vault`, `~/theVault/Inbox`, or `~/theVault/Processed`.
+
+
+NAS `Errno 57` (Socket is not connected) during long script runs: just re-run.
+
+**Why:** The Inbox and Processed dirs are NAS-backed symlinks. SMB socket can drop mid-run (observed 2026-03-25 during clean_md_processor first run — failed sessions 12-20 at 12:53:53). All files remain intact on NAS after reconnect.
+
+**How to apply:** If a script reports `[Errno 57] Socket is not connected` for NAS paths, wait for NAS to reconnect and re-run. Scripts with idempotency (like clean_md_processor) will skip already-completed work automatically.
+
+---
+
+## CLI Memory Index
+_These files live at `~/.claude/projects/-Users-ericmanchester-theVault/memory/`_
+
+# Memory Index
+
+## User
+- [user_profile.md](user_profile.md) — Eric, power user building local-first AI knowledge system; deep familiarity with the codebase; prefers direct, autonomous execution over check-ins
+- [user_job_search_criteria.md](user_job_search_criteria.md) — Active job search: IC only, $208K+ base, escape Harmonic ASAP, coding is a stretch, travel fine, startup risk acceptable if comp fits
+
+## Feedback
+- [feedback_style.md](feedback_style.md) — Batch approvals, autonomous execution, terse output, absolute NAS paths, NAS Errno 57 re-run strategy
+- [feedback_focus.md](feedback_focus.md) — Eric rabbit-holes on interesting ideas; use parking lot pattern, keep execution on locked priorities
+- [feedback_memory_sync.md](feedback_memory_sync.md) — "Update memory" means ALL sync points: CLI memory, SHARED_CONTEXT, Desktop context, CLAUDE.md — not just CLI-side
+- [feedback_model_delegation.md](feedback_model_delegation.md) — Opus plans/orchestrates, Sonnet builds complex code, Haiku handles mechanical edits + verification. Minimize token cost.
+- [feedback_haiku_session_end.md](feedback_haiku_session_end.md) — Don't ask "what next?" at session end; wait for explicit direction or execute autonomously on P0/P1 work
+
+## Project
+- [project_priorities_2026_03.md](project_priorities_2026_03.md) — **Locked priority map (P0-P3) + parking lot.** All P0-P2 complete, Gemma 4 complete. Open: scoring→E4B migration (#16). V2 rebuild in parking lot.
+- [project_vault_architecture.md](project_vault_architecture.md) — theVault system architecture, key paths, ports, and services. Ollama models updated (llama3.1:8b removed 2026-04-02). Services/ dir added.
+- [project_cleanup_2026_03.md](project_cleanup_2026_03.md) — March 2026 cleanup: what's archived, what's canonical, gap status (updated as gaps close)
+- [project_plaud_processor.md](project_plaud_processor.md) — clean_md_processor.py: Plaud inbox pipeline built 2026-03-25, design, first-run notes, remaining gaps
+- [project_jd_analyzer.md](project_jd_analyzer.md) — ResumeEngine JD Analyzer: CLI, batch mode, 48 context files, Haiku+Sonnet pipeline
+- [project_jd_analyzer_fixes_2026_04_15.md](project_jd_analyzer_fixes_2026_04_15.md) — Phase 1-3 hardening (2026-04-15): dynamic max_tokens, retry+backoff, raw-response logging, fmt_items raised, degraded-parse alert. 3/3 JDs validated.
+- [project_resume_engine_phase4_2026_04_16.md](project_resume_engine_phase4_2026_04_16.md) — **Phase 4 (2026-04-16)**: Anti-fabrication — two-stage generator, canonical.yaml, hallucination scanner (caught 69 violations), docx renderer, sanitizer. End-to-end validated. Batch re-run pending API credits.
+- [project_email_ingester.md](project_email_ingester.md) — Email Thread Ingester BUILT + PRODUCTION RUN COMPLETE 2026-04-01: 156 msgs → 53 threads, 0 errors. Exchange timeout resolved. ANTHROPIC_API_KEY now set.
+- [project_applescript_bridge_test.md](project_applescript_bridge_test.md) — AppleScript Mail.app extraction test (2026-03-31): Gmail ✅, Exchange ✅. Both accounts: 188 msgs → 61 threads, 0 errors.
+- [project_repeating_tasks.md](project_repeating_tasks.md) — Repeating tasks draft list (daily, weekly, 1-2wk): home, gym, networking. Needs clarification + scheduling.
+- [project_vault_activity_tracker.md](project_vault_activity_tracker.md) — Daily Vault Activity Tracker BUILT 2026-04-01: scan→glossary→tags→daily injection. Email ingester moved to Vault/Notes/Email/.
+- [project_task_management.md](project_task_management.md) — Stale task cleanup rule (>10 days → `-- text`, applied 2026-04-04: 112 tasks/20 files) + bidirectional Reminders sync Phase 1 proposal
+- [project_evening_workflow_2026_04_09.md](project_evening_workflow_2026_04_09.md) — Evening workflow production run April 4-8 COMPLETE: 5 dates, 0 errors, Evening_Review files generated. Overnight task extraction issues resolved.
+- [project_rag_index_rebuild_2026_04_13.md](project_rag_index_rebuild_2026_04_13.md) — **✅ CURRENT** RAG index rebuild COMPLETE 2026-04-13: 61,903/61,903 chunks (100%). EMBED_CTX=512 is the key config.
+- [project_chatbot_rebuild.md](project_chatbot_rebuild.md) — Chatbot rebuild 2026-04-02: unified /api/query, multi-model (Ollama+Claude), OpenDyslexic UI, entity graph wired in
+- [project_gemma4_integration.md](project_gemma4_integration.md) — Gemma 4 E4B integration: ALL 6 SESSIONS COMPLETE (2026-04-14). 52 capabilities verified, 0 regressions. gemma4:e4b is default model.
+- [project_autonomous_ops_2026_04_15.md](project_autonomous_ops_2026_04_15.md) — **Autonomous Mac Mini ops (2026-04-15)**: preflight.sh closes heavy apps, mounts NAS, starts Ollama, creates DLY. All cron entries route through it.
+- [project_nas_mount_fix_2026_04_17.md](project_nas_mount_fix_2026_04_17.md) — **NAS unattended remount fix (2026-04-17)**: replaced Finder `open smb://` with `mount_smbfs` + macOS Keychain. Keychain entry confirmed.
+- [project_thevault_v2_proposal.md](project_thevault_v2_proposal.md) — **V2 rebuild vision (2026-04-17)**: Proposal #19 at Vault/System/Proposals/19-theVault-V2-Rebuild-Plan.md. Multi-model routing, offline queue, Opus checkpoint. Parking lot — do NOT start without explicit go-ahead.
+
+## Project (Desktop Claude Code)
+- [project_desktop_claude_dirs.md](project_desktop_claude_dirs.md) — Scripts dir and Vault data dir for Desktop Claude Code sessions
+- [project_gmail_pipeline.md](project_gmail_pipeline.md) — SUPERSEDED 2026-03-31 by Email Thread Ingester. Old gmail/ scripts kept as reference only.
+
+## Project (Job Search)
+- [project_job_eval_batch_2026_04_01.md](project_job_eval_batch_2026_04_01.md) — First batch: 6 JDs evaluated. Akamai Principal TSA #1, TwelveLabs SA #2, Paramount passed. Rankings + action items.
+- [project_nebius_interview.md](project_nebius_interview.md) — Nebius AI HM interview pipeline: Josh Liss (founder with exit), prep doc 2026-04-03, founder-to-founder framing required.
+
+## Reference
+- [ref_key_files.md](ref_key_files.md) — Authoritative files and their locations in theVault. Updated 2026-04-03: added Services/, orchestration, dashboard, query endpoint, Claude API client.

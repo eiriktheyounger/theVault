@@ -61,6 +61,16 @@ NAS_USER="ericmanchester"
 NAS_HOST="DS1621plus._smb._tcp.local"
 NAS_SHARE="home"
 
+NAS_TOUCH_LOG="$VAULT_HOME/Vault/System/Logs/Touch/NAS Check.md"
+
+nas_write_check() {
+    # Prove the mount is alive and writable by appending a canary entry.
+    # Returns 0 on success, 1 on failure.
+    local ts
+    ts=$(date '+%Y-%m-%d %H:%M:%S')
+    printf -- "- %s — NAS check good\n" "$ts" >> "$NAS_TOUCH_LOG" 2>/dev/null
+}
+
 if [ ! -d "$NAS_PATH" ]; then
     log "Step 2: NAS not mounted — attempting unattended remount via mount_smbfs..."
 
@@ -85,6 +95,14 @@ if [ ! -d "$NAS_PATH" ]; then
     log "  NAS remounted successfully (unattended)"
 else
     log "Step 2: NAS already mounted at $NAS_PATH"
+fi
+
+# Live write-check: proves mount is responsive and writable, not just present as a directory.
+if nas_write_check; then
+    log "  NAS write-check OK (Touch/NAS Check.md)"
+else
+    log "ERROR: NAS write-check failed — mount may be stale, aborting"
+    exit 1
 fi
 
 # Validate symlinks point to NAS (laptop migration can corrupt these)
