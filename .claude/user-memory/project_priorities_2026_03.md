@@ -79,6 +79,7 @@ _This is the "distraction catcher." Good ideas that would pull focus from active
 - Photo/screenshot/receipt inbox processing (vision API pattern)
 - Whiteboard capture → diagrams + action items
 - **Tailscale remote control page** — once Tailscale is running, build a simple authenticated web page to trigger major processes (morning, evening, ingest, reindex, sync) from phone/laptop remotely
+- **theVault V2 Rebuild** — full architectural rebuild with multi-model routing, offline queue, Opus checkpoint protocol, cleaner multi-system sync. Proposal #19 at `Vault/System/Proposals/19-theVault-V2-Rebuild-Plan.md`. Phase 0 recommended first step. Do NOT start without explicit go-ahead.
 
 **Why this structure:** Eric tends to rabbit-hole on interesting ideas. Parking lot prevents losing them while keeping execution focused on what moves the needle.
 
