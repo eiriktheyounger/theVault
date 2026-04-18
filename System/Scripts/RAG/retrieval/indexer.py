@@ -21,7 +21,7 @@ except Exception:
 
 # Override with settings.json if present (same source as store.py)
 try:
-    from ..settings_cache import load_app_settings as _load_app_settings
+    from ...settings_cache import load_app_settings as _load_app_settings
     _s = _load_app_settings()
     if _s.get("INDEX_EXCLUDE_GLOBS"):
         EXCLUDE_GLOBS = [str(g) for g in _s["INDEX_EXCLUDE_GLOBS"]]
