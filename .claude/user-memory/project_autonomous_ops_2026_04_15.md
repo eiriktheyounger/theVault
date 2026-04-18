@@ -57,6 +57,6 @@ macOS only fetches new mail when Mail.app is running. Mail is NOT in the heavy_a
 - preflight.sh closes Chrome before workflows run → eliminates the risk
 
 ## Known issues NOT fixed (deferred)
-- Anthropic JSON parse errors in summarizer → falls back to Ollama, non-blocking
+- Anthropic JSON parse errors in summarizer → fixed 2026-04-18 (see project_email_ingester.md)
 - Incremental indexer count_mismatch RuntimeError → couldn't reproduce in current code (line 148 already passes ok=True). May have been stale .pyc — cleared cache.
 - NAS symlink corruption from laptop migration is now mitigated by preflight Step 2 validation
