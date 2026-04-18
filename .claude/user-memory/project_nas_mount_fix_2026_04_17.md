@@ -19,6 +19,8 @@ If NAS password changes, update keychain:
 security add-internet-password -s "DS1621plus._smb._tcp.local" -a "ericmanchester" -w "NEW_PASSWORD"
 ```
 
+**Live write-check added 2026-04-18:** After both the mount and already-mounted branches, preflight now calls `nas_write_check()` which appends a canary line to `Vault/System/Logs/Touch/NAS Check.md`. This catches stale mounts that pass the directory check but are actually dead. Aborts preflight if write fails.
+
 **Why:** NAS connections can drop during idle overnight periods (sleep, network hiccup). The system must remount without any user present — especially critical when Eric is traveling.
 
 **How to apply:** If preflight NAS remount fails again, first check keychain entry exists and is correct before investigating anything else. If it's a new Mac or keychain was reset, the entry needs to be re-added manually once.
