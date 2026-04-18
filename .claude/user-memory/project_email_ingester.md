@@ -43,7 +43,7 @@ python -m System.Scripts.email_thread_ingester --job nebius.com --start-date 202
 
 **Known issues**:
 - **LinkedIn spam filtering**: `email_parser.py` lacks LinkedIn/notification filtering. Email ingestion will pull LinkedIn notifications + job alerts. Consider adding regex filter for senders matching `*.linkedin.com` in topic router.
-- ANTHROPIC_API_KEY must be set in env; Ollama fallback works without it
+- ANTHROPIC_API_KEY must be set in env; Gemma4:e4b (Ollama) fallback works without it
 
 **Test results (2026-03-31)**:
 - Gmail `--start-date 2026-03-01`: 48 messages → 29 threads, 0 errors ✅
