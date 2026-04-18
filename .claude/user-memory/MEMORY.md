@@ -12,19 +12,25 @@
 - [feedback_haiku_session_end.md](feedback_haiku_session_end.md) — Don't ask "what next?" at session end; wait for explicit direction or execute autonomously on P0/P1 work
 
 ## Project
-- [project_priorities_2026_03.md](project_priorities_2026_03.md) — **Locked priority map (P0-P3) + parking lot.** Most P0/P1 done. Open: bidirectional Reminders sync (Phase 1), rag_qa_agent.py. Updated 2026-04-04.
+- [project_priorities_2026_03.md](project_priorities_2026_03.md) — **Locked priority map (P0-P3) + parking lot.** All P0-P2 complete, Gemma 4 complete. Open: scoring→E4B migration (#16). V2 rebuild in parking lot.
 - [project_vault_architecture.md](project_vault_architecture.md) — theVault system architecture, key paths, ports, and services. Ollama models updated (llama3.1:8b removed 2026-04-02). Services/ dir added.
 - [project_cleanup_2026_03.md](project_cleanup_2026_03.md) — March 2026 cleanup: what's archived, what's canonical, gap status (updated as gaps close)
 - [project_plaud_processor.md](project_plaud_processor.md) — clean_md_processor.py: Plaud inbox pipeline built 2026-03-25, design, first-run notes, remaining gaps
-- [project_jd_analyzer.md](project_jd_analyzer.md) — ResumeEngine JD Analyzer built 2026-03-28: CLI, models, context structure, worktree location
+- [project_jd_analyzer.md](project_jd_analyzer.md) — ResumeEngine JD Analyzer: CLI, batch mode, 48 context files, Haiku+Sonnet pipeline
+- [project_jd_analyzer_fixes_2026_04_15.md](project_jd_analyzer_fixes_2026_04_15.md) — Phase 1-3 hardening (2026-04-15): dynamic max_tokens, retry+backoff, raw-response logging, fmt_items raised, degraded-parse alert. 3/3 JDs validated.
+- [project_resume_engine_phase4_2026_04_16.md](project_resume_engine_phase4_2026_04_16.md) — **Phase 4 (2026-04-16)**: Anti-fabrication — two-stage generator, canonical.yaml, hallucination scanner (caught 69 violations), docx renderer, sanitizer. End-to-end validated. Batch re-run pending API credits.
 - [project_email_ingester.md](project_email_ingester.md) — Email Thread Ingester BUILT + PRODUCTION RUN COMPLETE 2026-04-01: 156 msgs → 53 threads, 0 errors. Exchange timeout resolved. ANTHROPIC_API_KEY now set.
-- [project_applescript_bridge_test.md](project_applescript_bridge_test.md) — AppleScript Mail.app extraction test (2026-03-31): Gmail ✅, Exchange ✅ (resolved via --start-date early-exit). Both accounts: 188 msgs → 61 threads, 0 errors.
+- [project_applescript_bridge_test.md](project_applescript_bridge_test.md) — AppleScript Mail.app extraction test (2026-03-31): Gmail ✅, Exchange ✅. Both accounts: 188 msgs → 61 threads, 0 errors.
 - [project_repeating_tasks.md](project_repeating_tasks.md) — Repeating tasks draft list (daily, weekly, 1-2wk): home, gym, networking. Needs clarification + scheduling.
 - [project_vault_activity_tracker.md](project_vault_activity_tracker.md) — Daily Vault Activity Tracker BUILT 2026-04-01: scan→glossary→tags→daily injection. Email ingester moved to Vault/Notes/Email/.
-
 - [project_task_management.md](project_task_management.md) — Stale task cleanup rule (>10 days → `-- text`, applied 2026-04-04: 112 tasks/20 files) + bidirectional Reminders sync Phase 1 proposal
-- [project_evening_workflow_2026_04_09.md](project_evening_workflow_2026_04_09.md) — Evening workflow production run April 4-8 COMPLETE: 5 dates, 0 errors, Evening_Review files generated. Overnight processor task extraction issues resolved (Ollama timing, April 8 race condition).
-- [project_rag_index_rebuild_2026_04_13.md](project_rag_index_rebuild_2026_04_13.md) — **✅ CURRENT** RAG index rebuild COMPLETE 2026-04-13: 61,903/61,903 chunks (100% coverage). Root cause: EMBED_CTX context window was primary bottleneck. Solution: EMBED_CTX=512 (down from 1024) → 0% skip rate. Previous attempt (94.8%) archived as reference.
+- [project_evening_workflow_2026_04_09.md](project_evening_workflow_2026_04_09.md) — Evening workflow production run April 4-8 COMPLETE: 5 dates, 0 errors, Evening_Review files generated. Overnight task extraction issues resolved.
+- [project_rag_index_rebuild_2026_04_13.md](project_rag_index_rebuild_2026_04_13.md) — **✅ CURRENT** RAG index rebuild COMPLETE 2026-04-13: 61,903/61,903 chunks (100%). EMBED_CTX=512 is the key config.
+- [project_chatbot_rebuild.md](project_chatbot_rebuild.md) — Chatbot rebuild 2026-04-02: unified /api/query, multi-model (Ollama+Claude), OpenDyslexic UI, entity graph wired in
+- [project_gemma4_integration.md](project_gemma4_integration.md) — Gemma 4 E4B integration: ALL 6 SESSIONS COMPLETE (2026-04-14). 52 capabilities verified, 0 regressions. gemma4:e4b is default model.
+- [project_autonomous_ops_2026_04_15.md](project_autonomous_ops_2026_04_15.md) — **Autonomous Mac Mini ops (2026-04-15)**: preflight.sh closes heavy apps, mounts NAS, starts Ollama, creates DLY. All cron entries route through it.
+- [project_nas_mount_fix_2026_04_17.md](project_nas_mount_fix_2026_04_17.md) — **NAS unattended remount fix (2026-04-17)**: replaced Finder `open smb://` with `mount_smbfs` + macOS Keychain. Keychain entry confirmed.
+- [project_thevault_v2_proposal.md](project_thevault_v2_proposal.md) — **V2 rebuild vision (2026-04-17)**: Proposal #19 at Vault/System/Proposals/19-theVault-V2-Rebuild-Plan.md. Multi-model routing, offline queue, Opus checkpoint. Parking lot — do NOT start without explicit go-ahead.
 
 ## Project (Desktop Claude Code)
 - [project_desktop_claude_dirs.md](project_desktop_claude_dirs.md) — Scripts dir and Vault data dir for Desktop Claude Code sessions
@@ -32,13 +38,7 @@
 
 ## Project (Job Search)
 - [project_job_eval_batch_2026_04_01.md](project_job_eval_batch_2026_04_01.md) — First batch: 6 JDs evaluated. Akamai Principal TSA #1, TwelveLabs SA #2, Paramount passed. Rankings + action items.
-
-- [project_chatbot_rebuild.md](project_chatbot_rebuild.md) — Chatbot rebuild 2026-04-02: unified /api/query, multi-model (Ollama+Claude), OpenDyslexic UI, entity graph wired in
-- [project_gemma4_integration.md](project_gemma4_integration.md) — Gemma 4 E4B integration: Session 0 planning COMPLETE (9 docs), 6 build sessions planned, memory optimizations, PDF vision post-build
-- [project_autonomous_ops_2026_04_15.md](project_autonomous_ops_2026_04_15.md) — **Autonomous Mac Mini ops (2026-04-15)**: preflight.sh closes heavy apps, mounts NAS, starts Ollama, creates DLY. All cron entries route through it. Mail.app must stay open; Reminders/Calendar can be closed.
-- [project_nas_mount_fix_2026_04_17.md](project_nas_mount_fix_2026_04_17.md) — **NAS unattended remount fix (2026-04-17)**: replaced Finder `open smb://` (interactive) with `mount_smbfs` + macOS Keychain. Keychain entry confirmed. If password changes, re-add via `security add-internet-password`.
-- [project_jd_analyzer_fixes_2026_04_15.md](project_jd_analyzer_fixes_2026_04_15.md) — **ResumeEngine fixes (2026-04-15)**: Phase 1-3 applied to `jd_analyzer.py` (dynamic max_tokens, retry+backoff, raw-response logging, fmt_items unlocked, batch error logs, degraded-parse alert). **FAST-FOLLOW: migrate scoring to Gemma 4 E4B** — see priority #16 in project_priorities_2026_03.md.
-- [project_resume_engine_phase4_2026_04_16.md](project_resume_engine_phase4_2026_04_16.md) — **ResumeEngine Phase 4 (2026-04-16)**: Anti-fabrication overhaul — two-stage generator (Sonnet→JSON bullets, Python assembly from canonical.yaml), hallucination scanner (10 checks, caught 69 violations in old output), docx renderer, sanitizer, --legacy flag. End-to-end validated. Batch re-run pending API credit reload.
+- [project_nebius_interview.md](project_nebius_interview.md) — Nebius AI HM interview pipeline: Josh Liss (founder with exit), prep doc 2026-04-03, founder-to-founder framing required.
 
 ## Reference
 - [ref_key_files.md](ref_key_files.md) — Authoritative files and their locations in theVault. Updated 2026-04-03: added Services/, orchestration, dashboard, query endpoint, Claude API client.
