@@ -91,3 +91,254 @@ _This is the "distraction catcher." Good ideas that would pull focus from active
 
 ## Active Work & Handoffs
 
+## Active Work
+
+| Session | Working On | Files Touched | Updated |
+|---------|-----------|---------------|---------|
+| CLI Opus | **ResumeEngine Phase 4 COMPLETE (2026-04-16)** — Anti-fabrication overhaul: (1) `_canonical.yaml` ground-truth manifest (8 roles, 7+4 patents, 4 Emmys, affiliations, education, 21 banned_claims); (2) Two-stage generator: Stage A = Sonnet tailors ONLY bullets+summary (JSON), Stage B = Python assembles from canonical (titles/patents/awards/contact/education never LLM-generated); (3) `sanitize_tailored_content()` strips banned claims from Stage A output before assembly; (4) `scan_fabrications.py` post-generation validator (10 check categories, caught 69 violations in old output, 0-1 in new); (5) `render_docx.py` module for .docx output alongside .md; (6) `--legacy` flag preserves old single-stage path for rollback; (7) Fixed TWC 2012-2017 context file ("independent architect" → "lead architect and IC"). **End-to-end validated** on Akamai JD: correct contact, titles, all 11 patents, all 4 Emmys, Television Academy membership, no fabricated certs, no fabricated degree. Phase 1-3 resilience code preserved. API credits exhausted — batch re-run pending credit reload. | ResumeEngine/jd_analyzer.py, ResumeEngine/render_docx.py (NEW), ResumeEngine/scan_fabrications.py (NEW), ResumeEngine/context/_canonical.yaml (NEW), ResumeEngine/context/roles/time-warner-cable-2012-2017.md | **2026-04-16** |
+| CLI Opus | **Autonomous Operation Hardening COMPLETE (2026-04-15)** — Built preflight.sh (RAM cleanup, NAS auto-mount, Ollama auto-start, DLY auto-create, env source), wired all 3 cron entries through it. Fixed: ViewLift glossary entries (3), tag enrichment (bootstrap when empty + send actual content + protect source-type tags + fuzzy-match prompt), stop_all.py (clean brew services stop), .env (Ollama tuning vars), QUICK-REFERENCE.md (indexer module path + reminders sync entry + preflight entry), email backlinks (relative wikilinks). Cleared stale indexer pyc cache. | System/Scripts/preflight.sh (NEW), Vault/System/glossary.md, System/Scripts/daily_vault_activity.py, System/Scripts/Services/stop_all.py, .env, Vault/System/QUICK-REFERENCE.md, System/Scripts/email_thread_ingester/markdown_writer.py, crontab | **2026-04-15** |
+| CLI Opus | **Gemma 4 Session 6 COMPLETE** — Full validation passed. Post-build report written. CLAUDE.md updated. All 52 capabilities verified, 0 regressions. | CLAUDE.md, post-build-report.md, SHARED_CONTEXT.md | **2026-04-14** |
+| **Sonnet Desktop** | **Tasks 1+2 COMPLETE** — rag_qa_agent.py (18 tests, Haiku grader, markdown report, exit 0/1/2), calendar integration (calendar_daily_injector.py, generate_weekly_summary.py, calendar_mapper.py updated, morning_workflow.py Steps 2+6, evening_workflow.py Sunday WKY trigger, overnight_processor.py 1st-of-month MTH trigger). | System/Scripts/rag_qa_agent.py, System/Scripts/calendar_daily_injector.py, System/Scripts/generate_weekly_summary.py, System/Scripts/Workflows/calendar_mapper.py, System/Scripts/Workflows/morning_workflow.py, System/Scripts/Workflows/evening_workflow.py, System/Scripts/overnight_processor.py | **2026-04-14** |
+| **CLI Haiku** | **HAIKU_BRIEFING Tasks 1+2+3 COMPLETE** — Fixed RAG incremental indexing defaults, updated OPERATIONS-INDEX.md (models, chunks, versions), created QUICK-REFERENCE.md. All 3 tasks done. | System/Scripts/RAG/retrieval/indexer.py, System/Scripts/batch_reindex.py, Vault/System/OPERATIONS-INDEX.md, Vault/System/QUICK-REFERENCE.md, SHARED_CONTEXT.md | **2026-04-14** |
+
+## Current System State (2026-04-14)
+
+- **All P0/P1/P2 priorities COMPLETE** — overnight processor, email ingester, vault activity tracker, Reminders sync, file classification, RAG rebuild (100% coverage)
+- **RAG index**: 61,903 chunks, 100% coverage, EMBED_CTX=512 (production config locked)
+- **Ollama models**: gemma4:e4b (9.6GB), gemma3:4b (3.3GB), qwen2.5:7b (4.7GB), nomic-embed-text (274MB)
+- **Ollama version**: **0.20.7** (upgraded from 0.12.9 on 2026-04-14)
+- **ollama Python pkg**: **0.6.1** (upgraded from 0.3.3 on 2026-04-14)
+- **Memory with E4B**: 15G used (12G wired), 74MB free — tight but inference runs cleanly. No thinking tags observed in simple queries.
+- **FAISS canary**: `8e49a6f4901335532a9f9e1cf58189cfdd546295e7a30c62695f94785dda6ac4` (updated: post-rebuild 2026-04-13)
+- **Tailscale**: Installed (1.96.4) — needs Eric to run `tailscale up` interactively (requires sudo + browser auth)
+- **starlette**: Pinned to 0.37.2 (downgraded from 1.0.0 — ollama 0.6.1 upgrade pulled in incompatible version)
+- **Server branch**: `gemma4/session-2-core-server` (auto-committed)
+
+## Next Priority: Gemma 4 Integration
+
+Planning complete (Session 0, 9 docs at `Vault/Sessions/gemma4-integration/`). Build plan: 6 sessions.
+
+| Session | Model | Scope | Status |
+|---------|-------|-------|--------|
+| 1. Infrastructure | Sonnet | Ollama upgrade 0.12.9→0.20.4+, pull E4B, memory opts, Tailscale | **COMPLETE (2026-04-14)** |
+| 2. Core Server | Sonnet | config.py, server.py, _strip_thinking() | **COMPLETE (2026-04-14)** |
+| 3. Route Whitelist | Haiku | query.py, fast.py, deep.py, models metadata | **COMPLETE (2026-04-14)** |
+| 4. Batch Scripts | Haiku | 5 scripts with hardcoded model names | **COMPLETE (2026-04-14)** |
+| 5. UI + Cosmetic | Haiku | Chat.tsx, Settings.tsx, health.py, chat_cli.py | **COMPLETE (2026-04-14)** |
+| 6. Validation | Opus | Full smoke test, quality comparison | **COMPLETE (2026-04-14)** |
+
+**Dependency graph:** S1 → S2 → S3 → S5 → S6, S1 → S4 → S6
+
+## Decisions Made (Recent)
+
+- **2026-04-13**: All 7 worktrees pruned (beautiful-maxwell, condescending-mccarthy, keen-kapitsa, naughty-shaw, silly-gauss, silly-varahamihira, trusting-moore). All `claude/*` branches deleted. Clean slate.
+- **2026-04-13**: RAG index rebuild COMPLETE — 61,903 chunks, 100% coverage. EMBED_CTX=512 is the key config. See `project_rag_index_rebuild_2026_04_13.md`.
+- **2026-04-12**: Gemma 4 Session 0 planning COMPLETE — GO verdict. E4B for all 3 generation roles. Build plan at `Vault/Sessions/gemma4-integration/build-plan.md`.
+
+## Handoffs
+
+### Gemma 4 Integration (Sessions 1-6: COMPLETE)
+- **Session 1 DONE** — Sonnet Desktop 2026-04-14. Ollama upgrade 0.12.9→0.20.7, E4B pulled, memory opts, Tailscale. All criteria met except Tailscale needs interactive auth.
+- **Session 2 DONE** — Sonnet Desktop 2026-04-14. config.py + server.py updated (gemma4:e4b defaults, FAST/DEEP/QUERY/BATCH_CTX constants, _strip_thinking() with code-fence stripping, per-endpoint num_ctx + 180s timeout). starlette downgraded 1.0.0→0.37.2.
+- **Session 3 DONE** — Haiku 2026-04-14. query.py, fast.py, deep.py updated. VALID_MODELS added gemma4:e4b, imports of context constants.
+- **Session 4 DONE** — Haiku Desktop 2026-04-14. All 5 batch scripts updated (overnight_processor, clean_md_processor, daily_vault_activity, email_thread_ingester, task_categorizer). FAISS canary verified.
+- **Session 5 DONE** — Haiku 2026-04-14. UI + health.py + chat_cli.py updated. DEFAULT_MODEL qwen2.5:7b→gemma4:e4b across Chat.tsx, Settings.tsx.
+- **Session 6 DONE** — Opus CLI 2026-04-14. Full validation passed. All 52 capabilities verified, 0 regressions.
+
+### HAIKU_BRIEFING (Tasks 1-3: COMPLETE)
+- **Task 1: RAG Incremental Fix** — DONE 2026-04-14. System/Scripts/RAG/retrieval/indexer.py: `incremental: bool = False` → `True` (line 39), added `full: bool = False` parameter (line 40), updated CLI to `--full` flag (lines 237-249). System/Scripts/batch_reindex.py: call changed to `reindex(full=True)` (line 157). All Python files parse OK.
+- **Task 2: OPERATIONS-INDEX.md Update** — DONE 2026-04-14. All qwen2.5:7b→gemma4:e4b, removed llama3.1:8b/gemma3:4b references. Chunks: 41,976→61,903 (100% coverage). Added Ollama 0.20.7, pkg 0.6.1. Updated context windows (/fast=4096, /deep=16384, /api/query=32768). Added Reminders sync 4x daily schedule, daily_vault_activity notes. Added memory optimization env vars section. Updated model dropdown and health endpoint examples.
+- **Task 3: QUICK-REFERENCE.md Creation** — DONE 2026-04-14. Created Vault/System/QUICK-REFERENCE.md with 11 sections: Startup & Health, Morning, Ingest & Indexing (with --full note), Evening, Reminders, Email, Plaud, File Classification, RAG QA, Server Mgmt, Troubleshooting. One-page format with model+context info footer.
+
+- **⚠️ Known issue**: Ollama usage tokens always 0 — /api/chat uses eval_count/prompt_eval_count, not usage{}. Pre-existing, not in scope.
+
+## Prior Work (Archived — for reference only)
+
+All prior decisions from March-April 2026 are preserved in memory files. Key completions:
+- Email Thread Ingester: BUILT + production (156→53 threads)
+- Daily Vault Activity Tracker: BUILT (glossary, tags, daily injection)
+- Bidirectional Reminders sync: COMPLETE
+- File classification: COMPLETE (67 files moved)
+- Evening/overnight workflows: STABLE
+- RAG rebuild: 100% coverage
+
+---
+
+## Key File Locations
+
+| File | Path | Purpose |
+|------|------|---------|
+| RAG server entry | `System/Scripts/RAG/llm/server.py` | FastAPI app, start with uvicorn from ~/theVault root |
+| Start script | `System/Scripts/start_server.sh` | Starts RAG server; accepts port arg, default 5055 |
+| NAS check (Mac Mini) | `System/Scripts/check_nas.sh` | Verifies /Volumes/home/MacMiniStorage mount |
+| Laptop preflight | `System/Scripts/check_vault_laptop.sh` | 7-section check: symlinks, venv, Obsidian, git, env vars |
+| Morning workflow | `System/Scripts/Workflows/morning_workflow.py` | _step_organize_files disabled; _step_update_tocs EOL'd 2026-03-25 |
+| Evening workflow | `System/Scripts/Workflows/evening_workflow.py` | Fully self-contained, no missing deps |
+| Overnight processor | `System/Scripts/overnight_processor.py` | Fixed 2026-03-28: Captures regex (end-of-file), sys.path, docstring (10→11 PM) |
+| JD Analyzer | `ResumeEngine/jd_analyzer.py` | Haiku parse+score, Sonnet generate. Single: `--jd file.txt`. Batch: `--batch` processes all in `ResumeEngine/jds/`, moves to `jds/processed/` or `jds/failed/`. |
+| Reminders sync | `System/Scripts/task_reminders_sync.py` | Fixed 2026-03-28: _upsert_reminder, "Do Today!!!!" list name, check() API. Production-tested. |
+| Reminders sync shortcut | `System/Scripts/sync_reminders_now.sh` | Manual trigger script; wire to Shortcuts app for keyboard shortcut |
+| Plaud processor | `System/Scripts/clean_md_processor.py` | Built 2026-03-25. Inbox → Vault/Notes. Public API: `run_orchestration()` |
+| FAISS indexer | `System/Scripts/RAG/retrieval/indexer.py` | Builds/updates vector index |
+| Embedding repair | `System/Scripts/RAG/repair_embeddings.py` | Finds orphan chunks missing FAISS vectors, re-embeds them. --dry-run first. |
+| Content classifier | `System/Scripts/Workflows/classify_content.py` | Haiku-powered file classification with learning DB. EXISTS (689 lines). Path bug fixed 2026-04-02. Needs production test run. |
+| Services manager | `System/Scripts/Services/` | start_all.py, stop_all.py, emergency_kill.py — manages Ollama + RAG server (built 2026-04-02) |
+| Orchestration entry | `System/Scripts/orchestration_system_start.py` | Triggers Plaud + email ingest pipelines; wired into `/ingest/start` API (built 2026-04-02) |
+| Daily dashboard | `System/Scripts/generate_daily_dashboard.py` | Aggregates open tasks + vault activity into TimeTracking/ (built 2026-04-02) |
+| Query endpoint | `System/Scripts/RAG/routes/query.py` | Unified `/api/query` endpoint; replaces /fast and /deep for new code; multi-model (Ollama+Claude API) |
+| Claude API client | `System/Scripts/RAG/llm/claude_client.py` | Async Anthropic API client for /api/query; loads .env with override=True |
+| Classification DB | `System/Scripts/RAG/rag_data/classification.db` | Separate from chunks.sqlite3. Decisions, rules, directory tree tables. |
+| Classification manifest | `Vault/System/ClassificationReview.md` | Overwritten each --scan. Edit in Obsidian/VS Code, then --apply. |
+| Session state sync | `System/Scripts/sync_session_state.sh` | Auto-syncs CLI memory → `.agents/SESSION_STATE.md`. Triggered by hooks + Stop. |
+| Session state (shared) | `.agents/SESSION_STATE.md` | Auto-generated consolidated view for all instances. Do not edit manually. |
+| Email Thread Ingester | `System/Scripts/email_thread_ingester/` | 12-module package. Exchange+Gmail via AppleScript, threading, job tracker, daily backlinks. Run: `python -m System.Scripts.email_thread_ingester --start-date YYYY-MM-DD --dry-run` |
+| Vault Activity Tracker | `System/Scripts/daily_vault_activity.py` | Scan vault changes → glossary → tags → daily note injection. Run: `python System/Scripts/daily_vault_activity.py --dry-run --days 7` |
+| SQLite DB | `System/Scripts/RAG/rag_data/chunks.sqlite3` | 47,496 chunks, FTS5 |
+| FAISS index | `System/Scripts/RAG/rag_data/chunks_hnsw.bin` | 768-dim FAISS (IndexIDMap2/IndexFlatIP), 53,381 vectors (95.8% coverage, rebuilt 2026-03-30) |
+| Glossary | `Vault/Glossary/glossary.md` | Only active glossary; backups archived |
+| Operations index | `Vault/System/OPERATIONS-INDEX.md` | Production reference doc (created 2026-03-24) |
+| Workflow map | `Vault/System/WORKFLOW-MAP.md` | Full workflow + script inventory with Mermaid diagrams |
+| System audit | `Vault/System/SYSTEM-AUDIT-2026-03-25.md` | Complete MISSING/BROKEN/WORKING/ORPHANED audit; CLAUDE.md requires reading before modifying scripts |
+| Tag spec | `Vault/System/Specifications/OutputSpec_Tags.md` | Tag generation rules |
+| Archive (docs) | `Vault/_archive/system-cleanup-2026-03-24/` | 128 archived NeroSpicy-era files |
+| Archive (EOL scripts) | `Vault/_archive/eol-scripts/` | EOL'd scripts; toc_generator.py.eol-2026-03-25 here |
+
+---
+
+## User Preferences & Feedback
+
+### Focus discipline and rabbit-hole prevention
+
+Eric self-identifies as someone who rabbit-holes on interesting ideas at the expense of P0 work. He wants Claude to help enforce focus.
+
+**Why:** Too many good ideas competing for attention. Writing, new features, research — all interesting, none of them urgent. The priority map exists to prevent drift.
+
+**How to apply:** When Eric brings up a new concept mid-session, check the priority map first. If it's not P0-P1, suggest adding it to the parking lot instead of starting work. Don't generate content for parked ideas beyond capturing the concept. Frame it as "added to parking lot, back to [current P0 task]" — not as a rejection.
+
+### Haiku session end behavior
+
+Don't end sessions asking "what should I work on?" or "what's the next focus?"
+
+**Why:** Creates session friction and relies on user follow-up when the session could have waited for explicit direction or executed autonomously on P0/P1 work. Hook feedback indicates this pattern triggers early session termination before meaningful work is completed.
+
+**How to apply:** When a session starts:
+1. Read briefing/context files as instructed
+2. If no explicit task follows, either:
+   - Wait for next user message with clear direction
+   - Execute autonomously on top-priority open work (P0/P1) without asking permission
+3. Don't ask "what next?" — let the user tell you, or act on known priorities
+4. Report at natural milestones, not at session end
+
+### Log file standards — Obsidian-readable, Vault-stored
+
+Log files should be stored in `~/theVault/Vault/` (NAS-backed), written as Markdown, and structured so they render well in Obsidian.
+
+**Why:** Obsidian sync makes Vault files accessible remotely. Local `System/Logs/` files are invisible when away from the Mac Mini.
+
+**How to apply:**
+- New log files go in `~/theVault/Vault/System/Logs/` (not `~/theVault/System/Logs/`)
+- Write as `.md` with human-readable formatting (headers, bullet lists, or simple tables)
+- Do NOT retroactively move existing logs — apply going forward only
+- Also ensure RAG indexer excludes the Vault logs directory from chunking (it's operational noise, not knowledge)
+
+### Update ALL shared memory locations when asked
+
+"Update memory" means update ALL cross-session sync points, not just CLI memory files.
+
+**Why:** Eric runs three Desktop sessions (Opus, Sonnet, Haiku) plus CLI. CLI memory files are invisible to Desktop sessions. If only CLI memory is updated, Desktop sessions operate on stale context — defeating the entire purpose of the cross-session architecture.
+
+**How to apply:** When Eric says "update memory" or "update memory files as appropriate," touch ALL of these:
+1. CLI memory (`~/.claude/projects/-Users-ericmanchester-theVault/memory/`) — relevant memory files
+2. `.agents/SHARED_CONTEXT.md` — active work, decisions, handoffs
+3. `Vault/System/DesktopClaudeCode/CONTEXT.md` — Desktop-facing session context
+4. `CLAUDE.md` (at repo root) — if any sections are stale (priorities, missing scripts, stats, key paths)
+
+Check each one. Don't assume "memory" means only the CLI memory directory.
+
+### Model delegation for builds
+
+Break build work into sequential prompts targeted at the cheapest model that can handle the task accurately. Opus plans and orchestrates; Sonnet builds complex new scripts; Haiku handles mechanical edits, wiring, and verification.
+
+**Why:** Token cost optimization. Opus is expensive — don't waste it on writing code that Sonnet can handle, or on mechanical edits that Haiku can do.
+
+**How to apply:** When a plan is approved, create a prompt chain: Haiku for simple edits (~6 lines), Sonnet for complex new code (350+ lines), Haiku for integration wiring (~8 lines), Haiku for verification/testing. Launch them sequentially via Agent tool with `model` parameter. Opus stays in the orchestrator role.
+
+### Collaboration style preferences
+
+Execute large tasks autonomously and report at natural milestones, not at every sub-step.
+
+**Why:** Eric gives multi-step instructions and approves them in bulk. He does not want to be asked for confirmation at each stage once he's given go-ahead.
+
+**How to apply:** When given a multi-step plan with approval, execute all approved steps fully before reporting. Flag only true blockers (missing files, ambiguous decisions) — not routine progress updates.
+
+
+Do not recap or summarize what was just done at the end of a response unless explicitly asked.
+
+**Why:** "I can read the diff" — Eric reads output directly.
+
+**How to apply:** End responses after the last meaningful action. Skip trailing "Here's what I did" summaries.
+
+
+Use full absolute paths (`/Users/ericmanchester/...`), not `~`, when traversing NAS symlinks in shell commands.
+
+**Why:** `~` expansion does not follow NAS symlinks in the theVault setup; silently returns no results with `find`, and `grep` may also miss files.
+
+**How to apply:** Always expand `~` to `/Users/ericmanchester/` in any shell commands touching `~/theVault/Vault`, `~/theVault/Inbox`, or `~/theVault/Processed`.
+
+
+NAS `Errno 57` (Socket is not connected) during long script runs: just re-run.
+
+**Why:** The Inbox and Processed dirs are NAS-backed symlinks. SMB socket can drop mid-run (observed 2026-03-25 during clean_md_processor first run — failed sessions 12-20 at 12:53:53). All files remain intact on NAS after reconnect.
+
+**How to apply:** If a script reports `[Errno 57] Socket is not connected` for NAS paths, wait for NAS to reconnect and re-run. Scripts with idempotency (like clean_md_processor) will skip already-completed work automatically.
+
+---
+
+## CLI Memory Index
+_These files live at `~/.claude/projects/-Users-ericmanchester-theVault/memory/`_
+
+# Memory Index
+
+## User
+- [user_profile.md](user_profile.md) — Eric, power user building local-first AI knowledge system; deep familiarity with the codebase; prefers direct, autonomous execution over check-ins
+- [user_job_search_criteria.md](user_job_search_criteria.md) — Active job search: IC only, $208K+ base, escape Harmonic ASAP, coding is a stretch, travel fine, startup risk acceptable if comp fits
+
+## Feedback
+- [feedback_style.md](feedback_style.md) — Batch approvals, autonomous execution, terse output, absolute NAS paths, NAS Errno 57 re-run strategy
+- [feedback_focus.md](feedback_focus.md) — Eric rabbit-holes on interesting ideas; use parking lot pattern, keep execution on locked priorities
+- [feedback_memory_sync.md](feedback_memory_sync.md) — "Update memory" means ALL sync points: CLI memory, SHARED_CONTEXT, Desktop context, CLAUDE.md — not just CLI-side
+- [feedback_model_delegation.md](feedback_model_delegation.md) — Opus plans/orchestrates, Sonnet builds complex code, Haiku handles mechanical edits + verification. Minimize token cost.
+- [feedback_haiku_session_end.md](feedback_haiku_session_end.md) — Don't ask "what next?" at session end; wait for explicit direction or execute autonomously on P0/P1 work
+- [feedback_log_standards.md](feedback_log_standards.md) — New log files go in Vault/System/Logs/ (NAS-backed, Obsidian-readable, synced remotely). Do NOT retroactively move old logs.
+
+## Project
+- [project_priorities_2026_03.md](project_priorities_2026_03.md) — **Locked priority map (P0-P3) + parking lot.** All P0-P2 complete, Gemma 4 complete. Open: scoring→E4B migration (#16). V2 rebuild in parking lot.
+- [project_vault_architecture.md](project_vault_architecture.md) — theVault system architecture, key paths, ports, and services. Ollama models updated (llama3.1:8b removed 2026-04-02). Services/ dir added.
+- [project_cleanup_2026_03.md](project_cleanup_2026_03.md) — March 2026 cleanup: what's archived, what's canonical, gap status (updated as gaps close)
+- [project_plaud_processor.md](project_plaud_processor.md) — clean_md_processor.py: Plaud inbox pipeline built 2026-03-25, design, first-run notes, remaining gaps
+- [project_jd_analyzer.md](project_jd_analyzer.md) — ResumeEngine JD Analyzer: CLI, batch mode, 48 context files, Haiku+Sonnet pipeline
+- [project_jd_analyzer_fixes_2026_04_15.md](project_jd_analyzer_fixes_2026_04_15.md) — Phase 1-3 hardening (2026-04-15): dynamic max_tokens, retry+backoff, raw-response logging, fmt_items raised, degraded-parse alert. 3/3 JDs validated.
+- [project_resume_engine_phase4_2026_04_16.md](project_resume_engine_phase4_2026_04_16.md) — **Phase 4 (2026-04-16)**: Anti-fabrication — two-stage generator, canonical.yaml, hallucination scanner (caught 69 violations), docx renderer, sanitizer. End-to-end validated. Batch re-run pending API credits.
+- [project_email_ingester.md](project_email_ingester.md) — Email Thread Ingester BUILT + PRODUCTION RUN COMPLETE 2026-04-01: 156 msgs → 53 threads, 0 errors. Exchange timeout resolved. ANTHROPIC_API_KEY now set.
+- [project_applescript_bridge_test.md](project_applescript_bridge_test.md) — AppleScript Mail.app extraction test (2026-03-31): Gmail ✅, Exchange ✅. Both accounts: 188 msgs → 61 threads, 0 errors.
+- [project_repeating_tasks.md](project_repeating_tasks.md) — Repeating tasks draft list (daily, weekly, 1-2wk): home, gym, networking. Needs clarification + scheduling.
+- [project_vault_activity_tracker.md](project_vault_activity_tracker.md) — Daily Vault Activity Tracker BUILT 2026-04-01: scan→glossary→tags→daily injection. Email ingester moved to Vault/Notes/Email/.
+- [project_task_management.md](project_task_management.md) — Stale task cleanup rule (>10 days → `-- text`, applied 2026-04-04: 112 tasks/20 files) + bidirectional Reminders sync Phase 1 proposal
+- [project_evening_workflow_2026_04_09.md](project_evening_workflow_2026_04_09.md) — Evening workflow production run April 4-8 COMPLETE: 5 dates, 0 errors, Evening_Review files generated. Overnight task extraction issues resolved.
+- [project_rag_index_rebuild_2026_04_13.md](project_rag_index_rebuild_2026_04_13.md) — **✅ CURRENT** RAG index rebuild COMPLETE 2026-04-13: 61,903/61,903 chunks (100%). EMBED_CTX=512 is the key config.
+- [project_chatbot_rebuild.md](project_chatbot_rebuild.md) — Chatbot rebuild 2026-04-02: unified /api/query, multi-model (Ollama+Claude), OpenDyslexic UI, entity graph wired in
+- [project_gemma4_integration.md](project_gemma4_integration.md) — Gemma 4 E4B integration: ALL 6 SESSIONS COMPLETE (2026-04-14). 52 capabilities verified, 0 regressions. gemma4:e4b is default model.
+- [project_autonomous_ops_2026_04_15.md](project_autonomous_ops_2026_04_15.md) — **Autonomous Mac Mini ops (2026-04-15)**: preflight.sh closes heavy apps, mounts NAS, starts Ollama, creates DLY. All cron entries route through it.
+- [project_nas_mount_fix_2026_04_17.md](project_nas_mount_fix_2026_04_17.md) — **NAS unattended remount fix (2026-04-17)**: replaced Finder `open smb://` with `mount_smbfs` + macOS Keychain. Keychain entry confirmed.
+- [project_thevault_v2_proposal.md](project_thevault_v2_proposal.md) — **V2 rebuild vision (2026-04-17)**: Proposal #19 at Vault/System/Proposals/19-theVault-V2-Rebuild-Plan.md. Multi-model routing, offline queue, Opus checkpoint. Parking lot — do NOT start without explicit go-ahead.
+
+## Project (Desktop Claude Code)
+- [project_desktop_claude_dirs.md](project_desktop_claude_dirs.md) — Scripts dir and Vault data dir for Desktop Claude Code sessions
+- [project_gmail_pipeline.md](project_gmail_pipeline.md) — SUPERSEDED 2026-03-31 by Email Thread Ingester. Old gmail/ scripts kept as reference only.
+
+## Project (Job Search)
+- [project_job_eval_batch_2026_04_01.md](project_job_eval_batch_2026_04_01.md) — First batch: 6 JDs evaluated. Akamai Principal TSA #1, TwelveLabs SA #2, Paramount passed. Rankings + action items.
+- [project_nebius_interview.md](project_nebius_interview.md) — Nebius AI HM interview pipeline: Josh Liss (founder with exit), prep doc 2026-04-03, founder-to-founder framing required.
+
+## Reference
+- [ref_key_files.md](ref_key_files.md) — Authoritative files and their locations in theVault. Updated 2026-04-03: added Services/, orchestration, dashboard, query endpoint, Claude API client.

@@ -13,8 +13,9 @@ originSessionId: d779d3e3-81e8-4d10-bd15-33a7d93732e7
 ### preflight.sh — `System/Scripts/preflight.sh`
 One script every cron job calls FIRST. Five steps:
 1. **Close heavy GUI apps** via `osascript "quit"` (graceful, NOT pkill). Closes: Chrome, Safari, Firefox, Slack, Discord, Spotify, Zoom, Teams, Preview, TextEdit, Numbers, Pages, Keynote. Keeps: Finder, Mail (needed for email fetch), Reminders, Calendar, Obsidian, Claude.
-2. **Mount NAS** if `/Volumes/home/MacMiniStorage` missing. Uses `open smb://...` then waits up to 30s.
-3. **Validate symlinks** (Vault, Inbox, Processed) point to NAS. Aborts if broken.
+2. **Mount NAS** if `/Volumes/home/MacMiniStorage` missing. Uses `mount_smbfs` + macOS Keychain (updated 2026-04-17 — old `open smb://` triggered GUI prompt). After both mount and already-mounted branches, runs a live write-check.
+3. **NAS write-check** (added 2026-04-18): appends a canary line to `Vault/System/Logs/Touch/NAS Check.md`. Proves mount is alive and writable, not just present as a directory. Aborts if write fails (catches stale/hung mounts). Log visible in Obsidian.
+4. **Validate symlinks** (Vault, Inbox, Processed) point to NAS. Aborts if broken.
 4. **Start Ollama** via `brew services start ollama` if not running.
 5. **Create today's DLY** from inline template if missing — NEVER overwrites existing.
 6. **Source .env** so workflows have ANTHROPIC_API_KEY + Ollama tuning vars.
