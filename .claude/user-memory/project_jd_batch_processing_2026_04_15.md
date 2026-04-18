@@ -1,10 +1,15 @@
 ---
-name: JD Batch Processing Issue — 2026-04-15
-description: ResumeEngine jd_analyzer.py batch run failing on JSON parsing in scoring phase
+name: JD Batch Processing Issue — 2026-04-15 (SUPERSEDED)
+description: RESOLVED 2026-04-15 by Phase 1-3 hardening. See project_jd_analyzer_fixes_2026_04_15.md. Kept for historical record only.
 type: project
 originSessionId: 4bc5104f-958f-4f24-aee1-414fc3ed9bec
 ---
-## Status: Debugging Required (Opus)
+## Status: RESOLVED — See project_jd_analyzer_fixes_2026_04_15.md
+
+Root cause (token truncation in scoring phase) fixed by Phase 1-3 hardening (2026-04-15). All 3 JDs validated successfully. Phase 4 anti-fabrication overhaul followed 2026-04-16. This file is kept for historical record only.
+
+---
+## Original Debugging Record (for history)
 
 **Date**: 2026-04-15  
 **Work**: Batch processing 3 JDs through ResumeEngine
