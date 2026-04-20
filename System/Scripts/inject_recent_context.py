@@ -2,15 +2,21 @@
 """
 inject_recent_context.py — Inject temporal-context sections into today's DLY.
 
-Injects THREE sections (in this top-to-bottom order), each independently
-idempotent via its own marker pair:
+Injects THREE sections, each independently idempotent via its own marker pair:
 
-  1. ## 🎯 Today — Forward-Back (next 14 days)    [forward-back-start/end]
+  1. ### Calendar (14-day forward-back)            [forward-back-start/end]
+     — lives inside `## Morning`, above `### Tasks Due Today`.
   2. ## 📅 Past 7 Days                              [past-7-start/end]
   3. ## Recent Context (last week + last month)    [recent-context-start/end]
 
-Placement: before the first of ## Captures, ## Email Activity,
-## Vault Activity, ## Navigation.
+Placement:
+  - Section 1 is inserted before `### Tasks Due Today` (inside `## Morning`)
+    so the upcoming view sits above today's task queue — Eric's
+    ADHD/OOSOOM requirement: "I have to see the upcoming, I have to process
+    the tasks daily. The past needs to be at my fingertips but doesn't need
+    to be on top."
+  - Sections 2 and 3 are inserted before the first of `## Captures`,
+    `## Email Activity`, `## Vault Activity`, `## Navigation`.
 
 Each section is built by its own function; a section that fails (e.g.,
 EventKit unavailable) leaves the others unaffected.
