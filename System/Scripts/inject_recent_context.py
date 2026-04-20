@@ -298,7 +298,12 @@ _P7_FALLBACK_RE = re.compile(
 
 
 def _build_forward_back(today: date, use_gemma: bool = True) -> str:
-    """Render the 🎯 section via calendar_forward_back. Fails soft."""
+    """Render the Calendar/Forward-Back section via calendar_forward_back. Fails soft.
+
+    The renderer emits an H2 `## 🎯 Today — Forward-Back` header; we rewrite it
+    to H3 `### Calendar` so the block lives inside the `## Morning` subtree,
+    above `### Tasks Due Today` (ADHD/OOSOOM placement Eric asked for).
+    """
     if _cfb is None:
         return (
             f"{_FB_HEADER}\n{_FB_START}\n\n"
@@ -306,12 +311,19 @@ def _build_forward_back(today: date, use_gemma: bool = True) -> str:
             f"{_FB_END}\n"
         )
     try:
-        return _cfb.render_forward_back_section(
+        rendered = _cfb.render_forward_back_section(
             today,
             horizon_days=14,
             use_gemma=use_gemma,
             dly_reader=_dly_reader,  # enables 72h gap detection for P0 events
         )
+        # Demote H2 → H3 and rename to `### Calendar` in place.
+        rendered = rendered.replace(
+            "## 🎯 Today — Forward-Back (next 14 days)\n",
+            f"{_FB_HEADER}\n",
+            1,
+        )
+        return rendered
     except Exception as e:
         log.warning(f"Forward-back render failed: {e}")
         return (
