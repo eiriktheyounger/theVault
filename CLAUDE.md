@@ -115,6 +115,7 @@ See full priority map: `~/.claude/projects/-Users-ericmanchester-theVault/memory
 5. RAG Q/A gate — rag_qa_agent.py missing
 
 ### Completed
+- ✅ ADHD/OOSOOM Phase 1b — Forward-Back + Past 7 Days + Recent Context injection + 72h gap detection, wired into morning/overnight cron (2026-04-20)
 - ✅ Overnight processor stabilization — all fixes applied, ANTHROPIC_API_KEY in cron (2026-04-01)
 - ✅ clean_md_processor.py — 93 Plaud sessions processed (2026-03-25 + 2026-03-31)
 - ✅ Resume Engine / JD Analyzer — built (2026-03-28)

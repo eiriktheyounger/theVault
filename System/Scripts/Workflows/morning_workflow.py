@@ -324,9 +324,30 @@ class MorningWorkflow:
 
             cal_status = result.get("calendar", {})
             n_events = cal_status.get("events", 0)
+
+            # Forward-back + Past 7 + Recent Context injection (ADHD/OOSOOM)
+            fb_summary = "skipped"
+            try:
+                from inject_recent_context import run_inject as _run_inject
+                fb_result = _run_inject(
+                    target_date=target_date.isoformat(),
+                    dry_run=False,
+                    verbose=False,
+                    use_gemma=True,
+                )
+                fb_summary = (
+                    f"forward-back={fb_result.get('forward_back', {}).get('events', 0)}ev "
+                    f"past7={fb_result.get('past_7', {}).get('days', 0)}d "
+                    f"ctx={fb_result.get('recent_context', {}).get('items', 0)}"
+                )
+            except Exception as e:
+                logger.error(f"inject_recent_context failed: {e}")
+                fb_summary = f"error: {e}"
+
             step.complete([
                 f"Calendar injected: {n_events} event(s) → DLY",
                 f"Week at a glance: {result.get('week_glance', {}).get('status', 'skipped')}",
+                f"Forward-back: {fb_summary}",
             ])
             self._notify_callback(step)
             return True

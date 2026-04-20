@@ -717,13 +717,19 @@ def run_vault_activity(
     if start_date:
         start_dt = datetime.strptime(start_date, "%Y-%m-%d")
     else:
-        # Use last run or days ago
+        # Effective start = max(last_run, days_floor) — `days` acts as a ceiling,
+        # so a missed/killed run can never cascade further back than the caller allowed.
         state = _load_state()
         last_run = state.get("last_run")
+        days_floor = end_dt - timedelta(days=days)
         if last_run:
-            start_dt = datetime.fromisoformat(last_run)
+            last_run_dt = datetime.fromisoformat(last_run)
+            # Strip timezone so comparison works with naive end_dt/days_floor
+            if last_run_dt.tzinfo is not None:
+                last_run_dt = last_run_dt.replace(tzinfo=None)
+            start_dt = max(last_run_dt, days_floor)
         else:
-            start_dt = end_dt - timedelta(days=days)
+            start_dt = days_floor
     start_ts = start_dt.replace(hour=0, minute=0, second=0).timestamp()
 
     log.info(f"Scanning {start_dt.date()} to {end_dt.date()}")
@@ -747,9 +753,10 @@ def run_vault_activity(
     errors = 0
 
     # Phase 2 & 3: Post-process and inject
-    for date_str in sorted(files_by_date.keys()):
-        log.info(f"Processing {date_str}")
+    sorted_dates = sorted(files_by_date.keys())
+    for idx, date_str in enumerate(sorted_dates, 1):
         files = files_by_date[date_str]
+        log.info(f"Processing {date_str} ({idx} of {len(sorted_dates)}, {len(files)} files)")
 
         # Group by source type for injection
         files_by_source: dict[str, list[dict]] = {}
@@ -811,7 +818,19 @@ def run_vault_activity(
         _inject_vault_activity(date_str, files_by_source, dry_run=dry_run)
         dates_updated += 1
 
-    # Update state
+        # Kill-resilient incremental state save — advance cursor after each
+        # completed date bucket so a mid-run interruption doesn't cascade.
+        if not dry_run:
+            try:
+                _save_state({
+                    "last_run": datetime.now(timezone.utc).isoformat(),
+                    "dates_processed": dates_updated,
+                    "files_processed": sum(len(files_by_date[d]) for d in sorted_dates[:idx]),
+                })
+            except Exception as e:
+                log.warning(f"Incremental state save failed: {e}")
+
+    # Final state save — totals for the full run
     state = {
         "last_run": datetime.now(timezone.utc).isoformat(),
         "dates_processed": len(files_by_date),

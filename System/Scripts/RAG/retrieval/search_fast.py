@@ -1,12 +1,63 @@
 from __future__ import annotations
 
 import difflib
+import logging
 import re
+import time
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 import numpy as np
+
+log = logging.getLogger(__name__)
+
+# ── Recency-aware retrieval ───────────────────────────────────────────────────
+# When a query expresses temporal intent ("latest status", "most recent", etc.)
+# we boost newer chunks so supersession-sensitive queries prefer current facts.
+TEMPORAL_QUERY_KEYWORDS = (
+    "latest", "current", "currently", "recent", "recently",
+    "right now", "today", "this week", "this month",
+    "most recent", "up to date", "up-to-date", "newest",
+    "status of", "status on", "where are we with", "where do we stand",
+)
+
+# Tunable: how strong the recency signal is vs. semantic/FTS rank.
+# Values chosen so a ~30-day-old chunk beats a semantically-similar 1-year-old.
+RECENCY_WEIGHT = 3.0          # scaling factor for the recency rank adjustment
+RECENCY_HALFLIFE_DAYS = 30.0  # chunks this old get ~half the max boost
+RECENCY_FLOOR_DAYS = 365.0    # chunks older than this get zero boost
+
+
+def _has_temporal_intent(query: str) -> bool:
+    """Detect whether a query expresses recency/supersession intent."""
+    if not query:
+        return False
+    q = query.lower()
+    return any(kw in q for kw in TEMPORAL_QUERY_KEYWORDS)
+
+
+def _recency_adjustment(mtime_value: Any, now_ts: float) -> float:
+    """
+    Return a NEGATIVE number proportional to recency, so that sorting ascending
+    places newer chunks earlier. Returns 0.0 for chunks older than RECENCY_FLOOR_DAYS
+    or when mtime is missing/unparseable.
+    """
+    if mtime_value is None:
+        return 0.0
+    try:
+        mt = float(mtime_value)
+    except (TypeError, ValueError):
+        return 0.0
+    if mt <= 0:
+        return 0.0
+    age_days = max(0.0, (now_ts - mt) / 86400.0)
+    if age_days >= RECENCY_FLOOR_DAYS:
+        return 0.0
+    # Exponential decay: newest chunks get the largest negative adjustment
+    import math
+    decay = math.exp(-age_days / RECENCY_HALFLIFE_DAYS)
+    return -RECENCY_WEIGHT * decay
 
 try:  # test-friendly imports
     from retrieval.store import embed_query, get_hnsw  # type: ignore
@@ -284,6 +335,8 @@ def hybrid(q: str) -> Dict[str, Any]:
     fused = list(dict.fromkeys(vids + fids))[: FAST_TOPK * 2]
 
     # Apply optional focus-term boosts from settings (hot‑reloadable)
+    # AND recency boost when the query expresses temporal intent.
+    temporal_intent = _has_temporal_intent(q)
     try:
         app_dir = settings_cache.APP_DIR
         cfg_path = (app_dir / "settings.json") if app_dir else None
@@ -293,22 +346,37 @@ def hybrid(q: str) -> Dict[str, Any]:
         boosts_enabled = bool(s.get("BOOSTS_ENABLED", False))
         focus_terms = [str(t).lower() for t in (s.get("FOCUS_TERMS") or [])]
         meta_for_boost = _load_meta(fused)
-        if boosts_enabled and focus_terms:
 
-            def _score_boost(rid: int) -> int:
-                m = meta_for_boost.get(str(rid), {})
-                path = str(m.get("path", "")).lower()
-                return -1 if any(t in path for t in focus_terms) else 0
+        now_ts = time.time() if temporal_intent else 0.0
 
-            fused = sorted(fused, key=_score_boost)
-        else:
-            # Deterministic fallback ordering by path
-            def _path_key(rid: int) -> str:
-                return str(meta_for_boost.get(str(rid), {}).get("path", ""))
+        def _combined_sort_key(rid: int) -> Tuple[float, str]:
+            m = meta_for_boost.get(str(rid), {})
+            path = str(m.get("path", "")).lower()
+            score = 0.0
+            # Focus-term boost (existing behaviour)
+            if boosts_enabled and focus_terms and any(t in path for t in focus_terms):
+                score -= 1.0
+            # Recency boost (new — only when query is temporal)
+            if temporal_intent:
+                score += _recency_adjustment(m.get("mtime"), now_ts)
+            return (score, path)  # path as secondary key for determinism
 
-            fused = sorted(fused, key=_path_key)
-    except Exception:
-        pass
+        fused = sorted(fused, key=_combined_sort_key)
+
+        if temporal_intent:
+            boosted = sum(
+                1
+                for rid in fused
+                if _recency_adjustment(meta_for_boost.get(str(rid), {}).get("mtime"), now_ts) < -0.1
+            )
+            log.info(
+                "Temporal intent detected in query %r — recency boost applied to %d/%d chunks",
+                q[:80],
+                boosted,
+                len(fused),
+            )
+    except Exception as e:
+        log.debug("Boost/ranking layer skipped: %s", e)
 
     # Metadata & snippets
     meta = _load_meta(fused)

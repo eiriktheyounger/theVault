@@ -168,6 +168,26 @@ def main(target_date=None):
     except Exception as e:
         logger.error(f"Vault activity tracking failed: {e}")
 
+    # ── Forward-Back / Past 7 / Recent Context Injection (ADHD/OOSOOM) ────────
+    # Re-renders tonight so tomorrow morning the DLY already reflects the
+    # latest state (captures processed, tasks extracted, new events, etc.)
+    try:
+        from inject_recent_context import run_inject
+        fb_date = (note_date if isinstance(note_date, datetime) else datetime.combine(note_date, datetime.min.time())).strftime("%Y-%m-%d")
+        fb_result = run_inject(
+            target_date=fb_date,
+            dry_run=False,
+            verbose=False,
+            use_gemma=True,
+        )
+        logger.info(
+            f"Forward-back: forward_back={fb_result.get('forward_back', {}).get('events', 0)}ev "
+            f"past_7={fb_result.get('past_7', {}).get('days', 0)}d "
+            f"recent_context={fb_result.get('recent_context', {}).get('items', 0)}"
+        )
+    except Exception as e:
+        logger.error(f"Forward-back injection failed: {e}")
+
     # ── Plaud Transcript Repair ─────────────────────────────────────────────────
     # Auto-fix any -Full.md files missing collapsible transcript sections
     # (e.g. processed on iOS or before the transcript feature was added)
