@@ -463,11 +463,19 @@ def inject_recent_context(
         )
 
     if fb_section:
+        # One-time migration: remove any orphan H2 Forward-Back block left behind
+        # from pre-relocation runs (was `## 🎯 Today — Forward-Back` at the
+        # bottom of the DLY; now lives inline as `### Calendar`).
+        migrated = _OLD_FB_RE.sub("", updated, count=1)
+        if migrated != updated:
+            log.info("  Removed orphan H2 Forward-Back block (migrated to ### Calendar)")
+            updated = migrated
         updated = _inject_one(
             updated, fb_section,
             _FB_HEADER, _FB_START, _FB_END,
             _FB_RE, _FB_FALLBACK_RE,
-            insertion_anchors=[_P7_HEADER, _SECTION_HEADER] + default_anchors,
+            # Land inside `## Morning`, above `### Tasks Due Today`.
+            insertion_anchors=["### Tasks Due Today", _P7_HEADER, _SECTION_HEADER] + default_anchors,
         )
 
     if updated == existing:
