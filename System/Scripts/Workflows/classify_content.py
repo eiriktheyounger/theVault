@@ -74,7 +74,21 @@ log = logging.getLogger('classify')
 # ── NAS validation ─────────────────────────────────────────────────────────────
 
 def check_nas() -> None:
-    """Exit if NAS is not mounted."""
+    """Exit if NAS is not mounted. On laptop, validate Vault symlink instead."""
+    import subprocess
+    computer = subprocess.run(
+        ['scutil', '--get', 'ComputerName'],
+        capture_output=True, text=True,
+    ).stdout.strip()
+    if 'mac mini' not in computer.lower():
+        # Laptop mode — NAS not expected; just verify Vault is reachable
+        if VAULT_ROOT.is_dir():
+            log.info(f'Laptop mode: Vault accessible at {VAULT_ROOT}')
+            return
+        else:
+            log.error(f'Vault not accessible at {VAULT_ROOT} — check Obsidian Sync or symlink')
+            sys.exit(1)
+    # Mac Mini mode — require NAS
     if not NAS_PATH.exists():
         log.error(f'NAS not mounted at {NAS_PATH}. Aborting.')
         sys.exit(1)

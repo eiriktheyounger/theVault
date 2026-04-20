@@ -13,8 +13,8 @@
 - [feedback_log_standards.md](feedback_log_standards.md) — New log files go in Vault/System/Logs/ (NAS-backed, Obsidian-readable, synced remotely). Do NOT retroactively move old logs.
 
 ## Project
-- [project_priorities_2026_03.md](project_priorities_2026_03.md) — **Locked priority map (P0-P3) + parking lot.** All P0-P2 complete, Gemma 4 complete. Open: scoring→E4B migration (#16). V2 rebuild in parking lot.
-- [project_vault_architecture.md](project_vault_architecture.md) — theVault system architecture, key paths, ports, and services. Ollama models updated (llama3.1:8b removed 2026-04-02). Services/ dir added.
+- [project_priorities_2026_03.md](project_priorities_2026_03.md) — **Locked priority map (P0-P3) + parking lot.** Most P0-P2 done. Laptop migration COMPLETE 2026-04-10. Open: rag_qa_agent.py. Updated 2026-04-10.
+- [project_vault_architecture.md](project_vault_architecture.md) — theVault system architecture, key paths, ports, services. Multi-machine setup COMPLETE 2026-04-10: Mac Mini + MacBook Air (lap3071). Updated 2026-04-10.
 - [project_cleanup_2026_03.md](project_cleanup_2026_03.md) — March 2026 cleanup: what's archived, what's canonical, gap status (updated as gaps close)
 - [project_plaud_processor.md](project_plaud_processor.md) — clean_md_processor.py: Plaud inbox pipeline built 2026-03-25, design, first-run notes, remaining gaps
 - [project_jd_analyzer.md](project_jd_analyzer.md) — ResumeEngine JD Analyzer: CLI, batch mode, 48 context files, Haiku+Sonnet pipeline

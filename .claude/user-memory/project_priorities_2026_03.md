@@ -52,6 +52,10 @@ originSessionId: d779d3e3-81e8-4d10-bd15-33a7d93732e7
 **Status:** ALL 6 SESSIONS COMPLETE (2026-04-14). Validated by Opus (Session 6), 52 capabilities verified, 0 regressions.
 **Details:** `project_gemma4_integration.md` + `Vault/Sessions/gemma4-integration/build-plan.md`
 
+### P1b — Infrastructure
+
+13. ✅ **Laptop migration (MacBook Air lap3071)** — COMPLETE 2026-04-10. Git pull (326 commits), Vault symlink fixed (→ NeroSpicy/Vault via Obsidian Sync), 23 user memory files installed, API key set, Inbox/Processed local stubs, classify_content.py hostname-aware fix, LAPTOP_SETUP_GUIDE.md rewritten, E2E validation 12/12 passing. See `LAPTOP_SETUP_GUIDE.md`.
+
 ### P3 — Valuable, not blocking
 
 14. **LinkedIn Content Strategy** — 7 pillars mapped, Pillar 7 (neurodivergence) research done. Files: `Vault/Knowledge/Plans for writing/LinkedIn/`. Needs brain dump session when ready. Sonnet Desktop for writing.
