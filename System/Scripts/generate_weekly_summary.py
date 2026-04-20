@@ -34,8 +34,7 @@ from typing import Optional
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 
-PROJECT_ROOT = Path(__file__).parent.parent
-VAULT_ROOT = PROJECT_ROOT / "Vault"
+VAULT_ROOT = Path.home() / "theVault" / "Vault"
 DAILY_DIR = VAULT_ROOT / "Daily"
 
 # ── LLM Config ────────────────────────────────────────────────────────────────
@@ -194,8 +193,14 @@ def generate_weekly_summary(
     ref_date: date,
     dry_run: bool = False,
     verbose: bool = False,
-) -> Optional[Path]:
-    """Generate WKY file for the ISO week containing ref_date."""
+) -> dict:
+    """Generate WKY file for the ISO week containing ref_date.
+
+    Returns:
+        dict with keys 'status' and 'path':
+            - status: "success", "exists", or "dry-run"
+            - path: Path object or None
+    """
     monday, sunday = week_bounds(ref_date)
     week_num = ref_date.isocalendar()[1]
     year = monday.year
@@ -203,21 +208,36 @@ def generate_weekly_summary(
     output_path = wky_path(ref_date)
     if output_path.exists() and not dry_run:
         log.info(f"WKY already exists: {output_path.name}")
+        return {"status": "exists", "path": output_path}
 
     # Gather data from 7 DLY files
     all_completed: list[str] = []
     all_open: list[str] = []
     all_key_events: list[str] = []
     dly_contents: list[str] = []
+    dly_found: list[date] = []
 
     for offset in range(7):
         d = monday + timedelta(days=offset)
         content = _read_dly(d)
         dly_contents.append(content)
+        if content:
+            dly_found.append(d)
         done, open_t = _extract_tasks(content)
         all_completed.extend(done)
         all_open.extend(open_t)
         all_key_events.extend(_extract_key_events(content))
+
+    # Abort rather than silently writing an empty WKY when DLYs are unreachable
+    # (e.g. NAS not mounted at cron time). Prevents poisoning the vault with a
+    # "No daily notes found" stub that the existence guard above then refuses
+    # to refresh on the next run.
+    if not dly_found:
+        log.warning(
+            f"No DLY files readable for week {week_num} "
+            f"({monday.isoformat()}..{sunday.isoformat()}); skipping WKY write"
+        )
+        return {"status": "no-dly", "path": None}
 
     # Vault activity
     total_notes = _count_vault_files_in_range(monday, sunday)
@@ -325,12 +345,12 @@ tags: [weekly, summary]
 
     if dry_run:
         print(f"[dry-run] Would write {output_path}")
-        return None
+        return {"status": "dry-run", "path": output_path}
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(content, encoding="utf-8")
     log.info(f"✓ Written: {output_path}")
-    return output_path
+    return {"status": "success", "path": output_path}
 
 
 # ── Monthly Summary (Part E) ──────────────────────────────────────────────────
@@ -340,8 +360,14 @@ def generate_monthly_summary(
     month: int,
     dry_run: bool = False,
     verbose: bool = False,
-) -> Optional[Path]:
-    """Generate MTH file for the given year/month."""
+) -> dict:
+    """Generate MTH file for the given year/month.
+
+    Returns:
+        dict with keys 'status' and 'path':
+            - status: "success", "dry-run"
+            - path: Path object or None
+    """
     output_path = mth_path(year, month)
 
     # Find first and last day of month
@@ -459,12 +485,12 @@ tags: [monthly, summary]
 
     if dry_run:
         print(f"[dry-run] Would write {output_path}")
-        return None
+        return {"status": "dry-run", "path": output_path}
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(content, encoding="utf-8")
     log.info(f"✓ Written: {output_path}")
-    return output_path
+    return {"status": "success", "path": output_path}
 
 
 # ── CLI ───────────────────────────────────────────────────────────────────────

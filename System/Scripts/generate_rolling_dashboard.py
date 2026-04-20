@@ -99,16 +99,25 @@ _SECTION_RE = re.compile(r"^#{1,4}\s+(.+?)\s*$", re.MULTILINE)
 
 def _extract_section(content: str, section_name: str, include_header: bool = False) -> str:
     """Extract content of a markdown section by (partial) header name match."""
+    # NOTE: curly-brace regex quantifiers must be double-escaped in f-strings
+    # (`{{1,4}}` → `{1,4}`). The original `{1,4}` got evaluated as the Python
+    # tuple `(1, 4)` and the pattern silently never matched — a preexisting bug.
     pattern = re.compile(
-        rf"^(#{1,4})\s+{re.escape(section_name)}\s*$",
+        rf"^(#{{1,4}})\s+{re.escape(section_name)}\s*$",
         re.IGNORECASE | re.MULTILINE,
     )
     m = pattern.search(content)
     if not m:
         return ""
     level = len(m.group(1))
-    # Find end: next heading of same or higher level
-    end_pattern = re.compile(rf"^#{{{1},{level}}}\s+", re.MULTILINE)
+    # Find end: next heading at same level (sibling) OR HTML end marker.
+    # NOTE: we do NOT stop at higher-level (fewer-hash) headings because the
+    # DLY format sometimes contains stray H1s like "# Day's Summary" as
+    # CONTENT inside an H3 block (emitted by overnight_processor's LLM).
+    # Stopping at same-level siblings is the right boundary for our files.
+    end_pattern = re.compile(
+        rf"^#{{{level}}}\s+|^<!--\s*\w[\w-]*-end\s*-->", re.MULTILINE
+    )
     start = m.end()
     next_h = end_pattern.search(content, start)
     chunk = content[start: next_h.start()] if next_h else content[start:]
@@ -124,7 +133,9 @@ def extract_day_summary(content: str) -> str:
     if not chunk:
         return ""
     # Strip interior "# Day Summary" sub-header if present (redundant in the block)
-    chunk = re.sub(r"^#+ Day Summary\s*\n?", "", chunk, flags=re.IGNORECASE).strip()
+    # Strip any interior "# Day Summary" / "# Day's Summary" content-heading
+    # emitted by overnight_processor's LLM output.
+    chunk = re.sub(r"^#+ Day'?s? Summary\s*\n?", "", chunk, flags=re.IGNORECASE).strip()
     return chunk
 
 
@@ -540,6 +551,53 @@ def render_next_7_days(today: date, errors: list[str]) -> tuple[str, int]:
     return "\n".join(lines), len(events)
 
 
+def render_today_summary(today: date, errors: list[str]) -> str:
+    """Build ## Today section — narrative summary only.
+
+    Shows today's Day Summary if overnight has already run; otherwise falls
+    back to the most recent prior day that has one. Tasks and calendar are
+    intentionally NOT included here — those live on the DLY.
+    """
+    weekday = today.strftime("%A")
+    header = f"## 📅 Today — {weekday}, {today.strftime('%b %d, %Y')}"
+    lines = [header, ""]
+
+    # Try today first, then walk backward up to 7 days to find the most recent
+    # day summary (handles mornings before overnight has processed yesterday).
+    chosen_date: Optional[date] = None
+    chosen_summary = ""
+    for offset in range(0, 8):
+        d = today - timedelta(days=offset)
+        content = read_dly(d)
+        summary = extract_day_summary(content) if content else ""
+        if summary:
+            chosen_date = d
+            chosen_summary = summary
+            break
+
+    if chosen_summary and chosen_date is not None:
+        if chosen_date == today:
+            prefix = "_Today's summary (from tonight's overnight processing):_"
+        else:
+            days_back = (today - chosen_date).days
+            if days_back == 1:
+                prefix = "_Yesterday's summary (most recent completed day):_"
+            else:
+                prefix = f"_Most recent completed day — {chosen_date.isoformat()} ({days_back} days ago):_"
+        lines.append(prefix)
+        lines.append("")
+        lines.append(chosen_summary)
+        lines.append("")
+        stem = f"Daily/{chosen_date.year}/{chosen_date.month:02d}/{chosen_date.isoformat()}-DLY"
+        lines.append(f"[[{stem}|Full day note →]]")
+    else:
+        lines.append("_No day summary available in the last 7 days._")
+        lines.append("_(Day Summary is generated nightly by `overnight_processor.py` at 10 PM.)_")
+
+    lines.append("")
+    return "\n".join(lines)
+
+
 def render_this_week_so_far(today: date, use_llm: bool, errors: list[str]) -> tuple[str, int]:
     """Build ## This Week So Far section. Returns (markdown, key_moments_count)."""
     lines = [
@@ -680,20 +738,7 @@ def render_last_full_month(today: date, use_llm: bool, errors: list[str]) -> tup
 
     lines.append("")
 
-    # Month key moments from MTH content
-    if mth_content:
-        body_for_moments = re.sub(r"^---.*?---\s*", "", mth_content, flags=re.DOTALL).strip()
-        moments = build_key_moments(body_for_moments[:4000], "last-full-month", use_llm=use_llm)
-        key_moments_count = len(moments)
-        lines.append("### Month Key Moments")
-        lines.append("")
-        if moments:
-            for m in moments:
-                lines.append(f"- **{m.get('date', 'unknown')}** — {m.get('moment', '')}")
-        else:
-            lines.append("_No key moments extracted._")
-        lines.append("")
-
+    # Eric's 2026-04-20 spec: summary-only. Key-moments extraction removed.
     if mth:
         lines.append(f"[[{mth.stem}|Full monthly summary →]]")
     lines.append("")
@@ -748,41 +793,30 @@ def assemble_dashboard(
         "",
     ]
 
-    # Section 1: Next 7 Days
-    log.info("Building: Next 7 Days")
-    next7_md, events_count = render_next_7_days(today, errors)
+    # Eric's 2026-04-20 spec: narrative-only dashboard, 3 sections.
+    # Tasks + calendar deliberately NOT on the dashboard (they live on the DLY).
+
+    # Section 1: Today
+    log.info("Building: Today")
+    today_md = render_today_summary(today, errors)
     sections_built += 1
 
-    # Section 2: This Week So Far
-    log.info("Building: This Week So Far")
-    week_md, week_moments = render_this_week_so_far(today, use_llm=use_llm, errors=errors)
-    total_key_moments += week_moments
-    sections_built += 1
-
-    # Section 3: Last Full Week
+    # Section 2: Last Full Week
     log.info("Building: Last Full Week")
     last_week_md = render_last_full_week(today, errors)
     sections_built += 1
 
-    # Section 4: Last Full Month
+    # Section 3: Last Full Month
     log.info("Building: Last Full Month")
-    last_month_md, month_moments = render_last_full_month(today, use_llm=use_llm, errors=errors)
-    total_key_moments += month_moments
-    sections_built += 1
-
-    # Section 5: At a Glance
-    log.info("Building: At a Glance")
-    glance_md = render_at_a_glance(today, errors)
+    last_month_md, _ = render_last_full_month(today, use_llm=use_llm, errors=errors)
     sections_built += 1
 
     separator = "\n---\n\n"
     full_md = (
         "\n".join(header_lines)
-        + next7_md + separator
-        + week_md + separator
+        + today_md + separator
         + last_week_md + separator
-        + last_month_md + separator
-        + glance_md
+        + last_month_md
         + "\n<!-- rolling-dashboard-end -->\n"
     )
 
@@ -792,7 +826,7 @@ def assemble_dashboard(
     return {
         "markdown": full_md,
         "sections_built": sections_built,
-        "events_next_7": events_count,
+        "events_next_7": 0,  # retired — tasks/calendar moved to DLY only
         "key_moments_extracted": total_key_moments,
         "errors": errors,
     }
