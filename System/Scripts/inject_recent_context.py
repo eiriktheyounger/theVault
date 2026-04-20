@@ -266,15 +266,21 @@ def _build_section(today: date) -> str:
 
 # ── Forward-Back (14 days) + Past 7 Days builders ────────────────────────────
 
-_FB_HEADER = "## 🎯 Today — Forward-Back (next 14 days)"
+_FB_HEADER = "### Calendar"
 _FB_START = "<!-- forward-back-start -->"
 _FB_END = "<!-- forward-back-end -->"
 _FB_RE = re.compile(
-    r"## 🎯 Today — Forward-Back \(next 14 days\)\n<!-- forward-back-start -->.*?<!-- forward-back-end -->\n?",
+    r"### Calendar\n<!-- forward-back-start -->.*?<!-- forward-back-end -->\n?",
     re.DOTALL,
 )
+# Stop at the next H2 or H3 so we don't eat `### Tasks Due Today`.
 _FB_FALLBACK_RE = re.compile(
-    r"## 🎯 Today — Forward-Back[^\n]*\n.*?(?=\n## |\Z)",
+    r"### Calendar\n.*?(?=\n### |\n## |\Z)",
+    re.DOTALL,
+)
+# Migration: strip any orphan H2 Forward-Back block left over from pre-relocation runs.
+_OLD_FB_RE = re.compile(
+    r"\n?## 🎯 Today — Forward-Back[^\n]*\n<!-- forward-back-start -->.*?<!-- forward-back-end -->\n?",
     re.DOTALL,
 )
 
