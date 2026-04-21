@@ -175,12 +175,30 @@ def _run_icalpal(args: list[str], timeout: int = 30) -> str:
 # ── Date/time parsing ─────────────────────────────────────────────────────────
 
 def _parse_ical_datetime(raw) -> Optional[datetime]:
-    """Parse icalPal's DateTime output into a naive local datetime."""
+    """Parse icalPal's DateTime output into a naive local datetime.
+
+    icalPal emits several date representations per event:
+      * sseconds / eseconds  — Unix epoch integers (most reliable)
+      * sctime / ectime      — "YYYY-MM-DD HH:MM:SS ±HHMM" with offset
+      * sdate / edate        — human-friendly ("today", "yesterday",
+                               "May 4, 2026") — NOT parseable; ignored here
+      * start_date / end_date — iCal reference seconds (since 2001-01-01 UTC)
+
+    This helper accepts all of the above except sdate/edate.
+    """
     if raw is None:
         return None
     if isinstance(raw, (int, float)):
-        # Some icalPal fields are epoch-ish seconds
-        return datetime.fromtimestamp(raw)
+        # Heuristic: iCal reference epoch starts 2001-01-01. Values under
+        # ~1 billion are iCal seconds; values over are Unix epoch.
+        # 2001-01-01 UTC = 978307200 Unix. icalPal's start_date field is
+        # iCal seconds; sseconds is Unix seconds.
+        try:
+            if raw < 978307200:  # iCal reference epoch offset
+                return datetime.fromtimestamp(raw + 978307200)
+            return datetime.fromtimestamp(raw)
+        except (OverflowError, OSError, ValueError):
+            return None
     if not isinstance(raw, str):
         return None
 
@@ -188,19 +206,16 @@ def _parse_ical_datetime(raw) -> Optional[datetime]:
     if not s:
         return None
 
-    # icalPal emits ISO-8601 with offset, e.g. "2026-04-21T09:00:00-04:00"
-    # or "2026-04-21T09:00:00+00:00". strptime doesn't handle the colon in
-    # the offset pre-3.7, but fromisoformat does from 3.7+.
+    # Try ISO 8601 first (fromisoformat handles colon offsets in 3.7+)
     try:
         dt = datetime.fromisoformat(s)
         if dt.tzinfo is not None:
-            # Convert to local time, then drop tzinfo so we match EventKit shape
             dt = dt.astimezone().replace(tzinfo=None)
         return dt
     except ValueError:
         pass
 
-    # Fallback: try common formats
+    # icalPal sctime/ectime format: "2026-04-21 09:00:00 -0400"
     for fmt in (
         "%Y-%m-%dT%H:%M:%S%z",
         "%Y-%m-%d %H:%M:%S %z",
@@ -216,16 +231,35 @@ def _parse_ical_datetime(raw) -> Optional[datetime]:
         except ValueError:
             continue
 
-    log.warning("Could not parse icalPal datetime: %r", s)
+    # Human strings ("today", "tomorrow", "Jan 4, 2026") are intentionally
+    # not parsed — caller should use sseconds/eseconds for those rows.
     return None
 
 
 # ── Row → normalized dict ─────────────────────────────────────────────────────
 
 def _normalize_row(row: dict) -> Optional[dict]:
-    """Convert one icalPal JSON row into the shared event shape."""
-    start = _parse_ical_datetime(row.get("sdate") or row.get("start_date"))
-    end = _parse_ical_datetime(row.get("edate") or row.get("end_date"))
+    """Convert one icalPal JSON row into the shared event shape.
+
+    Date resolution priority (most → least reliable):
+      1. sseconds / eseconds  — Unix epoch integers
+      2. sctime / ectime      — ISO-ish strings with offset
+      3. start_date / end_date — iCal reference seconds (since 2001-01-01)
+    sdate / edate are intentionally skipped — they contain human strings
+    like "today" that can't be parsed.
+    """
+    def _resolve(row, keys):
+        for k in keys:
+            v = row.get(k)
+            if v is None:
+                continue
+            dt = _parse_ical_datetime(v)
+            if dt is not None:
+                return dt
+        return None
+
+    start = _resolve(row, ("sseconds", "sctime", "start_date"))
+    end = _resolve(row, ("eseconds", "ectime", "end_date"))
 
     if not start:
         return None
@@ -234,7 +268,19 @@ def _normalize_row(row: dict) -> Optional[dict]:
         end = start + timedelta(minutes=30)
 
     title = row.get("title") or row.get("summary") or "(no title)"
-    calendar_name = row.get("calendar") or "Unknown"
+    calendar_name = (row.get("calendar") or "Unknown").strip()
+
+    # Map icalPal's raw sqlite calendar names to the EventKit display names
+    # used in calendar_forward_back.INCLUDED_CALENDARS and
+    # calendar_daily_injector.TARGET_CALENDARS.
+    store = (row.get("store") or row.get("account") or "").strip()
+    if store == "Exchange" and calendar_name == "Calendar":
+        calendar_name = "ExchangeCalendar"
+
+    # Skip Reminders/tasks that sometimes appear in the events stream
+    if calendar_name in ("Scheduled Reminders",) or store == "Reminders":
+        return None
+
     location = row.get("location") or ""
     address = row.get("address") or ""
     # icalPal sometimes merges address into location via its accessor. If the
@@ -306,11 +352,10 @@ def fetch_icalpal_events(
         "-o", "json",
     ]
 
-    # Calendar filters — repeat --ic for each name. icalPal accepts comma
-    # lists too, but we pass separately to be safe with names containing spaces.
-    if calendars:
-        for cal in calendars:
-            args.extend(["--ic", cal])
+    # We do NOT pass --ic to icalPal. The raw sqlite calendar titles can
+    # differ from EventKit display names ("Calendar" vs "ExchangeCalendar",
+    # trailing whitespace on "Lulu "). Instead, normalize in _normalize_row
+    # and filter in Python below.
 
     try:
         raw = _run_icalpal(args, timeout=timeout)
@@ -341,6 +386,12 @@ def fetch_icalpal_events(
         log.error("icalPal JSON was %s, expected list", type(rows).__name__)
         return []
 
+    # Build a set of permitted calendar names for Python-side filtering.
+    # We accept exact matches against the caller's list (which uses
+    # EventKit display names), since _normalize_row already maps
+    # "Calendar" → "ExchangeCalendar" and trims whitespace.
+    allowed = set(c.strip() for c in calendars) if calendars else None
+
     events: list[dict] = []
     for row in rows:
         if not isinstance(row, dict):
@@ -349,7 +400,11 @@ def fetch_icalpal_events(
         if not normalized:
             continue
 
-        # Post-filter: drop events strictly outside the window
+        # Calendar filter (post-normalization)
+        if allowed is not None and normalized["calendar_name"] not in allowed:
+            continue
+
+        # Drop events strictly outside the window
         if normalized["end"] < start_dt or normalized["start"] > end_dt:
             continue
         events.append(normalized)
