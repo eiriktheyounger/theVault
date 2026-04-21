@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import re
 import sys
 import time
@@ -34,6 +35,22 @@ try:
     EVENTKIT_AVAILABLE = True
 except ImportError:
     EVENTKIT_AVAILABLE = False
+
+# ── icalPal fallback ──────────────────────────────────────────────────────────
+
+try:
+    # Allow import whether invoked from System/Scripts/ or from the vault root
+    try:
+        from calendar_icalpal import fetch_icalpal_events, icalpal_available
+    except ImportError:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from calendar_icalpal import fetch_icalpal_events, icalpal_available
+    ICALPAL_AVAILABLE_IMPORT = True
+except ImportError:
+    ICALPAL_AVAILABLE_IMPORT = False
+
+# Backend selection via THEVAULT_CALENDAR_BACKEND: eventkit | icalpal | auto
+CALENDAR_BACKEND = os.environ.get("THEVAULT_CALENDAR_BACKEND", "auto").lower()
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 
@@ -141,11 +158,12 @@ def _get_store() -> Optional["EKEventStore"]:
     return None
 
 
-def fetch_events_for_date(target_date: date, calendars: list[str] = TARGET_CALENDARS) -> list[CalendarEvent]:
-    """Fetch all events on target_date across the named calendars."""
+def _fetch_via_eventkit(target_date: date, calendars: list[str]) -> list[CalendarEvent] | None:
+    """EventKit path. Returns None if unauthorized/unavailable, [] on error,
+    list on success."""
     store = _get_store()
     if not store:
-        return []
+        return None
 
     try:
         all_calendars = store.calendarsForEntityType_(EKEntityTypeEvent)
@@ -184,12 +202,67 @@ def fetch_events_for_date(target_date: date, calendars: list[str] = TARGET_CALEN
             ))
 
         result.sort(key=lambda e: e.start)
-        log.info(f"Fetched {len(result)} events for {target_date}")
+        log.info(f"[EventKit] Fetched {len(result)} events for {target_date}")
         return result
 
     except Exception as exc:
         log.error(f"EventKit fetch failed: {exc}")
         return []
+
+
+def _fetch_via_icalpal(target_date: date, calendars: list[str]) -> list[CalendarEvent]:
+    """icalPal path — reads Calendar sqlite directly."""
+    if not ICALPAL_AVAILABLE_IMPORT or not icalpal_available():
+        return []
+
+    start_dt = datetime.combine(target_date, datetime.min.time())
+    end_dt = datetime.combine(target_date, datetime.max.time().replace(microsecond=0))
+    raw = fetch_icalpal_events(start_dt, end_dt, calendars=calendars)
+
+    result: list[CalendarEvent] = []
+    for row in raw:
+        result.append(CalendarEvent(
+            title=row["title"],
+            start=row["start"],
+            end=row["end"],
+            calendar_name=row["calendar_name"],
+            location=row["location"],
+            attendees=row["attendees"],
+            all_day=row["all_day"],
+        ))
+    result.sort(key=lambda e: e.start)
+    log.info(f"[icalPal] Fetched {len(result)} events for {target_date}")
+    return result
+
+
+def fetch_events_for_date(target_date: date, calendars: list[str] = TARGET_CALENDARS) -> list[CalendarEvent]:
+    """Fetch all events on target_date across the named calendars.
+
+    Backend selection via THEVAULT_CALENDAR_BACKEND env var:
+        eventkit | icalpal | auto (default)
+    """
+    backend = CALENDAR_BACKEND
+
+    if backend == "icalpal":
+        return _fetch_via_icalpal(target_date, calendars)
+
+    if backend == "eventkit":
+        result = _fetch_via_eventkit(target_date, calendars)
+        return result or []
+
+    # auto: EventKit first, icalPal fallback
+    ek_result = _fetch_via_eventkit(target_date, calendars)
+    if ek_result is None:
+        log.info("EventKit unavailable; trying icalPal fallback")
+        return _fetch_via_icalpal(target_date, calendars)
+    if ek_result:
+        return ek_result
+    if ICALPAL_AVAILABLE_IMPORT and icalpal_available():
+        log.info("EventKit returned 0 events; cross-checking with icalPal")
+        ical_result = _fetch_via_icalpal(target_date, calendars)
+        if ical_result:
+            return ical_result
+    return ek_result
 
 
 # ── Formatting ────────────────────────────────────────────────────────────────

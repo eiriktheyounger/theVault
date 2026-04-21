@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import re
 import time
 import urllib.request
@@ -52,6 +53,17 @@ try:
     EVENTKIT_AVAILABLE = True
 except ImportError:  # pragma: no cover — non-macOS dev environments
     EVENTKIT_AVAILABLE = False
+
+# ── icalPal fallback (TCC-bypass via Ruby gem reading Calendar sqlite) ───────
+try:
+    from calendar_icalpal import fetch_icalpal_events, icalpal_available
+    ICALPAL_AVAILABLE_IMPORT = True
+except ImportError:  # pragma: no cover
+    ICALPAL_AVAILABLE_IMPORT = False
+
+# Backend selection: "eventkit" (default), "icalpal", "auto" (try EK then icalPal)
+# Set via env var THEVAULT_CALENDAR_BACKEND
+CALENDAR_BACKEND = os.environ.get("THEVAULT_CALENDAR_BACKEND", "auto").lower()
 
 # ── Config: per-calendar extraction rules ────────────────────────────────────
 # keyed by the exact EventKit calendar title
@@ -275,20 +287,16 @@ def _get_store():
     return None
 
 
-def fetch_events_in_range(
+def _fetch_via_eventkit(
     start_dt: datetime,
     end_dt: datetime,
-    calendars: list[str] = None,
-) -> list[RangeEvent]:
-    """
-    Fetch events in [start_dt, end_dt] across `calendars`. Defaults to
-    INCLUDED_CALENDARS. Captures notes/location/url/attendees.
-    """
-    if calendars is None:
-        calendars = INCLUDED_CALENDARS
+    calendars: list[str],
+) -> list[RangeEvent] | None:
+    """EventKit path. Returns None if EventKit is unavailable/unauthorized,
+    [] on error, or a list of RangeEvents on success."""
     store = _get_store()
     if not store:
-        return []
+        return None
 
     try:
         all_cals = store.calendarsForEntityType_(EKEntityTypeEvent)
@@ -313,7 +321,6 @@ def fetch_events_in_range(
                     nm = att.name()
                     if nm:
                         attendees.append(str(nm))
-            # EventKit: .notes() returns NSString | None
             notes = ""
             try:
                 n = ev.notes()
@@ -342,11 +349,88 @@ def fetch_events_in_range(
             ))
 
         out.sort(key=lambda e: e.start)
-        log.info(f"Fetched {len(out)} events from {start_dt.date()} to {end_dt.date()}")
+        log.info(f"[EventKit] Fetched {len(out)} events from {start_dt.date()} to {end_dt.date()}")
         return out
     except Exception as exc:
         log.error(f"EventKit range fetch failed: {exc}", exc_info=True)
         return []
+
+
+def _fetch_via_icalpal(
+    start_dt: datetime,
+    end_dt: datetime,
+    calendars: list[str],
+) -> list[RangeEvent]:
+    """icalPal path. Reads Calendar.app sqlite DB directly, bypassing TCC.
+    Parent process needs Full Disk Access."""
+    if not ICALPAL_AVAILABLE_IMPORT or not icalpal_available():
+        log.debug("icalPal not available (binary missing or import failed)")
+        return []
+
+    raw_events = fetch_icalpal_events(start_dt, end_dt, calendars=calendars)
+    out: list[RangeEvent] = []
+    for row in raw_events:
+        out.append(RangeEvent(
+            title=row["title"],
+            start=row["start"],
+            end=row["end"],
+            calendar_name=row["calendar_name"],
+            location=row["location"],
+            notes=row["notes"],
+            attendees=row["attendees"],
+            all_day=row["all_day"],
+            url=row["url"],
+        ))
+    out.sort(key=lambda e: e.start)
+    log.info(f"[icalPal] Fetched {len(out)} events from {start_dt.date()} to {end_dt.date()}")
+    return out
+
+
+def fetch_events_in_range(
+    start_dt: datetime,
+    end_dt: datetime,
+    calendars: list[str] = None,
+) -> list[RangeEvent]:
+    """
+    Fetch events in [start_dt, end_dt] across `calendars`. Defaults to
+    INCLUDED_CALENDARS. Captures notes/location/url/attendees.
+
+    Backend selection via THEVAULT_CALENDAR_BACKEND:
+        "eventkit"  — EventKit only (error if unauthorized)
+        "icalpal"   — icalPal only (requires FDA on parent process)
+        "auto"      — try EventKit, fall back to icalPal if it returns None
+                      (unauthorized) or [] with no target calendars found
+        Default: "auto"
+    """
+    if calendars is None:
+        calendars = INCLUDED_CALENDARS
+
+    backend = CALENDAR_BACKEND
+
+    if backend == "icalpal":
+        return _fetch_via_icalpal(start_dt, end_dt, calendars)
+
+    if backend == "eventkit":
+        result = _fetch_via_eventkit(start_dt, end_dt, calendars)
+        return result or []
+
+    # auto: try EventKit first; fall through to icalPal if EK is unauthorized
+    # or returned empty AND icalPal is available
+    ek_result = _fetch_via_eventkit(start_dt, end_dt, calendars)
+    if ek_result is None:
+        # EK unavailable/unauthorized — try icalPal
+        log.info("EventKit unavailable; trying icalPal fallback")
+        return _fetch_via_icalpal(start_dt, end_dt, calendars)
+    if ek_result:
+        return ek_result
+    # EK returned [] — could mean TCC denied in sandbox, or legitimately no events.
+    # Only fall back to icalPal if it's available, to avoid needless subprocess call.
+    if ICALPAL_AVAILABLE_IMPORT and icalpal_available():
+        log.info("EventKit returned 0 events; cross-checking with icalPal")
+        ical_result = _fetch_via_icalpal(start_dt, end_dt, calendars)
+        if ical_result:
+            return ical_result
+    return ek_result
 
 
 # ── Event formatter (one line per extraction mode) ───────────────────────────

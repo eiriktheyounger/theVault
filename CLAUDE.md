@@ -67,6 +67,8 @@ Do NOT start from inside System/Scripts/RAG — relative imports will break:
 - Classification manifest: Vault/System/ClassificationReview.md
 - Email Thread Ingester: System/Scripts/email_thread_ingester/ (12 modules, Exchange+Gmail)
 - Vault Activity Tracker: System/Scripts/daily_vault_activity.py (scan→glossary→tags→DLY injection)
+- Calendar fetchers: System/Scripts/calendar_forward_back.py + calendar_daily_injector.py (EventKit primary)
+- Calendar fallback: System/Scripts/calendar_icalpal.py (icalPal Ruby gem, TCC-bypass — set THEVAULT_CALENDAR_BACKEND=auto|eventkit|icalpal)
 - Session sync script: System/Scripts/sync_session_state.sh (auto-generates .agents/SESSION_STATE.md)
 - Session state (shared): .agents/SESSION_STATE.md (auto-generated, all instances read this)
 
@@ -115,6 +117,7 @@ See full priority map: `~/.claude/projects/-Users-ericmanchester-theVault/memory
 5. RAG Q/A gate — rag_qa_agent.py missing
 
 ### Completed
+- ✅ Calendar icalPal fallback — TCC-bypass via Ruby gem reading Calendar sqlite directly. `calendar_icalpal.py` wrapper + EventKit→icalPal auto-fallback wired into calendar_forward_back.py and calendar_daily_injector.py. Env override `THEVAULT_CALENDAR_BACKEND`. Parent process needs FDA (not per-app Calendar permission). (2026-04-21)
 - ✅ Rolling Dashboard — 3-section narrative view (Today / Last Full Week / Last Full Month), wired into morning_workflow Step 3. Path + return-shape bugs in generate_weekly_summary.py fixed. March MTH regenerated (2211 notes). (2026-04-20)
 - ✅ ADHD/OOSOOM Phase 1b — Forward-Back + Past 7 Days + Recent Context injection + 72h gap detection, wired into morning/overnight cron (2026-04-20)
 - ✅ Overnight processor stabilization — all fixes applied, ANTHROPIC_API_KEY in cron (2026-04-01)
