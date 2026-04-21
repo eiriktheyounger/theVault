@@ -134,6 +134,7 @@ See full priority map: `~/.claude/projects/-Users-ericmanchester-theVault/memory
 - Create backup route before modifying production endpoints
 - One session writes code at a time — coordinate via SHARED_CONTEXT.md
 - The vector index uses FAISS, not hnswlib — do not import hnswlib for search
+- **Research-first rule**: Before building against a new external resource (macOS frameworks, system databases, third-party APIs) OR when a current approach has persistent issues (TCC permission walls, rate limits, brittle scraping, repeated workarounds), first research existing Python libraries, CLI tools, and well-maintained alternatives. Check PyPI, GitHub "awesome-*" lists, recent blog posts (< 12 months), and compare options on: (a) actively maintained, (b) avoids the problem we're hitting, (c) has JSON/structured output, (d) license-compatible. Document alternatives considered in the relevant project memory file under a `## Libraries evaluated` heading so future sessions don't re-research. Prefer well-maintained tools over hand-rolled code, and prefer approaches that bypass known pain points (e.g. TCC) over approaches that require permission dances.
 
 ## What NOT to Do
 - Do not install Docker or reference Docker configs
