@@ -304,6 +304,8 @@ def _normalize_row(row: dict) -> Optional[dict]:
 
     all_day = bool(row.get("all_day"))
 
+    uid = row.get("UUID") or row.get("uuid") or row.get("uid") or ""
+
     return {
         "title": title,
         "start": start,
@@ -314,6 +316,7 @@ def _normalize_row(row: dict) -> Optional[dict]:
         "attendees": attendees,
         "all_day": all_day,
         "url": url,
+        "uid": uid,
     }
 
 
