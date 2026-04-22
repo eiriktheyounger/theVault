@@ -231,6 +231,7 @@ class RangeEvent:
     attendees: list[str] = field(default_factory=list)
     all_day: bool = False
     url: str = ""
+    uid: str = ""
 
     @property
     def rule(self) -> dict:
