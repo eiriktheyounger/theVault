@@ -336,6 +336,17 @@ def _fetch_via_eventkit(
                     url = str(u.absoluteString()) if hasattr(u, "absoluteString") else str(u)
             except Exception:
                 pass
+            uid = ""
+            try:
+                ext_id = ev.calendarItemExternalIdentifier()
+                if ext_id:
+                    uid = str(ext_id)
+                else:
+                    item_id = ev.calendarItemIdentifier()
+                    if item_id:
+                        uid = str(item_id)
+            except Exception:
+                pass
 
             out.append(RangeEvent(
                 title=ev.title() or "(no title)",
@@ -347,6 +358,7 @@ def _fetch_via_eventkit(
                 attendees=attendees,
                 all_day=bool(ev.isAllDay()),
                 url=url,
+                uid=uid,
             ))
 
         out.sort(key=lambda e: e.start)
