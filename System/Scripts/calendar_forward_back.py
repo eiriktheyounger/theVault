@@ -400,6 +400,30 @@ def _fetch_via_icalpal(
     return out
 
 
+def _dedupe_events(events: list[RangeEvent]) -> list[RangeEvent]:
+    """Collapse duplicate rows produced when a single event is subscribed to
+    via multiple accounts (shared family CalDAV calendars, Gmail auto-events
+    syncing to multiple stores) or when icalPal emits per-day expansions of
+    the same multi-day all-day event. Prefer UID; fall back to the
+    (title, start, end, all_day) tuple."""
+    seen: set = set()
+    deduped: list[RangeEvent] = []
+    for ev in events:
+        key = ev.uid or (
+            ev.title,
+            ev.start.isoformat(),
+            ev.end.isoformat(),
+            ev.all_day,
+        )
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(ev)
+    if len(deduped) != len(events):
+        log.info(f"Deduped {len(events) - len(deduped)} duplicate event rows")
+    return deduped
+
+
 def fetch_events_in_range(
     start_dt: datetime,
     end_dt: datetime,
@@ -422,11 +446,11 @@ def fetch_events_in_range(
     backend = CALENDAR_BACKEND
 
     if backend == "icalpal":
-        return _fetch_via_icalpal(start_dt, end_dt, calendars)
+        return _dedupe_events(_fetch_via_icalpal(start_dt, end_dt, calendars))
 
     if backend == "eventkit":
         result = _fetch_via_eventkit(start_dt, end_dt, calendars)
-        return result or []
+        return _dedupe_events(result or [])
 
     # auto: try EventKit first; fall through to icalPal if EK is unauthorized
     # or returned empty AND icalPal is available
@@ -434,17 +458,17 @@ def fetch_events_in_range(
     if ek_result is None:
         # EK unavailable/unauthorized — try icalPal
         log.info("EventKit unavailable; trying icalPal fallback")
-        return _fetch_via_icalpal(start_dt, end_dt, calendars)
+        return _dedupe_events(_fetch_via_icalpal(start_dt, end_dt, calendars))
     if ek_result:
-        return ek_result
+        return _dedupe_events(ek_result)
     # EK returned [] — could mean TCC denied in sandbox, or legitimately no events.
     # Only fall back to icalPal if it's available, to avoid needless subprocess call.
     if ICALPAL_AVAILABLE_IMPORT and icalpal_available():
         log.info("EventKit returned 0 events; cross-checking with icalPal")
         ical_result = _fetch_via_icalpal(start_dt, end_dt, calendars)
         if ical_result:
-            return ical_result
-    return ek_result
+            return _dedupe_events(ical_result)
+    return _dedupe_events(ek_result)
 
 
 # ── Event formatter (one line per extraction mode) ───────────────────────────
