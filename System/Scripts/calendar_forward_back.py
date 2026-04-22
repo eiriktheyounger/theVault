@@ -393,6 +393,7 @@ def _fetch_via_icalpal(
             attendees=row["attendees"],
             all_day=row["all_day"],
             url=row["url"],
+            uid=row.get("uid", ""),
         ))
     out.sort(key=lambda e: e.start)
     log.info(f"[icalPal] Fetched {len(out)} events from {start_dt.date()} to {end_dt.date()}")
