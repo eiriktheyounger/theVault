@@ -19,7 +19,7 @@ Public API
     fetch_icalpal_events(start_dt, end_dt, calendars=None) -> list[dict]
         Returns normalized event dicts with keys:
             title, start, end, calendar_name, location, notes,
-            attendees, all_day, url
+            attendees, all_day, url, uid
         Start/end are timezone-naive datetime objects (local time),
         matching the EventKit fetchers.
 

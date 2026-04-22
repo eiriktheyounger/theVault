@@ -54,8 +54,8 @@ CALENDAR_BACKEND = os.environ.get("THEVAULT_CALENDAR_BACKEND", "auto").lower()
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 
-PROJECT_ROOT = Path(__file__).parent.parent
-VAULT_ROOT = PROJECT_ROOT / "Vault"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent  # ~/theVault
+VAULT_ROOT = PROJECT_ROOT / "Vault"                            # ~/theVault/Vault
 DAILY_DIR = VAULT_ROOT / "Daily"
 
 # ── Config ────────────────────────────────────────────────────────────────────

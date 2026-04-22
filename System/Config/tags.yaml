@@ -1,16 +1,23 @@
 tags:
+  - academic-content
   - account-management
   - adobe-flash
   - ai-orchestration
   - ai-tools
+  - analysis
   - anthropic
   - anthropic-pbc
+  - api-readiness
   - application
   - archiving
   - asset-requirements
+  - assets
   - auto-recharge
   - billing
+  - biology
+  - booking
   - broadcast-center
+  - business-review
   - career
   - channel-assembly
   - channel-playout
@@ -24,8 +31,11 @@ tags:
   - contract-negotiations
   - creative-work
   - css
+  - daily
+  - daily-dashboard
   - daily-review
   - dash
+  - dashboard
   - data-integration
   - data-visualization
   - deployment
@@ -43,6 +53,7 @@ tags:
   - gemma4
   - general
   - harmonic
+  - health-and-fitness
   - help
   - hls
   - household-management
@@ -56,14 +67,20 @@ tags:
   - kintsugi
   - licensing
   - life-planning
+  - logistics
   - m-p4
+  - medical-review
   - meeting
   - mental-load
   - messaging
   - metadata-strategy
   - model-architecture
+  - moving
   - multi-view
   - multi-view-streaming
+  - network
+  - networking
+  - neurodiversity
   - notes
   - oracle
   - oracle-cloud-infrastructure
@@ -72,12 +89,15 @@ tags:
   - personal-finance
   - personal-life-system
   - personal-organization
+  - pets
+  - physiological-systems
   - planning
   - plaud
   - poc
   - presentation
   - product-demo
   - product-strategy
+  - product-updates
   - productivity
   - project-meeting
   - project-planning
@@ -85,10 +105,13 @@ tags:
   - receipt
   - record-keeping
   - records
+  - relocation
   - review
   - risk-management
   - scheduler
   - scheduling
+  - science
+  - security
   - self-improvement
   - shaka-player
   - source-asset-requirements
@@ -109,6 +132,7 @@ tags:
   - transactions
   - transcript
   - travel
+  - trip
   - troubleshooting
   - tutorial
   - user-access
