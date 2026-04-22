@@ -442,7 +442,9 @@ class MorningWorkflow:
 
             # Extract tags and glossary terms
             try:
-                from System.Scripts.daily_vault_activity import run_vault_activity
+                # scripts_dir (= System/Scripts) is already on sys.path (line 62);
+                # import as sibling module, not via System.Scripts.* package path.
+                from daily_vault_activity import run_vault_activity
                 activity_stats = run_vault_activity(days=1, extract_tasks=False, verbose=False)
                 logger.info(f"Vault activity: {activity_stats.get('files_tracked', 0)} files, "
                             f"{activity_stats.get('glossary_terms_added', 0)} glossary terms")
