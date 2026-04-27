@@ -131,20 +131,26 @@ def main(target_date=None):
 
     # Extract captures (from ## Captures heading to ## Evening heading)
     captures = read_section(content, "## Captures", "## Evening")
-    if not captures:
-        logger.info("No captures found — skipping processing")
-        return
-
-    logger.info(f"Processing {len(captures)} chars of captures")
-
-    # Extract tasks (local LLM) — default due date: note date + 6 days
     note_date = target_date if target_date else datetime.now()
-    tasks = extract_tasks_local(captures, note_date=note_date)
-    logger.info(f"Tasks extracted: {len(tasks.splitlines())} lines")
+    has_captures = bool(captures)
 
-    # Summarize (Claude API)
-    summary = summarize_with_claude(captures)
-    logger.info(f"Summary generated: {len(summary)} chars")
+    if has_captures:
+        logger.info(f"Processing {len(captures)} chars of captures")
+        # Extract tasks (local LLM) — default due date: note date + 6 days
+        tasks = extract_tasks_local(captures, note_date=note_date)
+        logger.info(f"Tasks extracted: {len(tasks.splitlines())} lines")
+
+        # Summarize (Claude API)
+        summary = summarize_with_claude(captures)
+        logger.info(f"Summary generated: {len(summary)} chars")
+    else:
+        # No captures — still run downstream steps (task_normalizer, vault_activity,
+        # inject_recent_context, transcript_repair). Skip only the capture-dependent
+        # extract/summarize/write steps. Bug fix 2026-04-27: previous version
+        # `return`'d here, which skipped calendar/forward-back refresh on quiet days.
+        logger.info("No captures found — skipping extract/summarize, still running downstream steps")
+        tasks = ""
+        summary = ""
 
     # Run task normalizer (incremental scan)
     task_report_text = ""
@@ -205,9 +211,10 @@ def main(target_date=None):
         logger.error(f"Transcript repair failed: {e}")
         repair_text = f"\n- Transcript repair error: {e}"
 
-    # Build overnight section
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-    overnight_content = f"""
+    # Build + write overnight section (only when captures existed)
+    if has_captures:
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+        overnight_content = f"""
 ### Tasks Extracted
 {tasks}
 
@@ -221,16 +228,33 @@ def main(target_date=None):
 - Tasks extracted: {len([l for l in tasks.splitlines() if l.strip().startswith('- [')])}
 {repair_text}"""
 
-    # Write back
-    new_content = write_section(
-        content,
-        "<!-- overnight-start -->",
-        "<!-- overnight-end -->",
-        overnight_content
-    )
+        # Write back (WITH ERROR HANDLING)
+        try:
+            logger.info(f"🔷 WRITE CHECKPOINT: About to write to {note_path}")
+            logger.info(f"🔷 overnight_content length: {len(overnight_content)} chars")
+            logger.info(f"🔷 File exists: {note_path.exists()}, file size before: {len(content)} chars")
 
-    note_path.write_text(new_content)
-    logger.info(f"Daily note updated: {note_path}")
+            new_content = write_section(
+                content,
+                "<!-- overnight-start -->",
+                "<!-- overnight-end -->",
+                overnight_content
+            )
+
+            logger.info(f"🔷 write_section returned: {len(new_content)} chars")
+
+            note_path.write_text(new_content)
+
+            logger.info(f"🔷 File written successfully, new size: {len(new_content)} chars")
+            logger.info(f"Daily note updated: {note_path}")
+        except Exception as e:
+            logger.error(f"❌ WRITE FAILED: {type(e).__name__}: {e}", exc_info=True)
+            logger.error(f"❌ Note path: {note_path}")
+            logger.error(f"❌ Path exists: {note_path.exists()}")
+            logger.error(f"❌ Parent exists: {note_path.parent.exists()}")
+            raise  # Re-raise so we know the process failed
+    else:
+        logger.info("Skipping overnight section write (no captures to summarize)")
 
     # ── Monthly Summary (1st of month only) ───────────────────────────────────
     run_date = note_date if isinstance(note_date, datetime) else datetime.combine(note_date, datetime.min.time())

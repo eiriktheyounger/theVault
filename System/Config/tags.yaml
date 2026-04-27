@@ -1,10 +1,12 @@
 tags:
   - academic-content
   - account-management
+  - admin
   - adobe-flash
   - ai-orchestration
   - ai-tools
   - analysis
+  - animals
   - anthropic
   - anthropic-pbc
   - api-readiness
@@ -13,23 +15,32 @@ tags:
   - asset-requirements
   - assets
   - auto-recharge
+  - automation
   - billing
   - biology
   - booking
   - broadcast-center
+  - bug
+  - bug-fix
   - business-review
   - career
+  - caregiving
   - channel-assembly
   - channel-playout
+  - chatbot
   - client-relations
   - cloud-solution
   - coding
   - collaboration
   - community
+  - connections
+  - consulting
   - contact
   - content-delivery
+  - context
   - contract-negotiations
   - creative-work
+  - cron
   - css
   - daily
   - daily-dashboard
@@ -43,21 +54,29 @@ tags:
   - diary
   - dirt-vision
   - dirtvision
+  - documentation
+  - domestic-tasks
   - email
+  - family
   - family-logistics
   - file-delivery
   - files
   - finance
   - financial-record
   - financial-records
+  - friends
+  - friendship
   - gemma4
   - general
+  - handoff
   - harmonic
   - health-and-fitness
   - help
   - hls
   - household-management
   - html
+  - individual-contributor
+  - individuals
   - internal
   - interview
   - interview-preparation
@@ -67,6 +86,8 @@ tags:
   - kintsugi
   - licensing
   - life-planning
+  - lifestyle
+  - living-situation
   - logistics
   - m-p4
   - medical-review
@@ -85,6 +106,7 @@ tags:
   - oracle
   - oracle-cloud-infrastructure
   - ott-streams
+  - people
   - person
   - personal-finance
   - personal-life-system
@@ -95,25 +117,42 @@ tags:
   - plaud
   - poc
   - presentation
+  - process
+  - process-failure
+  - process-updates
   - product-demo
   - product-strategy
   - product-updates
   - productivity
+  - professional-services
+  - professional-summary
   - project-meeting
   - project-planning
   - project-updates
+  - property-purchase
+  - rag
+  - real-estate
   - receipt
   - record-keeping
   - records
+  - relationship
+  - relationships
   - relocation
+  - resolved
   - review
   - risk-management
+  - roommate
+  - routine
   - scheduler
   - scheduling
   - science
+  - scripting
   - security
   - self-improvement
   - shaka-player
+  - social
+  - social-circle
+  - social-profile
   - source-asset-requirements
   - streaming
   - streaming-protocols
@@ -122,6 +161,8 @@ tags:
   - system-design
   - task-management
   - task-tracking
+  - tasks
+  - tech-architecture
   - technical
   - technical-demonstration
   - technical-discussion
