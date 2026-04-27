@@ -16,6 +16,16 @@ _GRAPH: nx.DiGraph | None = None
 
 WIKILINK_RE = re.compile(r"\[\[([^\]|]+)(?:\|[^\]]*)?\]\]")
 
+# Top-level vault folders excluded from graph (legacy/dupe/system content)
+# Updated 2026-04-27: HarmonicInternal moved out-of-vault; _Dupes/_archive excluded.
+_EXCLUDE_TOP_LEVEL: set[str] = {
+    "_Dupes",
+    "_archive",
+    "HarmonicInternal",  # safety: even after move, exclude in case legacy paths re-appear
+    ".obsidian",
+    ".trash",
+}
+
 # Mapping from vault folder name → entity type
 _FOLDER_TYPE_MAP: dict[str, str] = {
     "Context_People": "person",
@@ -23,6 +33,12 @@ _FOLDER_TYPE_MAP: dict[str, str] = {
     "Context_Technology": "technology",
     "Context_Places": "place",
 }
+
+
+def _is_excluded(rel_path: Path) -> bool:
+    """Return True if the file's top-level folder is in the exclude set."""
+    parts = rel_path.parts
+    return bool(parts) and parts[0] in _EXCLUDE_TOP_LEVEL
 
 
 def _node_type(rel_path: Path) -> str:
@@ -56,6 +72,8 @@ def build_graph(vault_path: str | Path) -> nx.DiGraph:
             rel = md_file.relative_to(vault)
         except ValueError:
             continue
+        if _is_excluded(rel):
+            continue
         stem = md_file.stem
         ntype = _node_type(rel)
         if stem not in g:
@@ -71,6 +89,8 @@ def build_graph(vault_path: str | Path) -> nx.DiGraph:
         try:
             rel = md_file.relative_to(vault)
         except ValueError:
+            continue
+        if _is_excluded(rel):
             continue
         source_stem = md_file.stem
         try:
