@@ -81,11 +81,13 @@ Do NOT delete or modify any script without:
 2. Creating a backup: `cp script.py script.py.backup-YYYY-MM-DD`
 3. Verifying nothing else breaks after the change
 
-### Known Missing Scripts (DO NOT reference as if they exist)
-- System/Scripts/Services/ — entire directory missing (start_all, stop_all, emergency_kill)
-- System/Scripts/Calendar/sync_calendar.py — missing
-- System/Scripts/generate_daily_dashboard.py — missing
-- orchestration_system_start.py — missing, blocks /ingest/start API
+### Previously Missing Scripts — ALL PRESENT (verified 2026-04-27)
+- ✅ System/Scripts/Services/{start_all,stop_all,emergency_kill}.py
+- ✅ System/Scripts/orchestration_system_start.py
+- ✅ System/Scripts/generate_daily_dashboard.py (also superseded by Rolling Dashboard 2026-04-20)
+- ✅ System/Scripts/calendar_{forward_back,daily_injector,icalpal}.py (replaces never-built sync_calendar.py)
+- ✅ System/Scripts/rag_qa_agent.py (built 2026-04-14)
+- ✅ System/Scripts/Workflows/classify_content.py
 
 ### Working & Don't Touch
 - Plaud pipeline (capture → Inbox/Plaud/MarkdownOnly/)
@@ -102,21 +104,24 @@ Do NOT delete or modify any script without:
 For startup commands, health checks, and workflow details: `Vault/System/OPERATIONS-INDEX.md`
 For script relationships and Mermaid flow diagrams: `Vault/System/WORKFLOW-MAP.md`
 
-## Current Priority (Updated 2026-04-01)
+## Current Priority (Updated 2026-04-27)
 See full priority map: `~/.claude/projects/-Users-ericmanchester-theVault/memory/project_priorities_2026_03.md`
 
 ### P0 — Must proceed ASAP
-1. orchestration_system_start.py — blocks /ingest/start API
+*(empty — all original P0 items shipped)*
 
 ### P1 — Enables daily workflows
-2. Services/ directory (start_all, stop_all, emergency_kill)
-3. Calendar sync + Daily dashboard
+*(empty — Services/, calendar, Rolling Dashboard all shipped)*
 
 ### P2 — Build incrementally
-4. Content classifier (classify_content.py) — Sonnet Desktop building
-5. RAG Q/A gate — rag_qa_agent.py missing
+- ResumeEngine `score_category()` migration: Haiku → Gemma 4 E4B (priority map item #16). ~40 LOC, frees Haiku budget for parse + banned-word fixes.
+
+### P3 — Valuable, not blocking
+- LinkedIn Content Strategy — 7 pillars mapped, brain-dump session needed
+- Chatbot bug ship: Gemma rename (5 files, 6 LOC) + Bella retrieval (4 layered bugs) — handoff at `Vault/Notes/2026-04-22-chatbot-handoff.md`
 
 ### Completed
+- ✅ Overnight capture-empty bypass FIX (2026-04-27, commit `9a1896a`) — `overnight_processor.py:134-136` early-returned when `## Captures` was empty, silently skipping task_normalizer + vault_activity + **inject_recent_context** + transcript_repair. Calendar refresh dead for 4 nights (04-23→04-26), so today's DLY had no Exchange events. Fix gates only capture-dependent steps on `has_captures`; downstream steps now always run. Smoke-tested end-to-end on no-captures DLY: all 4 downstream steps fire, "Skipping overnight section write" logs cleanly, no false writes. Email ingester catch-up from 04-18 also done (23 extracted, 16 threads, 0 errors). Memory: `project_overnight_capture_bypass_2026_04_27.md`.
 - ✅ Morning workflow end-to-end test (2026-04-22) — Full clean run for 04-22: deleted cron midnight stub → preflight → morning_workflow → verified. Fixed 2 path/import bugs: (a) `calendar_daily_injector.py` VAULT_ROOT was `~/theVault/System/Vault` (wrong) → `Path(__file__).resolve().parent.parent.parent / "Vault"` → `~/theVault/Vault`; same pattern as the 04-20 `generate_weekly_summary.py` fix. (b) `morning_workflow.py` Step 4 used `from System.Scripts.daily_vault_activity import …` which fails (scripts_dir is already on sys.path as bare root) → changed to `from daily_vault_activity import …`. Final DLY: 283 lines, 6 section markers, 0 placeholders, full calendar + FB/P7/RC + Plaud backlinks. Plaud: 2 sessions → Vault/Notes/, inbox drained. Memory: `project_morning_workflow_test_2026_04_22.md`.
 - ⏪ launchd migration REVERTED, cron RESTORED (2026-04-21) — Diagnostic test (`/tmp/launchd-tcc-test.log` at run time) proved launchd agents on Sequoia have NO Full Disk Access and specifically cannot write to network volumes (SMB `/Volumes/home/...`), regardless of whether `/bin/bash` is added to the FDA UI. TCC assigns responsibility to launchd itself, not the child binary. Cron by contrast has grandfathered network-volume access and has been writing to NAS successfully for weeks. **Plists archived** at `System/Archive/launchd-plists-2026-04-21/`. Good news from the test: launchd CAN read `Calendar.sqlitedb` (not FDA-protected), so if we revisit launchd for a calendar-only job that doesn't touch NAS, it would work. Cron + icalPal combo verified end-to-end (cron-env simulation read 7 events successfully).
 - ✅ Calendar icalPal fallback — TCC-bypass via Ruby gem reading Calendar sqlite directly. `calendar_icalpal.py` wrapper + EventKit→icalPal auto-fallback wired into calendar_forward_back.py and calendar_daily_injector.py. Env override `THEVAULT_CALENDAR_BACKEND`. Runs under cron (unchanged schedule). Parent process needs FDA for full-featured Calendar access but cron's existing grants + icalPal's direct sqlite read are sufficient for the fallback path. (2026-04-21)
