@@ -104,23 +104,23 @@ Do NOT delete or modify any script without:
 For startup commands, health checks, and workflow details: `Vault/System/OPERATIONS-INDEX.md`
 For script relationships and Mermaid flow diagrams: `Vault/System/WORKFLOW-MAP.md`
 
-## Current Priority (Updated 2026-04-27)
+## Current Priority (Updated 2026-04-28)
 See full priority map: `~/.claude/projects/-Users-ericmanchester-theVault/memory/project_priorities_2026_03.md`
 
 ### P0 — Must proceed ASAP
-*(empty — all original P0 items shipped)*
+*(empty — chatbot fix shipped 2026-04-28, all prior P0 items shipped)*
 
 ### P1 — Enables daily workflows
-*(empty — Services/, calendar, Rolling Dashboard all shipped)*
+*(empty — Services/, calendar, Rolling Dashboard, chatbot retrieval all shipped)*
 
 ### P2 — Build incrementally
 - ResumeEngine `score_category()` migration: Haiku → Gemma 4 E4B (priority map item #16). ~40 LOC, frees Haiku budget for parse + banned-word fixes.
 
 ### P3 — Valuable, not blocking
 - LinkedIn Content Strategy — 7 pillars mapped, brain-dump session needed
-- Chatbot bug ship: Gemma rename (5 files, 6 LOC) + Bella retrieval (4 layered bugs) — handoff at `Vault/Notes/2026-04-22-chatbot-handoff.md`
 
 ### Completed
+- ✅ Chatbot fix Phases 0-4 SHIPPED (2026-04-28, commit `c38576a`) — Phase 0 vault hygiene (archive excludes + dual-format consolidation across Context_People/Companies + densification on ViewLift/VOS360/XOS/Bella; Bella graph degree **3 → 84**, total edges +320). Phase 1 Gemma 3→4 rename across UI + routes (6 LOC). Phase 2 retrieval refactor in `search_fast.py` + `query.py` + `llm/server.py`: real cosine plumbed end-to-end (FAISS IndexFlatIP + L2-norm IS cosine), RRF fusion k=60, two-tier graph rerank (source-IS-entity +0.5 / 1-hop +0.25 / 2-hop +0.10, cap 0.60), COS_FLOOR=0.50 enforced, COS_ABSTAIN=0.62 with abstain_hint logic, PATH_EXCLUDE_PREFIXES at query time (FAISS pre-dates excludes). Phase 3 verification all pass: "who is Bella" returns 12 results (graph rescue), "harmonic XOS roadmap" cosine 0.69, nonsense query abstains. Closes the 4 layered Bella retrieval bugs + Gemma rename. Memory: `project_chatbot_fix_2026_04_28.md`.
 - ✅ Overnight capture-empty bypass FIX (2026-04-27, commit `9a1896a`) — `overnight_processor.py:134-136` early-returned when `## Captures` was empty, silently skipping task_normalizer + vault_activity + **inject_recent_context** + transcript_repair. Calendar refresh dead for 4 nights (04-23→04-26), so today's DLY had no Exchange events. Fix gates only capture-dependent steps on `has_captures`; downstream steps now always run. Smoke-tested end-to-end on no-captures DLY: all 4 downstream steps fire, "Skipping overnight section write" logs cleanly, no false writes. Email ingester catch-up from 04-18 also done (23 extracted, 16 threads, 0 errors). Memory: `project_overnight_capture_bypass_2026_04_27.md`.
 - ✅ Morning workflow end-to-end test (2026-04-22) — Full clean run for 04-22: deleted cron midnight stub → preflight → morning_workflow → verified. Fixed 2 path/import bugs: (a) `calendar_daily_injector.py` VAULT_ROOT was `~/theVault/System/Vault` (wrong) → `Path(__file__).resolve().parent.parent.parent / "Vault"` → `~/theVault/Vault`; same pattern as the 04-20 `generate_weekly_summary.py` fix. (b) `morning_workflow.py` Step 4 used `from System.Scripts.daily_vault_activity import …` which fails (scripts_dir is already on sys.path as bare root) → changed to `from daily_vault_activity import …`. Final DLY: 283 lines, 6 section markers, 0 placeholders, full calendar + FB/P7/RC + Plaud backlinks. Plaud: 2 sessions → Vault/Notes/, inbox drained. Memory: `project_morning_workflow_test_2026_04_22.md`.
 - ⏪ launchd migration REVERTED, cron RESTORED (2026-04-21) — Diagnostic test (`/tmp/launchd-tcc-test.log` at run time) proved launchd agents on Sequoia have NO Full Disk Access and specifically cannot write to network volumes (SMB `/Volumes/home/...`), regardless of whether `/bin/bash` is added to the FDA UI. TCC assigns responsibility to launchd itself, not the child binary. Cron by contrast has grandfathered network-volume access and has been writing to NAS successfully for weeks. **Plists archived** at `System/Archive/launchd-plists-2026-04-21/`. Good news from the test: launchd CAN read `Calendar.sqlitedb` (not FDA-protected), so if we revisit launchd for a calendar-only job that doesn't touch NAS, it would work. Cron + icalPal combo verified end-to-end (cron-env simulation read 7 events successfully).
