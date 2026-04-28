@@ -18,6 +18,15 @@ try:
     from ..index.config import EXCLUDE_GLOBS  # type: ignore
 except Exception:
     EXCLUDE_GLOBS: list[str] = []
+
+# Override with settings.json if present (same source as store.py)
+try:
+    from ...settings_cache import load_app_settings as _load_app_settings
+    _s = _load_app_settings()
+    if _s.get("INDEX_EXCLUDE_GLOBS"):
+        EXCLUDE_GLOBS = [str(g) for g in _s["INDEX_EXCLUDE_GLOBS"]]
+except Exception:
+    pass
 from .store import get_sqlite_rw, rebuild_chunks_from_vault
 
 PROGRESS_EVERY = 16  # Reduced: batch operations timeout at 64; smaller batches more reliable

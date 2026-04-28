@@ -324,9 +324,30 @@ class MorningWorkflow:
 
             cal_status = result.get("calendar", {})
             n_events = cal_status.get("events", 0)
+
+            # Forward-back + Past 7 + Recent Context injection (ADHD/OOSOOM)
+            fb_summary = "skipped"
+            try:
+                from inject_recent_context import run_inject as _run_inject
+                fb_result = _run_inject(
+                    target_date=target_date.isoformat(),
+                    dry_run=False,
+                    verbose=False,
+                    use_gemma=True,
+                )
+                fb_summary = (
+                    f"forward-back={fb_result.get('forward_back', {}).get('events', 0)}ev "
+                    f"past7={fb_result.get('past_7', {}).get('days', 0)}d "
+                    f"ctx={fb_result.get('recent_context', {}).get('items', 0)}"
+                )
+            except Exception as e:
+                logger.error(f"inject_recent_context failed: {e}")
+                fb_summary = f"error: {e}"
+
             step.complete([
                 f"Calendar injected: {n_events} event(s) → DLY",
                 f"Week at a glance: {result.get('week_glance', {}).get('status', 'skipped')}",
+                f"Forward-back: {fb_summary}",
             ])
             self._notify_callback(step)
             return True
@@ -337,36 +358,63 @@ class MorningWorkflow:
             return False
 
     def _step_create_dashboard(self) -> bool:
-        """Step 3: Create daily dashboard."""
+        """Step 3: Create daily dashboard + regenerate rolling dashboard."""
         step = self.steps[self._get_step_index(3)]
         step.start()
         self._notify_callback(step)
 
+        summary_lines = []
+        legacy_ok = False
+        rolling_ok = False
+
         try:
-            step.update_progress(25, ["Syncing calendar..."])
+            step.update_progress(25, ["Running legacy daily dashboard..."])
             self._notify_callback(step)
 
-            # Call dashboard generator as subprocess
+            # Legacy daily dashboard (best-effort — may be missing on some hosts)
             dashboard_script = scripts_dir / "generate_daily_dashboard.py"
-            result = subprocess.run(
-                [sys.executable, str(dashboard_script), self.date],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                stdin=subprocess.DEVNULL,
-                text=True,
-                timeout=120,
-                close_fds=True
-            )
+            if dashboard_script.exists():
+                result = subprocess.run(
+                    [sys.executable, str(dashboard_script), self.date],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    stdin=subprocess.DEVNULL,
+                    text=True,
+                    timeout=120,
+                    close_fds=True
+                )
+                if result.returncode == 0:
+                    legacy_ok = True
+                    summary_lines.append(f"Daily dashboard: created for {self.date}")
+                else:
+                    summary_lines.append(f"Daily dashboard: failed ({result.stderr.strip()[:120]})")
+            else:
+                summary_lines.append("Daily dashboard: script missing, skipped")
 
-            if result.returncode == 0:
-                step.complete([
-                    f"Dashboard created for {self.date}",
-                    f"Saved to TimeTracking/{self.date[:4]}/{self.date[5:7]}/Daily_{self.date}.md"
-                ])
+            # Rolling dashboard (today + last full week + last full month)
+            step.update_progress(70, ["Regenerating rolling dashboard..."])
+            self._notify_callback(step)
+            try:
+                from datetime import date as _date
+                from generate_rolling_dashboard import run_dashboard
+                target_date = _date.fromisoformat(self.date) if hasattr(self, "date") and self.date else _date.today()
+                dash_result = run_dashboard(ref_date=target_date, use_llm=True)
+                rolling_ok = True
+                summary_lines.append(
+                    f"Rolling dashboard: {dash_result.get('sections_built', 0)} sections "
+                    f"→ {dash_result.get('wrote_path', '?')}"
+                )
+            except Exception as e:
+                summary_lines.append(f"Rolling dashboard: failed ({e})")
+                logger.error(f"Rolling dashboard generation failed: {e}")
+
+            # Step passes if either dashboard succeeded
+            if legacy_ok or rolling_ok:
+                step.complete(summary_lines)
                 self._notify_callback(step)
                 return True
             else:
-                step.error(f"Dashboard generation failed: {result.stderr}")
+                step.error("Both dashboard generators failed")
                 self._notify_callback(step)
                 return False
 
@@ -394,7 +442,9 @@ class MorningWorkflow:
 
             # Extract tags and glossary terms
             try:
-                from System.Scripts.daily_vault_activity import run_vault_activity
+                # scripts_dir (= System/Scripts) is already on sys.path (line 62);
+                # import as sibling module, not via System.Scripts.* package path.
+                from daily_vault_activity import run_vault_activity
                 activity_stats = run_vault_activity(days=1, extract_tasks=False, verbose=False)
                 logger.info(f"Vault activity: {activity_stats.get('files_tracked', 0)} files, "
                             f"{activity_stats.get('glossary_terms_added', 0)} glossary terms")

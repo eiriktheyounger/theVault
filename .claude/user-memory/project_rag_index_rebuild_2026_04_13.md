@@ -67,11 +67,27 @@ Previous indices preserved:
 - `chunks_hnsw.bin.backup-2026-04-11-94pct` (94.8%, original)
 - `chunks_hnsw.bin.backup-2026-04-12-943pct` (94.3%, failed attempt)
 
+## Exclude Globs (added 2026-04-18)
+
+`System/Scripts/RAG/settings.json` created with:
+```json
+{"settings": {"INDEX_EXCLUDE_GLOBS": ["System/Logs*", ".obsidian*", ".trash*"]}}
+```
+Both the indexer (`retrieval/indexer.py`) and search layer (`retrieval/store.py`) now load this at startup. The indexer had a bug (wrong relative import depth `..` vs `...` for settings_cache) — fixed 2026-04-18.
+
+**Contamination in current DB:** 339 `System/Logs` docs and 39 `.trash` docs are already indexed from prior runs. They won't be re-indexed going forward but will persist until the next `--full` rebuild.
+
+**Run incremental update:**
+```bash
+python3 -m System.Scripts.RAG.retrieval.indexer
+```
+(no flags = incremental by default). Must use `-m` from `~/theVault` root — direct script execution breaks relative imports.
+
 ## Recommendations Going Forward
 1. **Keep EMBED_CTX=512** — this is the optimal balance for reliability and quality
-2. **Incremental rebuilds:** Use `--incremental` flag for faster updates on changed files only
-3. **Monitor:** If skip rate > 0.5% appears again, suggests Ollama resource constraints or model issues
-4. **Future optimization:** Investigate if even larger embeddings (784+ dims) are possible at 512-token context
+2. **Incremental rebuilds:** `python3 -m System.Scripts.RAG.retrieval.indexer` (no flags) from repo root
+3. **Full rebuild** to purge Logs/trash contamination: add `--full` flag when convenient
+4. **Monitor:** If skip rate > 0.5% appears again, suggests Ollama resource constraints or model issues
 
 ## Timeline Summary
 | Date | Attempt | Config | Result | Coverage |

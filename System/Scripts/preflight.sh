@@ -57,20 +57,52 @@ log "Step 1: Closed $freed_count heavy app(s)"
 sleep 2
 
 # ── Step 2: Mount NAS if not mounted ─────────────────────────────────────────
+NAS_USER="ericmanchester"
+NAS_HOST="DS1621plus._smb._tcp.local"
+NAS_SHARE="home"
+
+NAS_TOUCH_LOG="$VAULT_HOME/Vault/System/Logs/Touch/NAS Check.md"
+
+nas_write_check() {
+    # Prove the mount is alive and writable by appending a canary entry.
+    # Returns 0 on success, 1 on failure.
+    local ts
+    ts=$(date '+%Y-%m-%d %H:%M:%S')
+    printf -- "- %s — NAS check good\n" "$ts" >> "$NAS_TOUCH_LOG" 2>/dev/null
+}
+
 if [ ! -d "$NAS_PATH" ]; then
-    log "Step 2: NAS not mounted — attempting remount via Finder/SMB..."
-    open "smb://ericmanchester@DS1621plus._smb._tcp.local/home" 2>/dev/null
-    for i in $(seq 1 30); do
-        [ -d "$NAS_PATH" ] && break
-        sleep 1
-    done
-    if [ ! -d "$NAS_PATH" ]; then
-        log "ERROR: NAS remount failed after 30s — aborting"
+    log "Step 2: NAS not mounted — attempting unattended remount via mount_smbfs..."
+
+    # Pull credentials from macOS Keychain (stored when you last manually mounted)
+    NAS_PASS=$(security find-internet-password -s "$NAS_HOST" -a "$NAS_USER" -w 2>/dev/null)
+
+    if [ -z "$NAS_PASS" ]; then
+        log "ERROR: No keychain entry for $NAS_USER@$NAS_HOST — cannot remount unattended"
+        log "  Fix: security add-internet-password -s '$NAS_HOST' -a '$NAS_USER' -w 'YOUR_PASSWORD'"
         exit 1
     fi
-    log "  NAS remounted successfully"
+
+    mkdir -p "$NAS_PATH"
+    # URL-encode the password in case it contains special characters
+    NAS_PASS_ENC=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))" "$NAS_PASS")
+    mount_smbfs "//${NAS_USER}:${NAS_PASS_ENC}@${NAS_HOST}/${NAS_SHARE}" "$NAS_PATH" 2>/dev/null
+
+    if [ ! -d "$NAS_PATH" ] || ! ls "$NAS_PATH" > /dev/null 2>&1; then
+        log "ERROR: NAS remount failed — aborting"
+        exit 1
+    fi
+    log "  NAS remounted successfully (unattended)"
 else
     log "Step 2: NAS already mounted at $NAS_PATH"
+fi
+
+# Live write-check: proves mount is responsive and writable, not just present as a directory.
+if nas_write_check; then
+    log "  NAS write-check OK (Touch/NAS Check.md)"
+else
+    log "ERROR: NAS write-check failed — mount may be stale, aborting"
+    exit 1
 fi
 
 # Validate symlinks point to NAS (laptop migration can corrupt these)

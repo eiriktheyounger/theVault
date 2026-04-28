@@ -137,12 +137,24 @@ def _parse_citation_string(cit: str) -> Dict[str, str]:
 
 
 def _build_discovery_links(
-    citations: List[Any], limit: int = 10
+    citations: List[Any],
+    results: List[Dict[str, Any]] | None = None,
+    limit: int = 10,
 ) -> List[Dict[str, Any]]:
     """Extract top vault files from citations as discovery links.
 
     Citations from hybrid() are strings like 'Title (path/to/file.md)'.
+    When results (the per-item list from hybrid()) is provided, use the real
+    cosine value to compute relevance_pct instead of a rank-position estimate.
     """
+    # Build a path→cosine lookup from results if available
+    cosine_by_path: Dict[str, float | None] = {}
+    if results:
+        for r in results:
+            p = r.get("path", "")
+            if p:
+                cosine_by_path[p] = r.get("cosine")
+
     discovery = []
     total = min(len(citations), limit)
     for i, citation in enumerate(citations[:limit]):
@@ -154,8 +166,12 @@ def _build_discovery_links(
             title = citation.get("title", "").replace(".md", "")
             path = citation.get("path", "")
 
-        # Approximate relevance from rank position
-        relevance_pct = round(max(10.0, 100.0 - (i * (90.0 / max(total, 1)))), 1)
+        # Use real cosine if available; fall back to rank-position estimate
+        cosine = cosine_by_path.get(path)
+        if cosine is not None:
+            relevance_pct = int(round(max(0.0, cosine) * 100))
+        else:
+            relevance_pct = round(max(10.0, 100.0 - (i * (90.0 / max(total, 1)))), 1)
 
         obsidian_uri = f"obsidian://open?vault=Vault&file={path.replace('.md', '')}"
 
@@ -163,6 +179,7 @@ def _build_discovery_links(
             {
                 "title": title,
                 "path": path,
+                "cosine": round(cosine, 4) if cosine is not None else None,
                 "relevance_pct": relevance_pct,
                 "obsidian_uri": obsidian_uri,
             }
@@ -218,12 +235,20 @@ async def query_endpoint(body: QueryRequest, request: Request) -> QueryResponse:
 
     # Validate model
     VALID_MODELS = {
-        "gemma3:4b",
         "gemma4:e4b",
         "claude-haiku-4-5-20251001",
         "claude-sonnet-4-20250514",
         "claude-opus-4-20250514",
     }
+    # Backwards-compat aliases — cached UI bundles or saved user preferences
+    # may still send legacy ids. Redirect them silently to the current model.
+    MODEL_ALIASES = {
+        "gemma3:4b": "gemma4:e4b",
+        "gemma:3b": "gemma4:e4b",
+        "qwen2.5:7b": "gemma4:e4b",  # Qwen no longer installed; route to Gemma 4
+    }
+    if model in MODEL_ALIASES:
+        model = MODEL_ALIASES[model]
     if model not in VALID_MODELS:
         raise HTTPException(
             status_code=400, detail=f"Unknown model: {model}. Valid: {VALID_MODELS}"
@@ -249,11 +274,13 @@ async def query_endpoint(body: QueryRequest, request: Request) -> QueryResponse:
     citations: List[Dict[str, Any]] = []
     search_context = ""
 
+    search_results: List[Dict[str, Any]] = []
     if context_mode in ("auto", "full"):
         try:
             result = hybrid(question)
             search_context = result.get("context", "")
             citations = result.get("citations", []) or []
+            search_results = result.get("results", []) or []
         except Exception as exc:
             # Log but don't fail
             pass
@@ -332,8 +359,8 @@ async def query_endpoint(body: QueryRequest, request: Request) -> QueryResponse:
     except Exception:
         pass  # Don't fail if logging fails
 
-    # Build discovery links
-    discovery = _build_discovery_links(citations, limit=10)
+    # Build discovery links (with real cosine from search_results)
+    discovery = _build_discovery_links(citations, results=search_results, limit=10)
 
     # Build response
     return QueryResponse(
@@ -343,7 +370,16 @@ async def query_endpoint(body: QueryRequest, request: Request) -> QueryResponse:
         entities_detected=entities_detected,
         citations=[
             Citation(
-                **_parse_citation_string(c), score=0.0
+                **_parse_citation_string(c),
+                score=round(
+                    next(
+                        (r["cosine"] for r in search_results
+                         if r.get("path") == _parse_citation_string(c).get("path")
+                         and r.get("cosine") is not None),
+                        0.0,
+                    ),
+                    4,
+                ),
             ) if isinstance(c, str) else Citation(
                 title=c.get("title", ""),
                 path=c.get("path", ""),
@@ -363,15 +399,6 @@ async def query_endpoint(body: QueryRequest, request: Request) -> QueryResponse:
 async def get_models() -> Dict[str, List[ModelInfo]]:
     """Return available models with metadata."""
     models = [
-        ModelInfo(
-            id="gemma3:4b",
-            name="Gemma 4B",
-            provider="ollama",
-            use_case="Lightning-fast lookups & quick answers",
-            speed="< 0.25s",
-            cost_per_query="$0.00",
-            supports_context=True,
-        ),
         ModelInfo(
             id="gemma4:e4b",
             name="Gemma 4 E4B",

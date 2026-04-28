@@ -75,13 +75,28 @@ def _summarize_anthropic(prompt: str) -> Optional[dict]:
         client = anthropic.Anthropic(api_key=api_key)
         response = client.messages.create(
             model=_HAIKU_MODEL,
-            max_tokens=1024,
+            max_tokens=2048,
             messages=[{"role": "user", "content": prompt}],
         )
         text = response.content[0].text.strip()
+        # Strip markdown fences if Haiku wraps despite instructions
+        if text.startswith("```"):
+            text = text.split("```", 2)[1]
+            if text.startswith("json"):
+                text = text[4:]
+            text = text.rsplit("```", 1)[0].strip()
+        if not text:
+            log.warning(
+                f"Anthropic summarizer returned empty text "
+                f"(stop_reason={response.stop_reason}, tokens={response.usage.output_tokens})"
+            )
+            return None
         return json.loads(text)
     except ImportError:
         log.debug("anthropic SDK not installed, skipping")
+        return None
+    except json.JSONDecodeError as e:
+        log.warning(f"Anthropic summarizer JSON parse failed: {e} — raw: {text[:200]!r}")
         return None
     except Exception as e:
         log.warning(f"Anthropic summarizer failed: {e}")

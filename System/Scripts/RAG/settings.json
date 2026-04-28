@@ -1,0 +1,12 @@
+{
+  "settings": {
+    "INDEX_EXCLUDE_GLOBS": [
+      "System/Logs*",
+      ".obsidian*",
+      ".trash*",
+      "_Dupes*",
+      "_archive*",
+      "HarmonicInternal*"
+    ]
+  }
+}

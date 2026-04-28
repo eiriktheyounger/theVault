@@ -59,12 +59,6 @@ interface ChatTab {
 // ---- Model registry (must match backend /api/query/models) ----
 
 const MODEL_INFO: Record<string, { name: string; useCase: string; cost: string; speed: string }> = {
-  'gemma3:4b': {
-    name: 'Gemma 4B',
-    useCase: 'Lightning-fast lookups & quick answers',
-    cost: '$0.00',
-    speed: '< 0.25s',
-  },
   'gemma4:e4b': {
     name: 'Gemma 4 E4B',
     useCase: 'Advanced reasoning with vault knowledge',

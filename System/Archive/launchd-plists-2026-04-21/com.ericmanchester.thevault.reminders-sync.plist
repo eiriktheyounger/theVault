@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.ericmanchester.thevault.reminders-sync</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>-l</string>
+        <string>-c</string>
+        <string>bash /Users/ericmanchester/theVault/System/Scripts/preflight.sh &amp;&amp; cd /Users/ericmanchester/theVault &amp;&amp; source .venv/bin/activate &amp;&amp; python3 -m System.Scripts.task_normalizer</string>
+    </array>
+
+    <!-- Runs at 00:00, 06:00, 12:00, 18:00 daily -->
+    <key>StartCalendarInterval</key>
+    <array>
+        <dict>
+            <key>Hour</key>
+            <integer>0</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+        <dict>
+            <key>Hour</key>
+            <integer>6</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+        <dict>
+            <key>Hour</key>
+            <integer>12</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+        <dict>
+            <key>Hour</key>
+            <integer>18</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+    </array>
+
+    <key>StandardOutPath</key>
+    <string>/Users/ericmanchester/theVault/System/Logs/reminders_sync.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/ericmanchester/theVault/System/Logs/reminders_sync.log</string>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/ericmanchester/theVault</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/ericmanchester/.gem/bin:/opt/homebrew/opt/ruby/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>HOME</key>
+        <string>/Users/ericmanchester</string>
+        <key>GEM_HOME</key>
+        <string>/Users/ericmanchester/.gem</string>
+        <key>GEM_PATH</key>
+        <string>/Users/ericmanchester/.gem</string>
+        <key>THEVAULT_CALENDAR_BACKEND</key>
+        <string>auto</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

@@ -18,7 +18,7 @@ Email Thread Ingester **BUILT** 2026-03-31 by Sonnet CLI (condescending-mccarthy
 - `email_parser.py` — clean_body(), strip_subject_prefixes(), html_to_text(), extract_email_address(), extract_name(), safe_filename()
 - `thread_grouper.py` — EmailMessage + EmailThread dataclasses, threading algorithm
 - `topic_router.py` — route_thread() with JOB_RELATED_DOMAINS check + Work/Job sub-routing
-- `summarizer.py` — Haiku API (needs ANTHROPIC_API_KEY env) → Ollama qwen2.5:7b fallback → placeholder
+- `summarizer.py` — Haiku API (needs ANTHROPIC_API_KEY env) → Gemma4:e4b fallback → placeholder. Fixed 2026-04-18: empty response guard, markdown fence stripping, max_tokens 1024→2048, diagnostic logging on parse failure
 - `markdown_writer.py` — YAML frontmatter, anchor links, participant table, full message thread
 - `contact_tracker.py` — Create/update People/{Name}.md
 - `job_tracker.py` — Create/update Job Search/{Company}/_Index.md
@@ -43,7 +43,7 @@ python -m System.Scripts.email_thread_ingester --job nebius.com --start-date 202
 
 **Known issues**:
 - **LinkedIn spam filtering**: `email_parser.py` lacks LinkedIn/notification filtering. Email ingestion will pull LinkedIn notifications + job alerts. Consider adding regex filter for senders matching `*.linkedin.com` in topic router.
-- ANTHROPIC_API_KEY must be set in env; Ollama fallback works without it
+- ANTHROPIC_API_KEY must be set in env; Gemma4:e4b (Ollama) fallback works without it
 
 **Test results (2026-03-31)**:
 - Gmail `--start-date 2026-03-01`: 48 messages → 29 threads, 0 errors ✅
