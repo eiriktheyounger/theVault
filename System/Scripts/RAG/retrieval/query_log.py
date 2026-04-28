@@ -13,7 +13,7 @@ QUERY_LOG_DB = RAG_DATA_DIR / "query_log.sqlite3"
 
 # Model pricing (input_tokens/M -> output_tokens/M)
 MODEL_PRICING: Dict[str, tuple[float, float]] = {
-    "gemma3:4b": (0.00, 0.00),
+    "gemma4:e4b": (0.00, 0.00),
     "qwen2.5:7b": (0.00, 0.00),
     "claude-haiku-4-5-20251001": (1.00, 5.00),
     "claude-sonnet-4-20250514": (3.00, 15.00),

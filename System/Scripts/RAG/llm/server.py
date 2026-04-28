@@ -822,6 +822,26 @@ async def fast_endpoint(request: Request) -> Dict[str, Any]:
         return envelope
 
 
+@app.get("/fast")
+async def fast_get(q: str = "", question: str = "") -> Dict[str, Any]:
+    """GET convenience endpoint for /fast — returns retrieval metadata (results list)
+    with cosine, rrf_score, graph_boost per item. Useful for debugging and verification.
+    """
+    query = (q or question or "").strip()
+    if not query:
+        return {"error": "q parameter required", "results": []}
+    try:
+        result = search_fast.hybrid(query)
+        return {
+            "query": query,
+            "results": result.get("results", []),
+            "retrieval": result.get("retrieval", {}),
+            "abstain_hint": result.get("abstain_hint", False),
+        }
+    except Exception as exc:
+        return {"error": str(exc), "results": []}
+
+
 @app.post("/deep")
 async def deep_endpoint(payload: DeepRequest) -> Dict[str, Any]:
     # Normalize q from either field name

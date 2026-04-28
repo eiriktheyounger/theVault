@@ -9,7 +9,7 @@ export default function Settings() {
   const { settings, setSettings } = useSettings();
   const [apiBase, setApiBase] = useState(settings.apiBase || '');
   const [ragBase, setRagBase] = useState(settings.ragBase || '');
-  const [fastModel, setFastModel] = useState(settings.fastModel || 'gemma3:4b');
+  const [fastModel, setFastModel] = useState(settings.fastModel || 'gemma4:e4b');
   const [deepModel, setDeepModel] = useState(settings.deepModel || 'gemma4:e4b');
 
   const {
