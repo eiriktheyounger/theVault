@@ -240,6 +240,15 @@ async def query_endpoint(body: QueryRequest, request: Request) -> QueryResponse:
         "claude-sonnet-4-20250514",
         "claude-opus-4-20250514",
     }
+    # Backwards-compat aliases — cached UI bundles or saved user preferences
+    # may still send legacy ids. Redirect them silently to the current model.
+    MODEL_ALIASES = {
+        "gemma3:4b": "gemma4:e4b",
+        "gemma:3b": "gemma4:e4b",
+        "qwen2.5:7b": "gemma4:e4b",  # Qwen no longer installed; route to Gemma 4
+    }
+    if model in MODEL_ALIASES:
+        model = MODEL_ALIASES[model]
     if model not in VALID_MODELS:
         raise HTTPException(
             status_code=400, detail=f"Unknown model: {model}. Valid: {VALID_MODELS}"
