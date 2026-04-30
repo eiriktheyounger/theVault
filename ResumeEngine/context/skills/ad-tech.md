@@ -138,6 +138,5 @@ Mastery of advertising technology spanning from pioneering early ad targeting sy
 ## Context Notes
 
 - **Evolution**: Pre-DSP era (weight-based targeting) → SSAI/CSAI platforms → AI-driven dynamic insertion
-- **Recognition**: Four patents protecting ad tech innovations
-- **Impact**: Technology acquired by Facebook; millions of ad impressions driven
+- **Recognition**: Four ad-tech patents (AOL, Facebook ×2, NBCU pending) protecting weight-based targeting, insertion synchronization, and dynamic in-scene content
 - **Current Focus**: Advanced ad formats and monetization strategies at scale
