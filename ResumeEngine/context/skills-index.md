@@ -159,7 +159,7 @@ Comprehensive leadership and influence capabilities:
 
 ### Awards & Patents
 - **3 Emmy Awards:** Technology & Engineering recognition
-- **11 Patents:** 7 granted, 4 pending
+- **10 Patents:** 7 granted, 3 pending
 - **Industry Speaking:** Conference presentations and thought leadership
 
 ## Skills Development Timeline
