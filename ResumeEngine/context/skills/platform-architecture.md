@@ -122,9 +122,9 @@ Mastery of designing and building platforms that scale from prototype to million
 
 ## Related Patents
 
-- [[patents/granted/10667018]] — Asynchronous workflows
-- [[patents/pending/20250203152]] — Timed metadata for overlays
-- [[patents/pending/20240430496]] — Dynamic In-Scene Secondary Content Insertion
+- [[patents/patent-10667018]] — Asynchronous Workflows / workflow orchestration for parallel distributed media processing (TWC)
+- [[patents/patent-20250203152]] — Timed Metadata for Overlays / Foundation of Peacock Live Actions (NBCU, pending)
+- [[patents/patent-20240430496]] — Dynamic In-Scene Secondary Content Insertion (NBCU, pending)
 
 ## Resume Language
 
