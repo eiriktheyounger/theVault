@@ -160,10 +160,13 @@ Master index of 11 major career projects spanning 2001–2025. Projects organize
 - **2025:** Paris 2024 Olympics (Live Actions, Olympic Daily Recap)
 
 ### By Patent Generation
-- **US-8028092 (2011):** CNN Ad Targeting
-- **US-8769151, US-8762575 (2014):** TWC VOD Centralization
-- **US-20250203152 (pending):** Live Actions
-- **US-10667018 (2020):** Related to Daily Recap workflows
+- **US-8028092 (2011, AOL):** CNN Ad Targeting
+- **US-8762575, US-8769151 (2014, Facebook):** Ad insertion / targeting in streaming video
+- **US-10375452, US-11310567, US-12382148 (TWC):** Thumbnail Generation series
+- **US-10667018 (2020, TWC):** Asynchronous workflow orchestration for parallel distributed media processing
+- **US-20250203152 (pending, NBCU):** Foundation of Peacock Live Actions
+- **US-20240430496 (pending, NBCU):** Dynamic In-Scene Secondary Content Insertion
+- **US-20260057418 (pending, NBCU):** Generative AI Creative Platform
 - **Related:** Overlay Core Service (filed under NDA)
 
 ---
