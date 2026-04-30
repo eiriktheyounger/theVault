@@ -766,17 +766,21 @@ def assemble_resume_md(
     granted = canonical.get("patents_granted", [])
     pending = canonical.get("patents_pending", [])
     lines.append(f"## Patents ({len(granted)} Granted | {len(pending)} Pending)\n")
-    lines.append("### Granted\n")
+    lines.append("**Granted:**\n")
     for p in granted:
-        lines.append(
-            f"- **{p['title']}** ({p['number']}, {p.get('year', '')}) — {p.get('company', '')}\n"
-        )
+        line = f"- {p['number']} — {p['title']} ({p.get('company', '')})"
+        note = p.get("note", "")
+        if note:
+            line += f" — {note}"
+        lines.append(line + "\n")
     if pending:
-        lines.append("\n### Pending\n")
+        lines.append("\n**Pending:**\n")
         for p in pending:
-            lines.append(
-                f"- **{p.get('title', 'Pending')}** ({p.get('number', 'N/A')}) — {p.get('company', '')}\n"
-            )
+            line = f"- {p.get('number', 'N/A')} — {p.get('title', 'Pending')} ({p.get('company', '')})"
+            note = p.get("note", "")
+            if note:
+                line += f" — {note}"
+            lines.append(line + "\n")
     lines.append("\n---\n")
 
     # Awards (always from canonical — ALL of them)
