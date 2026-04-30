@@ -123,7 +123,7 @@ Master index of 8 career positions spanning 2001–2025 across four employer car
 **Average Tenure:** 3–4 years per role  
 **Team Leadership:** 4–6 person teams managed  
 **Emmy Awards:** 4 across career (2005, 2014, 2023, 2025)  
-**Patents:** 11 total (7 granted, 4 pending) across all roles  
+**Patents:** 10 total (7 granted, 3 pending) across all roles  
 
 ---
 
