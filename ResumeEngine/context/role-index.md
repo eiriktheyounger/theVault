@@ -137,9 +137,10 @@ Master index of 8 career positions spanning 2001–2025 across four employer car
 
 ### By Patent
 - Patents: [[patents/patent-index]] (full portfolio)
-- AOL patents: [[patents/patent-8028092]], [[patents/patent-12382148]]
-- TWC patents: [[patents/patent-8769151]], [[patents/patent-8762575]], [[patents/patent-11310567]]
-- NBCUniversal patents: [[patents/patent-10667018]], [[patents/patent-10375452]], [[patents/patent-20250203152]], [[patents/patent-20240430496]]
+- AOL patents: [[patents/patent-8028092]]
+- TWC patents: [[patents/patent-10375452]], [[patents/patent-10667018]], [[patents/patent-11310567]], [[patents/patent-12382148]]
+- Facebook patents: [[patents/patent-8762575]], [[patents/patent-8769151]]
+- NBCUniversal patents: [[patents/patent-20240430496]], [[patents/patent-20250203152]], [[patents/patent-20260057418]]
 
 ### By Industry
 - Streaming: AOL, TWC, Ooyala, NBCUniversal, Harmonic
