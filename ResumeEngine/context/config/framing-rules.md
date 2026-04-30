@@ -56,7 +56,7 @@ After briefly mentioning departure, immediately pivot to positive:
 - "OTT transition period" (if relevant)
 - "SaaS platform development"
 - "Cable-to-streaming modernization"
-- **Link to:** Emmy Award (2014), revenue growth (350%), patents (US-8769151, US-8762575, US-11310567)
+- **Link to:** Emmy Award (2014), revenue growth (350%), TWC patents (US-10375452, US-10667018, US-11310567, US-12382148)
 
 ### Ooyala (2017-2018)
 **Frame:** Enterprise SaaS and market expansion
