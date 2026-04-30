@@ -188,10 +188,13 @@ Master index of 11 major career projects spanning 2001–2025. Projects organize
 
 ### By Patent
 - Patents Index: [[patents/patent-index]]
-- CNN Ad Targeting: [[patents/patent-8028092]]
-- TWC VOD: [[patents/patent-8769151]], [[patents/patent-8762575]]
-- Live Actions: [[patents/patent-20250203152]]
-- Workflows: [[patents/patent-10667018]]
+- CNN Ad Targeting (AOL): [[patents/patent-8028092]]
+- Facebook ad insertion / targeting: [[patents/patent-8762575]], [[patents/patent-8769151]]
+- TWC Thumbnail series: [[patents/patent-10375452]], [[patents/patent-11310567]], [[patents/patent-12382148]]
+- TWC Asynchronous Workflows: [[patents/patent-10667018]]
+- Live Actions (NBCU): [[patents/patent-20250203152]]
+- Dynamic In-Scene Secondary Content (NBCU): [[patents/patent-20240430496]]
+- GenAI Creative Platform (NBCU): [[patents/patent-20260057418]]
 
 ### By Skill Area
 - Skills Index: [[skills/]] (streaming-media, ad-tech, ai-ml, platform-architecture, leadership)
