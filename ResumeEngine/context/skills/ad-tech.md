@@ -121,10 +121,10 @@ Mastery of advertising technology spanning from pioneering early ad targeting sy
 
 ## Related Patents
 
-- [[patents/granted/8028092]] — Weight-based ad targeting (2011)
-- [[patents/granted/8762575]] — Inserting advertising content (2014)
-- [[patents/granted/8769151]] — Adding advertising content to media (2014)
-- [[patents/pending/20240430496]] — Dynamic In-Scene Secondary Content Insertion
+- [[patents/patent-8028092]] — Dynamic insertion of advertising content into media streams (AOL, 2011)
+- [[patents/patent-8762575]] — Enhanced targeting techniques within streaming video (Facebook, 2014)
+- [[patents/patent-8769151]] — Synchronizing content insertion with media playback (Facebook, 2014)
+- [[patents/patent-20240430496]] — Dynamic In-Scene Secondary Content Insertion (NBCU, pending)
 
 ## Resume Language
 
