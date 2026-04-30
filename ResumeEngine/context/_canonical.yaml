@@ -48,52 +48,58 @@ roles:
     location: "Sterling, VA"
 
 patents_granted:
-  - number: "US 8,028,092"
+  - number: "US 12382148"
+    title: "Apparatus and Methods for Thumbnail Generation"
+    company: "TWC"
+    year: 2025
+    note: ""
+  - number: "US 11310567"
+    title: "Apparatus and Methods for Thumbnail Generation"
+    company: "TWC"
+    year: 2022
+    note: ""
+  - number: "US 10667018"
+    title: "Asynchronous Workflows"
+    company: "TWC"
+    year: 2020
+    note: "Workflow orchestration for parallel distributed media processing"
+  - number: "US 10375452"
+    title: "Apparatus and Methods for Thumbnail Generation"
+    company: "TWC"
+    year: 2019
+    note: ""
+  - number: "US 8769151"
+    title: "Adding Advertising Content to Media Content"
+    company: "Facebook"
+    year: 2014
+    note: "Synchronizing content insertion with media playback"
+  - number: "US 8762575"
+    title: "Inserting Advertising Content"
+    company: "Facebook"
+    year: 2014
+    note: "Enhanced targeting techniques within streaming video"
+  - number: "US 8028092"
     title: "Inserting Advertising Content"
     company: "AOL"
     year: 2011
-  - number: "US 8,762,575"
-    title: "Inserting Advertising Content"
-    company: "Time Warner Cable"
-    year: 2014
-  - number: "US 8,769,151"
-    title: "Adding Advertising Content to Media Content"
-    company: "Time Warner Cable"
-    year: 2014
-  - number: "US 10,375,452"
-    title: "Apparatus and Methods for Thumbnail Generation"
-    company: "NBCUniversal"
-    year: 2019
-  - number: "US 10,667,018"
-    title: "Asynchronous Workflows"
-    company: "NBCUniversal"
-    year: 2020
-  - number: "US 11,310,567"
-    title: "Apparatus and Methods for Thumbnail Generation"
-    company: "Time Warner Cable"
-    year: 2022
-  - number: "US 12,382,148"
-    title: "Apparatus and Methods for Thumbnail Generation"
-    company: "AOL"
-    year: 2025
+    note: "Dynamic insertion of advertising content into media streams"
 
 patents_pending:
-  - number: "US 20,250,203,152"
+  - number: "US 20260057418"
+    title: "Generative AI Creative Platform"
+    company: "NBCU"
+    year: 2026
+    note: ""
+  - number: "US 20250203152"
     title: "Timed Metadata for Overlays"
-    company: "NBCUniversal"
+    company: "NBCU"
     year: 2025
-  - number: "US 20,240,430,496"
+    note: "Foundation of Peacock Live Actions"
+  - number: "US 20240430496"
     title: "Dynamic In-Scene Secondary Content Insertion"
-    company: "NBCUniversal"
+    company: "NBCU"
     year: 2024
-  - number: "US 20,140,351,852"
-    title: "Inserting Advertising Content"
-    company: "Facebook"
-    year: 2014
-  - number: "US 20,140,351,853"
-    title: "Inserting Advertising Content"
-    company: "Facebook"
-    year: 2014
+    note: ""
 
 awards:
   - year: 2025
